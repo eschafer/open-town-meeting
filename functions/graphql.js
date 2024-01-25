@@ -1,86 +1,44 @@
 import { makeExecutableSchema } from '@graphql-tools/schema';
 import { graphql } from 'graphql';
+import { merge } from 'lodash';
 
-const typeDefs = `
-type Precinct {
-  precinct_id: ID!
-  precinct_number: Int!
-  census_year: Int!
-  polling_place: String
-  created_at: Int!
-  updated_at: Int!
-}
+import precinctTypeDefs from './types/Precinct/typeDefs';
+import electionTypeDefs from './types/Election/typeDefs';
+import townMeetingSessionTypeDefs from './types/TownMeetingSession/typeDefs';
+import voteTypeTypeDefs from './types/VoteType/typeDefs';
+import personTypeDefs from './types/Person/typeDefs';
+import officeTypeDefs from './types/Office/typeDefs';
+import raceTypeDefs from './types/Race/typeDefs';
+import candidateTypeDefs from './types/Candidate/typeDefs';
+import electionResultTypeDefs from './types/ElectionResult/typeDefs';
+import termTypeDefs from './types/Term/typeDefs';
+import warrantArticleTypeDefs from './types/WarrantArticle/typeDefs';
+import motionTypeDefs from './types/Motion/typeDefs';
+import petitionerTypeDefs from './types/Petitioner/typeDefs';
+import voteTypeDefs from './types/Vote/typeDefs';
 
-type Person {
-  person_id: ID!
-  first_name: String!
-  middle_name: String
-  last_name: String!
-  name_suffix: String
-  precinct_id: ID
-  precinct: Precinct
-  address: String
-  phone: String
-  email: String
-  created_at: Int!
-  updated_at: Int!
-}
+import precinctResolvers from './types/Precinct/resolvers';
+import electionResolvers from './types/Election/resolvers';
+import personResolvers from './types/Person/resolvers';
 
-type Query {
-  # Precinct
-  allPrecincts: [Precinct!]!
-  precinctById(id: ID!): Precinct
+const typeDefs = [
+  precinctTypeDefs, // this needs to go first because it sets the base Query type (the rest extend it)
+  electionTypeDefs,
+  townMeetingSessionTypeDefs,
+  voteTypeTypeDefs,
+  personTypeDefs,
+  officeTypeDefs,
+  raceTypeDefs,
+  candidateTypeDefs,
+  electionResultTypeDefs,
+  termTypeDefs,
+  warrantArticleTypeDefs,
+  motionTypeDefs,
+  petitionerTypeDefs,
+  voteTypeDefs,
+];
 
-  # Person
-  allPeople: [Person!]!
-  personById(id: ID!): Person
-}`;
-
-const resolvers = {
-  Query: {
-    async allPrecincts(root, args, { db }) {
-      const ps = db.prepare('SELECT * from precincts');
-      const data = await ps.all();
-      return data.results;
-    },
-    async precinctById(root, { id }, { db }) {
-      const ps = db
-        .prepare('SELECT * from precincts WHERE precinct_id = ?')
-        .bind(id);
-      const data = await ps.run();
-
-      if (!data.success) {
-        throw new Error('No precinct found with id ' + id);
-      }
-      return data.results[0];
-    },
-    async allPeople(root, args, { db }) {
-      const ps = db.prepare('SELECT * from people');
-      const data = await ps.all();
-      return data.results;
-    },
-    async personById(root, { id }, { db }) {
-      const ps = db
-        .prepare('SELECT * from people WHERE person_id = ?')
-        .bind(id);
-      const data = await ps.run();
-
-      if (!data.success) {
-        throw new Error('No person found with id ' + id);
-      }
-      return data.results[0];
-    },
-  },
-  Person: {
-    precinct: async (root, args, { db }) => {
-      const ps = db
-        .prepare('SELECT * from precincts WHERE precinct_id = ?')
-        .bind(root.precinct_id);
-      const data = await ps.run();
-      return data.results[0];
-    },
-  },
-};
+const resolvers = merge(precinctResolvers, electionResolvers, personResolvers);
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 

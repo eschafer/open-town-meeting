@@ -5,6 +5,7 @@ type Person {
   middle_name: String
   last_name: String!
   name_suffix: String
+  precinct_id: ID
   precinct: Precinct
   address: String
   phone: String
@@ -13,8 +14,22 @@ type Person {
   updated_at: Int!
 }
 
+input PersonInput {
+  person_id: ID
+  first_name: String
+  middle_name: String
+  last_name: String
+  name_suffix: String
+  precinct_id: ID
+  address: String
+  phone: String
+  email: String
+  created_at: Int
+  updated_at: Int
+}
+
 extend type Query {
-  allPeople(firstName: String, lastName: String): [Person!]!
+  allPeople(filter: PersonInput): [Person!]!
   personById(id: ID!): Person
 }
 `;

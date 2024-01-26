@@ -7,8 +7,16 @@ type TownMeetingSession {
   updated_at: Int!
 }
 
+input TownMeetingSessionInput {
+  session_id: ID
+  start_date: String
+  session_name: String
+  created_at: Int
+  updated_at: Int
+}
+
 extend type Query {
-  allTownMeetingSessions: [TownMeetingSession!]!
+  allTownMeetingSessions(filter: TownMeetingSessionInput): [TownMeetingSession!]!
   townMeetingSessionById(id: ID!): TownMeetingSession
 }
 `;

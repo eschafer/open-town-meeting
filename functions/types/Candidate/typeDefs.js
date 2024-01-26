@@ -7,8 +7,14 @@ type Candidate {
   updated_at: Int!
 }
 
+input CandidateInput {
+  candidate_id: ID
+  created_at: Int
+  updated_at: Int
+}
+
 extend type Query {
-  allCandidates: [Candidate!]!
+  allCandidates(filter: CandidateInput): [Candidate!]!
   candidateById(id: ID!): Candidate
 }
 `;

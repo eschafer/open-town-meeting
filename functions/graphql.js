@@ -19,7 +19,11 @@ import voteTypeDefs from './types/Vote/typeDefs';
 
 import precinctResolvers from './types/Precinct/resolvers';
 import electionResolvers from './types/Election/resolvers';
+import townMeetingSessionResolvers from './types/TownMeetingSession/resolvers';
 import personResolvers from './types/Person/resolvers';
+import voteTypeResolvers from './types/VoteType/resolvers';
+import officeResolvers from './types/Office/resolvers';
+import raceResolvers from './types/Race/resolvers';
 
 const typeDefs = [
   precinctTypeDefs, // this needs to go first because it sets the base Query type (the rest extend it)
@@ -38,7 +42,15 @@ const typeDefs = [
   voteTypeDefs,
 ];
 
-const resolvers = merge(precinctResolvers, electionResolvers, personResolvers);
+const resolvers = merge(
+  precinctResolvers,
+  electionResolvers,
+  personResolvers,
+  townMeetingSessionResolvers,
+  voteTypeResolvers,
+  officeResolvers,
+  raceResolvers,
+);
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 

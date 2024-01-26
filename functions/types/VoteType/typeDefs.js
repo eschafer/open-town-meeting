@@ -8,7 +8,7 @@ type VoteType {
 
 extend type Query {
   allVoteTypes: [VoteType!]!
-  voteTypesById(id: ID!): VoteType
+  voteTypeById(id: ID!): VoteType
 }
 `;
 

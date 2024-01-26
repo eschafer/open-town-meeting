@@ -5,7 +5,6 @@ type Person {
   middle_name: String
   last_name: String!
   name_suffix: String
-  precinct_id: ID
   precinct: Precinct
   address: String
   phone: String

@@ -1,4 +1,23 @@
-const resolvers = {
+import { createResolvers } from '../../src/utils';
+
+const resolvers = createResolvers({
+  singularName: 'person',
+  pluralName: 'people',
+  tableName: 'people',
+  idName: 'person_id',
+  nested: [
+    {
+      singularName: 'precinct',
+      pluralName: 'precincts',
+      tableName: 'precincts',
+      idName: 'precinct_id',
+    },
+  ],
+});
+
+export default resolvers;
+
+/*
   Query: {
     async allPeople(root, { firstName, lastName }, { db }) {
       console.log('all people', firstName, lastName);
@@ -28,27 +47,6 @@ const resolvers = {
       const data = await ps.all();
       return data.results;
     },
-    async personById(root, { id }, { db }) {
-      const ps = db
-        .prepare('SELECT * from people WHERE person_id = ?')
-        .bind(id);
-      const data = await ps.run();
 
-      if (!data.success) {
-        throw new Error('No person found with id ' + id);
-      }
-      return data.results[0];
-    },
-  },
-  Person: {
-    precinct: async (root, args, { db }) => {
-      const ps = db
-        .prepare('SELECT * from precincts WHERE precinct_id = ?')
-        .bind(root.precinct_id);
-      const data = await ps.run();
-      return data.results[0];
-    },
-  },
-};
-
-export default resolvers;
+  }
+*/

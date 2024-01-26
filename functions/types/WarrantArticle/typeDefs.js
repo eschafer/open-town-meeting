@@ -1,7 +1,7 @@
 const typeDefs = `
 type WarrantArticle {
   article_id: ID!
-  session: TownMeetingSession!
+  townMeetingSession: TownMeetingSession!
   article_number: Int!
   article_title: String!
   article_description: String

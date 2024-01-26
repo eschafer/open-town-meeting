@@ -24,6 +24,13 @@ import personResolvers from './types/Person/resolvers';
 import voteTypeResolvers from './types/VoteType/resolvers';
 import officeResolvers from './types/Office/resolvers';
 import raceResolvers from './types/Race/resolvers';
+import candidateResolvers from './types/Candidate/resolvers';
+import electionResultResolvers from './types/ElectionResult/resolvers';
+import termResolvers from './types/Term/resolvers';
+import warrantArticleResolvers from './types/WarrantArticle/resolvers';
+import motionResolvers from './types/Motion/resolvers';
+import petitionerResolvers from './types/Petitioner/resolvers';
+import voteResolvers from './types/Vote/resolvers';
 
 const typeDefs = [
   precinctTypeDefs, // this needs to go first because it sets the base Query type (the rest extend it)
@@ -50,6 +57,13 @@ const resolvers = merge(
   voteTypeResolvers,
   officeResolvers,
   raceResolvers,
+  candidateResolvers,
+  electionResultResolvers,
+  termResolvers,
+  warrantArticleResolvers,
+  motionResolvers,
+  petitionerResolvers,
+  voteResolvers,
 );
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });

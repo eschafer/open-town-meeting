@@ -1,7 +1,7 @@
 const typeDefs = `
 type Motion {
   motion_id: ID!
-  article: WarrantArticle!
+  warrantArticle: WarrantArticle!
   motion_title: String!
   motion_description: String
   created_at: Int!

@@ -1,7 +1,7 @@
 const typeDefs = `
 type Candidate {
   candidate_id: ID!
-  person: Person!
+  person: Person
   race: Race!
   created_at: Int!
   updated_at: Int!

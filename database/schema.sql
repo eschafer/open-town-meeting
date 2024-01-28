@@ -50,8 +50,8 @@ CREATE TABLE IF NOT EXISTS people (
     name_suffix TEXT,
     precinct_id INTEGER,
     address TEXT,
-    phone TEXT,
     email TEXT,
+    phone TEXT,
 
     created_at INTEGER NOT NULL,
     updated_at INTEGER NOT NULL,
@@ -93,8 +93,10 @@ CREATE TABLE IF NOT EXISTS races (
 CREATE TABLE IF NOT EXISTS candidates (
     candidate_id INTEGER PRIMARY KEY,
 
-    person_id INTEGER NOT NULL,
+    person_id INTEGER,
     race_id INTEGER NOT NULL,
+    is_no_vote INTEGER NOT NULL,
+    is_write_in INTEGER NOT NULL,
 
     created_at INTEGER NOT NULL,
     updated_at INTEGER NOT NULL,
@@ -103,12 +105,18 @@ CREATE TABLE IF NOT EXISTS candidates (
     FOREIGN KEY (race_id) REFERENCES races(race_id),
 
     UNIQUE (person_id, race_id)
+
+    CHECK (
+        (person_id IS NOT NULL AND is_no_vote = 0 AND is_write_in = 0) OR
+        (person_id IS NULL AND ((is_no_vote = 1 AND is_write_in = 0) OR (is_no_vote = 0 AND is_write_in = 1)))
+    )
 );
 
+-- each row represents the votes for a single candidate in a single race
 CREATE TABLE IF NOT EXISTS election_results (
     result_id INTEGER PRIMARY KEY,
 
-    candidate_id INTEGER NOT NULL,
+    candidate_id INTEGER,
 
     vote_count INTEGER,
 
@@ -177,9 +185,9 @@ CREATE TABLE IF NOT EXISTS petitioners (
     FOREIGN KEY (motion_id) REFERENCES motions(motion_id)
 );
 
-CREATE TABLE IF NOT EXISTS votes (
-    person_id INTEGER,
-    motion_id INTEGER,
+CREATE TABLE IF NOT EXISTS town_meeting_votes (
+    person_id INTEGER NOT NULL,
+    motion_id INTEGER NOT NULL,
 
     vote_type INTEGER NOT NULL,
 

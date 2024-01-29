@@ -1,16 +1,16 @@
 const typeDefs = `
 type Election {
-  election_id: ID!
-  election_date: String!
-  created_at: Int!
-  updated_at: Int!
+  electionId: ID!
+  electionDate: String!
+  createdAt: Int!
+  updatedAt: Int!
 }
 
 input ElectionInput {
-  election_id: ID
-  election_date: String
-  created_at: Int
-  updated_at: Int
+  electionId: ID
+  electionDate: String
+  createdAt: Int
+  updatedAt: Int
 }
 
 extend type Query {

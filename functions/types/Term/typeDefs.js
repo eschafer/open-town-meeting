@@ -1,16 +1,26 @@
 const typeDefs = `
 type Term {
-  term_id: ID!
+  termId: ID!
   person: Person!
   office: Office!
-  start_date: String!
-  end_date: String!
-  created_at: Int!
-  updated_at: Int!
+  startDate: String!
+  endDate: String!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+input TermInput {
+  termId: ID
+  personId: ID
+  officeId: ID
+  startDate: String
+  endDate: String
+  createdAt: Int
+  updatedAt: Int
 }
 
 extend type Query {
-  allTerms: [Term!]!
+  allTerms(filter: TermInput): [Term!]!
   termById(id: ID!): Term
 }
 `;

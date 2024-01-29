@@ -1,16 +1,18 @@
 const typeDefs = `
 type Candidate {
-  candidate_id: ID!
+  candidateId: ID!
   person: Person
   race: Race!
-  created_at: Int!
-  updated_at: Int!
+  createdAt: Int!
+  updatedAt: Int!
 }
 
 input CandidateInput {
-  candidate_id: ID
-  created_at: Int
-  updated_at: Int
+  candidateId: ID
+  personId: ID
+  raceId: ID
+  createdAt: Int
+  updatedAt: Int
 }
 
 extend type Query {

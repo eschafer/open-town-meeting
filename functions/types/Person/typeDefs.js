@@ -1,31 +1,31 @@
 const typeDefs = `
 type Person {
-  person_id: ID!
-  first_name: String!
-  middle_name: String
-  last_name: String!
-  name_suffix: String
-  precinct_id: ID
+  personId: ID!
+  firstName: String!
+  middleName: String
+  lastName: String!
+  nameSuffix: String
+  precinctId: ID
   precinct: Precinct
   address: String
   phone: String
   email: String
-  created_at: Int!
-  updated_at: Int!
+  createdAt: Int!
+  updatedAt: Int!
 }
 
 input PersonInput {
-  person_id: ID
-  first_name: String
-  middle_name: String
-  last_name: String
-  name_suffix: String
-  precinct_id: ID
+  personId: ID
+  firstName: String
+  middleName: String
+  lastName: String
+  nameSuffix: String
+  precinctId: ID
   address: String
   phone: String
   email: String
-  created_at: Int
-  updated_at: Int
+  createdAt: Int
+  updatedAt: Int
 }
 
 extend type Query {

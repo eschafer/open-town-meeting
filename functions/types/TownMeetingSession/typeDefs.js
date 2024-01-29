@@ -1,18 +1,18 @@
 const typeDefs = `
 type TownMeetingSession {
-  session_id: ID!
-  start_date: String!
-  session_name: String!
-  created_at: Int!
-  updated_at: Int!
+  sessionId: ID!
+  startDate: String!
+  sessionName: String!
+  createdAt: Int!
+  updatedAt: Int!
 }
 
 input TownMeetingSessionInput {
-  session_id: ID
-  start_date: String
-  session_name: String
-  created_at: Int
-  updated_at: Int
+  sessionId: ID
+  startDate: String
+  sessionName: String
+  createdAt: Int
+  updatedAt: Int
 }
 
 extend type Query {

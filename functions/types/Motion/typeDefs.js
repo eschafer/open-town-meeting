@@ -1,15 +1,24 @@
 const typeDefs = `
 type Motion {
-  motion_id: ID!
+  motionId: ID!
   warrantArticle: WarrantArticle!
-  motion_title: String!
-  motion_description: String
-  created_at: Int!
-  updated_at: Int!
+  motionTitle: String!
+  motionDescription: String
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+input MotionInput {
+  motionId: ID
+  warrantArticleId: ID
+  motionTitle: String
+  motionDescription: String
+  createdAt: Int
+  updatedAt: Int
 }
 
 extend type Query {
-  allMotions: [Motion!]!
+  allMotions(filter: MotionInput): [Motion!]!
   motionById(id: ID!): Motion
 }
 `;

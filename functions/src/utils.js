@@ -1,35 +1,65 @@
 import { merge } from 'lodash';
 
+function toCamelCase(str) {
+  return str.replace(/([-_][a-z])/g, (group) =>
+    group.toUpperCase().replace('-', '').replace('_', ''),
+  );
+}
+
+function convertKeysToCamelCase(obj) {
+  const newObj = {};
+  for (let key in obj) {
+    newObj[toCamelCase(key)] = obj[key];
+  }
+  return newObj;
+}
+
+export function toSnakeCase(str) {
+  return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
+}
+
+export function convertKeysToSnakeCase(obj) {
+  const newObj = {};
+  for (let key in obj) {
+    newObj[toSnakeCase(key)] = obj[key];
+  }
+  return newObj;
+}
+
 function createNestedResolver(
   { singularName, pluralName, tableName, idName },
   parentSingularName,
 ) {
-  return {
+  const nestedResolver = {
     [parentSingularName.charAt(0).toUpperCase() + parentSingularName.slice(1)]:
       {
         [singularName]: async (root, args, context) => {
-          console.log(
-            `SELECT * from ${tableName} WHERE ${idName} = ?`,
-            root[idName],
-            root,
-            idName,
-          );
+          if (!root[toCamelCase(idName)]) {
+            return null;
+          }
+
           const ps = context.db
             .prepare(`SELECT * from ${tableName} WHERE ${idName} = ?`)
-            .bind(root[idName]);
+            .bind(root[toCamelCase(idName)]);
           const data = await ps.run();
 
-          if (!data.success) {
-            throw new Error(`No ${tableName} found with id ${idName}`);
+          if (data.results.length === 0) {
+            return null;
           }
-          console.log(
-            `${parentSingularName.charAt(0).toUpperCase() + parentSingularName.slice(1)}.${singularName}`,
-            data.results[0],
-          );
-          return data.results[0];
+
+          const result = convertKeysToCamelCase(data.results[0]);
+
+          if (!data.success) {
+            throw new Error(
+              `No ${tableName} found with id ${root[toCamelCase(idName)]}`,
+            );
+          }
+          return result;
         },
       },
   };
+
+  return nestedResolver;
 }
 
 export function createResolvers({
@@ -51,7 +81,7 @@ export function createResolvers({
     otherResolvers = merge(...nestedResolvers);
   }
 
-  return merge(
+  const resolvers = merge(
     {
       Query: {
         [`all${pluralName.charAt(0).toUpperCase() + pluralName.slice(1)}`]:
@@ -60,7 +90,8 @@ export function createResolvers({
             let values = [];
 
             if (args.filter) {
-              const filters = Object.entries(args.filter);
+              const filter = convertKeysToSnakeCase(args.filter);
+              const filters = Object.entries(filter);
               const conditions = filters.map(([key, value], index) => {
                 values.push(value);
                 return `${key} = ?`;
@@ -69,32 +100,39 @@ export function createResolvers({
               query += ` WHERE ${conditions.join(' AND ')}`;
             }
 
-            console.log('query', query);
-            console.log('values', values);
-
             const ps = context.db.prepare(query).bind(...values);
             const data = await ps.all();
 
-            console.log(
-              `Query.all${pluralName.charAt(0).toUpperCase() + pluralName.slice(1)}`,
-              data.results,
-            );
-            return data.results;
+            const results = data.results.map(convertKeysToCamelCase);
+
+            return results;
           },
         [`${singularName}ById`]: async (root, args, context) => {
+          if (!args.id) {
+            return null;
+          }
+
           const ps = context.db
             .prepare(`SELECT * from ${tableName} WHERE ${idName} = ?`)
             .bind(args.id);
           const data = await ps.run();
 
+          if (data.results.length === 0) {
+            return null;
+          }
+
+          const result = convertKeysToCamelCase(data.results[0]);
+
           if (!data.success) {
             throw new Error(`No ${tableName} found with id ${args.id}`);
           }
-          console.log(`Query.${singularName}ById`, data.results[0]);
-          return data.results[0];
+
+          return result;
         },
       },
     },
     otherResolvers,
   );
+
+  return resolvers;
 }

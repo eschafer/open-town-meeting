@@ -1,15 +1,24 @@
 const typeDefs = `
 type Race {
-  race_id: ID!
+  raceId: ID!
   office: Office!
   election: Election!
-  term_length: Int!
-  created_at: Int!
-  updated_at: Int!
+  termLength: Int!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+input RaceInput {
+  raceId: ID
+  officeId: ID
+  electionId: ID
+  termLength: Int
+  createdAt: Int
+  updatedAt: Int
 }
 
 extend type Query {
-  allRaces: [Race!]!
+  allRaces(filter: RaceInput): [Race!]!
   raceById(id: ID!): Race
 }
 `;

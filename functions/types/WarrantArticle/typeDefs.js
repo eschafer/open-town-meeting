@@ -1,16 +1,26 @@
 const typeDefs = `
 type WarrantArticle {
-  article_id: ID!
+  articleId: ID!
   townMeetingSession: TownMeetingSession!
-  article_number: Int!
-  article_title: String!
-  article_description: String
-  created_at: Int!
-  updated_at: Int!
+  articleNumber: Int!
+  articleTitle: String!
+  articleDescription: String
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+input WarrantArticleInput {
+  articleId: ID
+  townMeetingSessionId: ID
+  articleNumber: Int
+  articleTitle: String
+  articleDescription: String
+  createdAt: Int
+  updatedAt: Int
 }
 
 extend type Query {
-  allWarrantArticles: [WarrantArticle!]!
+  allWarrantArticles(filter: WarrantArticleInput): [WarrantArticle!]!
   warrantArticleById(id: ID!): WarrantArticle
 }
 `;

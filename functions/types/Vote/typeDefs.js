@@ -3,12 +3,20 @@ type Vote {
   person: Person!
   motion: Motion!
   voteType: VoteType!
-  created_at: Int!
-  updated_at: Int!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+input VoteInput {
+  personId: ID
+  motionId: ID
+  voteTypeID: ID
+  createdAt: Int
+  updatedAt: Int
 }
 
 extend type Query {
-  allVotes: [Vote!]!
+  allVotes(filter: VoteInput): [Vote!]!
   voteById(id: ID!): Vote
 }
 `;

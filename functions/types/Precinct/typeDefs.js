@@ -1,20 +1,20 @@
 const typeDefs = `
 type Precinct {
-  precinct_id: ID!
-  precinct_number: Int!
-  census_year: Int!
-  polling_place: String
-  created_at: Int!
-  updated_at: Int!
+  precinctId: ID!
+  precinctNumber: Int!
+  censusYear: Int!
+  pollingPlace: String
+  createdAt: Int!
+  updatedAt: Int!
 }
 
 input PrecinctInput {
-  precinct_id: ID
-  precinct_number: Int
-  census_year: Int
-  polling_place: String
-  created_at: Int
-  updated_at: Int
+  precinctId: ID
+  precinctNumber: Int
+  censusYear: Int
+  pollingPlace: String
+  createdAt: Int
+  updatedAt: Int
 }
 
 type Query {

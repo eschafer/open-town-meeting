@@ -1,14 +1,22 @@
 const typeDefs = `
 type ElectionResult {
-  result_id: ID!
+  resultId: ID!
   candidate: Candidate!
-  vote_count: Int
-  created_at: Int!
-  updated_at: Int!
+  voteCount: Int
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+input ElectionResultInput {
+  resultId: ID
+  candidateId: ID
+  voteCount: Int
+  createdAt: Int
+  updatedAt: Int
 }
 
 extend type Query {
-  allElectionResults: [ElectionResult!]!
+  allElectionResults(filter: ElectionResultInput): [ElectionResult!]!
   electionResultById(id: ID!): ElectionResult
 }
 `;

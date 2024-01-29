@@ -2,12 +2,19 @@ const typeDefs = `
 type Petitioner {
   person: Person!
   motion: Motion!
-  created_at: Int!
-  updated_at: Int!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+input PetitionerInput {
+  personId: ID
+  motionId: ID
+  createdAt: Int
+  updatedAt: Int
 }
 
 extend type Query {
-  allPetitioners: [Petitioner!]!
+  allPetitioners(filter: PetitionerInput): [Petitioner!]!
   petitionerById(id: ID!): Petitioner
 }
 `;

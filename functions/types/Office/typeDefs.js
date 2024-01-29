@@ -1,14 +1,22 @@
 const typeDefs = `
 type Office {
-  office_id: ID!
-  office_name: String!
+  officeId: ID!
+  officeName: String!
   precinct: Precinct
-  created_at: Int!
-  updated_at: Int!
+  createdAt: Int!
+  updatedAt: Int!
+}
+
+input OfficeInput {
+  officeId: ID
+  officeName: String
+  precinct: PrecinctInput
+  createdAt: Int
+  updatedAt: Int
 }
 
 extend type Query {
-  allOffices: [Office!]!
+  allOffices(filter: OfficeInput): [Office!]!
   officeById(id: ID!): Office
 }
 `;

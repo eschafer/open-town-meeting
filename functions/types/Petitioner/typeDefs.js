@@ -1,14 +1,20 @@
 const typeDefs = `
 type Petitioner {
-  person: Person!
+  petitionerId: ID!
   motion: Motion!
+  person: Person
+  department: Department
+  committee: Committee
   createdAt: Int!
   updatedAt: Int!
 }
 
 input PetitionerInput {
-  personId: ID
+  petitionerId: ID
   motionId: ID
+  personId: ID
+  departmentId: ID
+  committeeId: ID
   createdAt: Int
   updatedAt: Int
 }

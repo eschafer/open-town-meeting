@@ -4,7 +4,7 @@ const resolvers = createResolvers({
   singularName: 'electionResult',
   pluralName: 'electionResults',
   tableName: 'election_results',
-  idName: 'result_id',
+  idName: 'election_result_id',
   nested: [
     {
       singularName: 'candidate',

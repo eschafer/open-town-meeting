@@ -1,3 +1,4 @@
+-- precinct_id,precinct_number,census_year,polling_place,created_at,updated_at
 CREATE TABLE IF NOT EXISTS precincts (
     precinct_id INTEGER PRIMARY KEY,
 
@@ -11,6 +12,7 @@ CREATE TABLE IF NOT EXISTS precincts (
     UNIQUE (precinct_number, census_year)
 );
 
+-- election_id,election_date,created_at,updated_at
 CREATE TABLE IF NOT EXISTS elections (
     election_id INTEGER PRIMARY KEY,
 
@@ -20,8 +22,9 @@ CREATE TABLE IF NOT EXISTS elections (
     updated_at INTEGER NOT NULL -- UNIX timestamp
 );
 
+-- town_meeting_session_id,start_date,session_name,created_at,updated_at
 CREATE TABLE IF NOT EXISTS town_meeting_sessions (
-    session_id INTEGER PRIMARY KEY,
+    town_meeting_session_id INTEGER PRIMARY KEY,
 
     start_date TEXT NOT NULL,
     session_name TEXT NOT NULL,
@@ -32,6 +35,7 @@ CREATE TABLE IF NOT EXISTS town_meeting_sessions (
     UNIQUE (start_date, session_name)
 );
 
+-- vote_type_id,vote_type_name,created_at,updated_at
 CREATE TABLE IF NOT EXISTS vote_types (
     vote_type_id INTEGER PRIMARY KEY,
 
@@ -41,6 +45,7 @@ CREATE TABLE IF NOT EXISTS vote_types (
     updated_at INTEGER NOT NULL
 );
 
+-- person_id,first_name,middle_name,last_name,name_suffix,address,email,phone,created_at,updated_at
 CREATE TABLE IF NOT EXISTS people (
     person_id INTEGER PRIMARY KEY,
 
@@ -48,21 +53,60 @@ CREATE TABLE IF NOT EXISTS people (
     middle_name TEXT,
     last_name TEXT NOT NULL,
     name_suffix TEXT,
-    precinct_id INTEGER,
     address TEXT,
     email TEXT,
     phone TEXT,
 
     created_at INTEGER NOT NULL,
-    updated_at INTEGER NOT NULL,
-
-    FOREIGN KEY (precinct_id) REFERENCES precincts(precinct_id)
+    updated_at INTEGER NOT NULL
 );
 
+-- committee_id,committee_name,committee_description,committee_url,created_at,updated_at
+CREATE TABLE IF NOT EXISTS committees (
+    committee_id INTEGER PRIMARY KEY,
+
+    committee_name TEXT NOT NULL,
+    committee_description TEXT,
+    committee_url TEXT,
+
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
+);
+
+-- department_id,department_name,department_url,created_at,updated_at
+CREATE TABLE IF NOT EXISTS departments (
+    department_id INTEGER PRIMARY KEY,
+
+    department_name TEXT NOT NULL,
+    department_url TEXT,
+
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
+);
+
+-- committee_member_id,committee_id,person_id,start_date,end_date,position,appointing_authority,created_at,updated_at
+CREATE TABLE IF NOT EXISTS committee_members (
+    committee_member_id INTEGER PRIMARY KEY,
+
+    committee_id INTEGER NOT NULL,
+    person_id INTEGER NOT NULL,
+    start_date TEXT,
+    end_date TEXT,
+    position TEXT,
+    appointing_authority TEXT,
+
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL,
+
+    FOREIGN KEY (person_id) REFERENCES people(person_id),
+    FOREIGN KEY (committee_id) REFERENCES committees(committee_id)
+);
+
+-- office_id,office_name,precinct_id,created_at,updated_at
 CREATE TABLE IF NOT EXISTS offices (
     office_id INTEGER PRIMARY KEY,
 
-    office_name TEXT NOT NULL, --
+    office_name TEXT NOT NULL,
     precinct_id INTEGER, -- NULL if town-wide
 
     created_at INTEGER NOT NULL,
@@ -73,6 +117,7 @@ CREATE TABLE IF NOT EXISTS offices (
     CHECK ((office_name = 'town meeting' AND precinct_id IS NOT NULL) OR (office_name != 'town meeting' AND precinct_id IS NULL))
 );
 
+-- race_id,office_id,election_id,term_length,seats_open,created_at,updated_at
 CREATE TABLE IF NOT EXISTS races (
     race_id INTEGER PRIMARY KEY,
 
@@ -90,13 +135,12 @@ CREATE TABLE IF NOT EXISTS races (
     UNIQUE (office_id, election_id, term_length)
 );
 
+-- candidate_id,person_id,race_id,created_at,updated_at
 CREATE TABLE IF NOT EXISTS candidates (
     candidate_id INTEGER PRIMARY KEY,
 
-    person_id INTEGER,
+    person_id INTEGER NOT NULL,
     race_id INTEGER NOT NULL,
-    is_no_vote INTEGER NOT NULL,
-    is_write_in INTEGER NOT NULL,
 
     created_at INTEGER NOT NULL,
     updated_at INTEGER NOT NULL,
@@ -105,16 +149,12 @@ CREATE TABLE IF NOT EXISTS candidates (
     FOREIGN KEY (race_id) REFERENCES races(race_id),
 
     UNIQUE (person_id, race_id)
-
-    CHECK (
-        (person_id IS NOT NULL AND is_no_vote = 0 AND is_write_in = 0) OR
-        (person_id IS NULL AND ((is_no_vote = 1 AND is_write_in = 0) OR (is_no_vote = 0 AND is_write_in = 1)))
-    )
 );
 
 -- each row represents the votes for a single candidate in a single race
+-- election_result_id,candidate_id,vote_count,created_at,updated_at
 CREATE TABLE IF NOT EXISTS election_results (
-    result_id INTEGER PRIMARY KEY,
+    election_result_id INTEGER PRIMARY KEY,
 
     candidate_id INTEGER,
 
@@ -126,6 +166,7 @@ CREATE TABLE IF NOT EXISTS election_results (
     FOREIGN KEY (candidate_id) REFERENCES candidates(candidate_id)
 );
 
+-- term_id,person_id,office_id,start_date,end_date,created_at,updated_at
 CREATE TABLE IF NOT EXISTS terms (
     term_id INTEGER PRIMARY KEY,
 
@@ -142,10 +183,11 @@ CREATE TABLE IF NOT EXISTS terms (
     FOREIGN KEY (office_id) REFERENCES offices(office_id)
 );
 
+-- warrant_article_id,town_meeting_session_id,article_number,article_title,article_description,created_at,updated_at
 CREATE TABLE IF NOT EXISTS warrant_articles (
-    article_id INTEGER PRIMARY KEY,
+    warrant_article_id INTEGER PRIMARY KEY,
 
-    session_id INTEGER NOT NULL,
+    town_meeting_session_id INTEGER NOT NULL,
 
     article_number INTEGER NOT NULL,
     article_title TEXT NOT NULL,
@@ -154,49 +196,60 @@ CREATE TABLE IF NOT EXISTS warrant_articles (
     created_at INTEGER NOT NULL,
     updated_at INTEGER NOT NULL,
 
-    FOREIGN KEY (session_id) REFERENCES town_meeting_sessions(session_id)
-    UNIQUE (session_id, article_id)
+    FOREIGN KEY (town_meeting_session_id) REFERENCES town_meeting_sessions(town_meeting_session_id)
+    UNIQUE (town_meeting_session_id, warrant_article_id)
 );
 
+-- motion_id,warrant_article_id,motion_title,motion_description,moved,yes_votes,no_votes,abstain_votes,pass_percentage,passed,created_at,updated_at
 CREATE TABLE IF NOT EXISTS motions (
     motion_id INTEGER PRIMARY KEY,
 
-    article_id INTEGER,
+    warrant_article_id INTEGER NOT NULL,
 
     motion_title TEXT NOT NULL,
     motion_description TEXT,
+    moved INTEGER,
+    yes_votes INTEGER,
+    no_votes INTEGER,
+    abstain_votes INTEGER,
+    pass_percentage INTEGER,
+    passed INTEGER,
 
     created_at INTEGER NOT NULL,
     updated_at INTEGER NOT NULL,
 
-    FOREIGN KEY (article_id) REFERENCES warrant_articles(article_id)
+    FOREIGN KEY (warrant_article_id) REFERENCES warrant_articles(warrant_article_id)
 );
 
+-- petitioner_id,motion_id,person_id,department_id,committee_id,created_at,updated_at
 CREATE TABLE IF NOT EXISTS petitioners (
-    person_id INTEGER NOT NULL,
+    petitioner_id INTEGER PRIMARY KEY,
+
     motion_id INTEGER NOT NULL,
+    person_id INTEGER,
+    department_id INTEGER,
+    committee_id INTEGER,
 
     created_at INTEGER NOT NULL,
     updated_at INTEGER NOT NULL,
-
-    PRIMARY KEY (person_id, motion_id),
 
     FOREIGN KEY (person_id) REFERENCES people(person_id),
     FOREIGN KEY (motion_id) REFERENCES motions(motion_id)
 );
 
+-- town_meeting_vote_id,person_id,motion_id,vote_type_id,created_at,updated_at
 CREATE TABLE IF NOT EXISTS town_meeting_votes (
+    town_meeting_vote_id INTEGER PRIMARY KEY,
+
     person_id INTEGER NOT NULL,
     motion_id INTEGER NOT NULL,
 
-    vote_type INTEGER NOT NULL,
+    vote_type_id INTEGER,
 
     created_at INTEGER NOT NULL,
     updated_at INTEGER NOT NULL,
 
-    PRIMARY KEY (person_id, motion_id),
-
     FOREIGN KEY (person_id) REFERENCES people(person_id),
     FOREIGN KEY (motion_id) REFERENCES motions(motion_id),
-    FOREIGN KEY (vote_type) REFERENCES vote_types(vote_type_id)
+    FOREIGN KEY (vote_type_id) REFERENCES vote_types(vote_type_id)
 );

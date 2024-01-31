@@ -1,10 +1,10 @@
 import { createResolvers } from '../../src/utils';
 
 const resolvers = createResolvers({
-  singularName: 'person',
-  pluralName: 'people',
-  tableName: 'people',
-  idName: 'person_id',
+  singularName: 'committee',
+  pluralName: 'committees',
+  tableName: 'committees',
+  idName: 'committee_id',
 });
 
 export default resolvers;

@@ -5,11 +5,9 @@ type Person {
   middleName: String
   lastName: String!
   nameSuffix: String
-  precinctId: ID
-  precinct: Precinct
   address: String
-  phone: String
   email: String
+  phone: String
   createdAt: Int!
   updatedAt: Int!
 }
@@ -20,10 +18,9 @@ input PersonInput {
   middleName: String
   lastName: String
   nameSuffix: String
-  precinctId: ID
   address: String
-  phone: String
   email: String
+  phone: String
   createdAt: Int
   updatedAt: Int
 }

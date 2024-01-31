@@ -10,7 +10,7 @@ const resolvers = createResolvers({
       singularName: 'warrantArticle',
       pluralName: 'warrantArticles',
       tableName: 'warrant_articles',
-      idName: 'article_id',
+      idName: 'warrant_article_id',
     },
   ],
 });

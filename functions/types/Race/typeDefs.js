@@ -4,6 +4,7 @@ type Race {
   office: Office!
   election: Election!
   termLength: Int!
+  seatsOpen: Int!
   createdAt: Int!
   updatedAt: Int!
 }
@@ -13,6 +14,7 @@ input RaceInput {
   officeId: ID
   electionId: ID
   termLength: Int
+  seatsOpen: Int
   createdAt: Int
   updatedAt: Int
 }

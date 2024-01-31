@@ -1,6 +1,6 @@
 const typeDefs = `
 type TownMeetingSession {
-  sessionId: ID!
+  townMeetingSessionId: ID!
   startDate: String!
   sessionName: String!
   createdAt: Int!
@@ -8,7 +8,7 @@ type TownMeetingSession {
 }
 
 input TownMeetingSessionInput {
-  sessionId: ID
+  townMeetingSessionId: ID
   startDate: String
   sessionName: String
   createdAt: Int

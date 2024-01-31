@@ -1,6 +1,6 @@
 const typeDefs = `
 type WarrantArticle {
-  articleId: ID!
+  warrantArticleId: ID!
   townMeetingSession: TownMeetingSession!
   articleNumber: Int!
   articleTitle: String!
@@ -10,7 +10,7 @@ type WarrantArticle {
 }
 
 input WarrantArticleInput {
-  articleId: ID
+  warrantArticleId: ID
   townMeetingSessionId: ID
   articleNumber: Int
   articleTitle: String

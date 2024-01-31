@@ -1,10 +1,10 @@
 import { createResolvers } from '../../src/utils';
 
 const resolvers = createResolvers({
-  singularName: 'vote',
-  pluralName: 'votes',
-  tableName: 'votes',
-  idName: 'vote_id', // this isn't right; it's actually multiple keys
+  singularName: 'townMeetingVote',
+  pluralName: 'townMeetingVotes',
+  tableName: 'town_meeting_votes',
+  idName: 'town_meeting_vote_id',
   nested: [
     {
       singularName: 'person',
@@ -16,7 +16,7 @@ const resolvers = createResolvers({
       singularName: 'motion',
       pluralName: 'motions',
       tableName: 'motions',
-      idName: 'mostion_id',
+      idName: 'motion_id',
     },
     {
       singularName: 'voteType',

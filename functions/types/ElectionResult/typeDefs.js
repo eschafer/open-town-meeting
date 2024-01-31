@@ -1,6 +1,6 @@
 const typeDefs = `
 type ElectionResult {
-  resultId: ID!
+  electionResultId: ID!
   candidate: Candidate!
   voteCount: Int
   createdAt: Int!
@@ -8,7 +8,7 @@ type ElectionResult {
 }
 
 input ElectionResultInput {
-  resultId: ID
+  electionResultId: ID
   candidateId: ID
   voteCount: Int
   createdAt: Int

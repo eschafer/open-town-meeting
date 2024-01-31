@@ -200,7 +200,7 @@ CREATE TABLE IF NOT EXISTS warrant_articles (
     UNIQUE (town_meeting_session_id, warrant_article_id)
 );
 
--- motion_id,warrant_article_id,motion_title,motion_description,moved,yes_votes,no_votes,abstain_votes,pass_percentage,passed,created_at,updated_at
+-- motion_id,warrant_article_id,motion_title,motion_description,created_at,updated_at
 CREATE TABLE IF NOT EXISTS motions (
     motion_id INTEGER PRIMARY KEY,
 
@@ -208,12 +208,7 @@ CREATE TABLE IF NOT EXISTS motions (
 
     motion_title TEXT NOT NULL,
     motion_description TEXT,
-    moved INTEGER,
-    yes_votes INTEGER,
-    no_votes INTEGER,
-    abstain_votes INTEGER,
-    pass_percentage INTEGER,
-    passed INTEGER,
+    threshold TEXT, -- majority, 2/3, etc.
 
     created_at INTEGER NOT NULL,
     updated_at INTEGER NOT NULL,

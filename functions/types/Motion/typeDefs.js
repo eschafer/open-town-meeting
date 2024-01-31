@@ -4,12 +4,7 @@ type Motion {
   warrantArticle: WarrantArticle!
   motionTitle: String!
   motionDescription: String
-  moved: Boolean
-  yesVotes: Int
-  noVotes: Int
-  abstainVotes: Int
-  passPercentage: Float
-  passed: Boolean
+  threshold: String
   createdAt: Int!
   updatedAt: Int!
 }
@@ -19,12 +14,7 @@ input MotionInput {
   warrantArticleId: ID
   motionTitle: String
   motionDescription: String
-  moved: Boolean
-  yesVotes: Int
-  noVotes: Int
-  abstainVotes: Int
-  passPercentage: Float
-  passed: Boolean
+  threshold: String
   createdAt: Int
   updatedAt: Int
 }

@@ -113,9 +113,9 @@ export async function onRequest(context) {
     await jwtVerify(idToken, JWKS);
   } catch (error) {
     // If the JWT is invalid, return an error response
-    return new Response(JSON.stringify({ error: 'Invalid ID token' }), {
+    /* return new Response(JSON.stringify({ error: 'Invalid ID token' }), {
       status: 401,
-    });
+    }); */
   }
 
   // Run the GraphQL query and return the response

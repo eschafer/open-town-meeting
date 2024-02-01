@@ -48,7 +48,7 @@ const Auth = () => {
     return () => {
       delete window.handleCredentialResponse;
     };
-  }, []);
+  }, [setIdToken]);
 
   const GOOGLE_CLIENT_ID =
     '72845727988-iquthaap2ui57ttr9rfefuvu5imlank3.apps.googleusercontent.com';

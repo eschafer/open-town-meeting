@@ -3,7 +3,7 @@ import GraphiQL from 'graphiql';
 import 'graphiql/graphiql.min.css';
 
 function GraphiQLExample() {
-  const [apiUrl, setApiUrl] = useState('/graphql');
+  const [apiUrl] = useState('/graphql');
 
   function graphQLFetcher(graphQLParams) {
     return fetch(apiUrl, {

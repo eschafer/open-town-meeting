@@ -8,7 +8,7 @@ const Precincts = () => {
   const [rowData, setRowData] = useState(null);
 
   // Column Definitions: Defines & controls grid columns.
-  const [colDefs, setColDefs] = useState([
+  const [colDefs] = useState([
     { field: 'precinctNumber' },
     { field: 'pollingPlace' },
   ]);

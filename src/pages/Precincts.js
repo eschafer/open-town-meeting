@@ -34,7 +34,7 @@ const Precincts = () => {
       .then((response) => {
         return response.json();
       })
-      .then((data) => setRowData(data.data.allPrecincts));
+      .then((data) => setRowData(data?.data?.allPrecincts));
   }, []);
 
   // ...

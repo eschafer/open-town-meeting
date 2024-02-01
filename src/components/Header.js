@@ -17,7 +17,7 @@ function Header() {
             <Link to="/grid-example">Grid Example</Link>
           </li>
           <li>
-            <Link to="/api/precincts">Precincts</Link>
+            <Link to="/precincts">Precincts</Link>
           </li>
           <li>
             <Link to="/auth">Auth</Link>

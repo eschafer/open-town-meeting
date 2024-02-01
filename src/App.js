@@ -3,7 +3,7 @@ import { AuthProvider } from './contexts/AuthProvider';
 
 import Header from './components/Header';
 import HomePage from './pages/HomePage';
-import ApiPage from './pages/ApiPage';
+import GraphiQL from './pages/GraphiQL';
 import Precincts from './pages/Precincts';
 import Auth from './pages/Auth';
 
@@ -13,8 +13,8 @@ function App() {
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        <Route path="/api" element={<ApiPage />} />
-        <Route path="/api/precincts" element={<Precincts />} />
+        <Route path="/graphiql" element={<GraphiQL />} />
+        <Route path="/precincts" element={<Precincts />} />
         <Route path="auth" element={<Auth />} />
       </Routes>
     </AuthProvider>

@@ -7,7 +7,10 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "ag-grid-react": "^31.0.3",
+    "graphiql": "^3.1.0",
     "graphql": "^16.8.1",
+    "jose": "^5.2.0",
     "lodash.merge": "^4.6.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -20,7 +23,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "pages:dev": "wrangler pages dev --compatibility-date=2024-01-17 --port 3000 -- npm start",
+    "pages:dev": "wrangler pages dev --compatibility-date=2024-01-17 --port 8788 -- npm start",
     "pages:deploy": "npm run build && wrangler pages deploy ./build"
   },
   "eslintConfig": {

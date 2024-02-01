@@ -26,3 +26,4 @@ data/
 database/generated/
 wrangler.toml
 .wrangler/
+.dev.vars

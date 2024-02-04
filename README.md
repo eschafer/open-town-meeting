@@ -6,6 +6,8 @@ This is a full stack web app to help make Town Meeting easier to follow. Based o
 
 The website uses create-react-app and is deployed to Cloudflare Pages. Serverless functions are used for Firebase Authentication (log in with Google) and a graphql API. Data is stored in a Cloudflare D1 SQL database.
 
+![Mind map showing the main components of the website: frontend (create-react-app, react router, material ui), serverless functions (firebase authentication, graphql api), database (cloudflare d1 sql), deployment (cloudflare pages), and testing (jest, react testing library).](./docs/diagram.png)
+
 ## Installation
 
 Clone the repository and install the dependencies with `npm ci`.

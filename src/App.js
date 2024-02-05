@@ -59,7 +59,7 @@ const lightTheme = createTheme({
   },
 });
 
-const darkTheme = createTheme({
+/*const darkTheme = createTheme({
   breakpoints: {
     keys: ['xs', 'sm', 'md', 'lg', 'xl'],
     values: {
@@ -786,7 +786,7 @@ const darkTheme = createTheme({
     snackbar: 1400,
     tooltip: 1500,
   },
-});
+});*/
 
 // 3️⃣ Router singleton created
 const router = createBrowserRouter(
@@ -807,11 +807,6 @@ const router = createBrowserRouter(
 // 4️⃣ RouterProvider added
 function App() {
   return <RouterProvider router={router} />;
-}
-
-// 1️⃣ Changed from App to Root
-function Root() {
-  return <p>404 Not Found</p>;
 }
 
 function Layout() {

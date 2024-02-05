@@ -40,7 +40,7 @@ export default function MenuAppBar() {
         }),
       }).then(async (response) => {
         if (response.ok) {
-          const authData = await response.json();
+          // const authData = await response.json();
         } else {
           console.error(
             'Auth.js Error:',

@@ -23,7 +23,7 @@ export function AuthProvider({ children }) {
         });
 
         if (response.ok) {
-          const data = await response.json();
+          // const data = await response.json();
         } else {
           console.error(
             'Authentication error:',

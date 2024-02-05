@@ -1,50 +1,83 @@
 import React, { useState, useEffect } from 'react';
 
-import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
-import 'ag-grid-community/styles/ag-grid.css'; // Core CSS
-import 'ag-grid-community/styles/ag-theme-quartz.css'; // Theme
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
 export function Component() {
-  const [rowData, setRowData] = useState(null);
-
-  // Column Definitions: Defines & controls grid columns.
-  const [colDefs] = useState([
-    { field: 'precinctNumber' },
-    { field: 'pollingPlace' },
-  ]);
+  const [precinctData, setPrecinctData] = useState([]);
 
   useEffect(() => {
-    const query = `
-      query AllPrecincts {
-        allPrecincts(filter: { censusYear: 2020 }) {
-          precinctNumber
-          pollingPlace
+    const abortController = new AbortController();
+
+    const fetchData = async () => {
+      try {
+        const query = `
+        query AllPrecincts {
+          allPrecincts(filter: { censusYear: 2020 }) {
+            precinctNumber
+            pollingPlace
+          }
+        }
+      `;
+
+        const response = await fetch('/graphql', {
+          method: 'post',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ query }),
+          signal: abortController.signal,
+        });
+        const data = await response.json();
+
+        setPrecinctData(data?.data?.allPrecincts);
+      } catch (error) {
+        if (error.name === 'AbortError') {
+        } else {
+          console.error('Failed to fetch data');
         }
       }
-    `;
+    };
 
-    fetch('/graphql', {
-      method: 'post',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ query }),
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => setRowData(data?.data?.allPrecincts));
+    fetchData();
+
+    // Cleanup function to cancel the fetch request when the
+    // component is unmounted
+    return () => {
+      abortController.abort();
+    };
   }, []);
 
-  // ...
-
   return (
-    // Container with theme & dimensions
-    <div className="ag-theme-quartz" style={{ height: 500 }}>
-      {/* The AG Grid component */}
-      <AgGridReact rowData={rowData} columnDefs={colDefs} />
-    </div>
+    <TableContainer component={Paper}>
+      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableHead>
+          <TableRow>
+            <TableCell>Precinct Number</TableCell>
+            <TableCell>Polling Place</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {precinctData.map((row) => (
+            <TableRow
+              key={row.name}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+              <TableCell component="th" scope="row">
+                {row.precinctNumber}
+              </TableCell>
+              <TableCell>{row.pollingPlace}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </TableContainer>
   );
 }
 

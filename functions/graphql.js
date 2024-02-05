@@ -4,41 +4,41 @@ import { merge } from 'lodash';
 
 import { createRemoteJWKSet, jwtVerify } from 'jose';
 
-import precinctTypeDefs from './types/Precinct/typeDefs';
-import electionTypeDefs from './types/Election/typeDefs';
-import townMeetingSessionTypeDefs from './types/TownMeetingSession/typeDefs';
-import voteTypeTypeDefs from './types/VoteType/typeDefs';
-import personTypeDefs from './types/Person/typeDefs';
-import committeeTypeDefs from './types/Committee/typeDefs';
-import departmentTypeDefs from './types/Department/typeDefs';
-import committeeMemberTypeDefs from './types/CommitteeMember/typeDefs';
-import officeTypeDefs from './types/Office/typeDefs';
-import raceTypeDefs from './types/Race/typeDefs';
-import candidateTypeDefs from './types/Candidate/typeDefs';
-import electionResultTypeDefs from './types/ElectionResult/typeDefs';
-import termTypeDefs from './types/Term/typeDefs';
-import warrantArticleTypeDefs from './types/WarrantArticle/typeDefs';
-import motionTypeDefs from './types/Motion/typeDefs';
-import petitionerTypeDefs from './types/Petitioner/typeDefs';
-import townMeetingVoteTypeDefs from './types/TownMeetingVote/typeDefs';
+import precinctTypeDefs from './graphql/types/Precinct/typeDefs';
+import electionTypeDefs from './graphql/types/Election/typeDefs';
+import townMeetingSessionTypeDefs from './graphql/types/TownMeetingSession/typeDefs';
+import voteTypeTypeDefs from './graphql/types/VoteType/typeDefs';
+import personTypeDefs from './graphql/types/Person/typeDefs';
+import committeeTypeDefs from './graphql/types/Committee/typeDefs';
+import departmentTypeDefs from './graphql/types/Department/typeDefs';
+import committeeMemberTypeDefs from './graphql/types/CommitteeMember/typeDefs';
+import officeTypeDefs from './graphql/types/Office/typeDefs';
+import raceTypeDefs from './graphql/types/Race/typeDefs';
+import candidateTypeDefs from './graphql/types/Candidate/typeDefs';
+import electionResultTypeDefs from './graphql/types/ElectionResult/typeDefs';
+import termTypeDefs from './graphql/types/Term/typeDefs';
+import warrantArticleTypeDefs from './graphql/types/WarrantArticle/typeDefs';
+import motionTypeDefs from './graphql/types/Motion/typeDefs';
+import petitionerTypeDefs from './graphql/types/Petitioner/typeDefs';
+import townMeetingVoteTypeDefs from './graphql/types/TownMeetingVote/typeDefs';
 
-import precinctResolvers from './types/Precinct/resolvers';
-import electionResolvers from './types/Election/resolvers';
-import townMeetingSessionResolvers from './types/TownMeetingSession/resolvers';
-import voteTypeResolvers from './types/VoteType/resolvers';
-import personResolvers from './types/Person/resolvers';
-import committeeResolvers from './types/Committee/resolvers';
-import departmentResolvers from './types/Department/resolvers';
-import committeeMemberResolvers from './types/CommitteeMember/resolvers';
-import officeResolvers from './types/Office/resolvers';
-import raceResolvers from './types/Race/resolvers';
-import candidateResolvers from './types/Candidate/resolvers';
-import electionResultResolvers from './types/ElectionResult/resolvers';
-import termResolvers from './types/Term/resolvers';
-import warrantArticleResolvers from './types/WarrantArticle/resolvers';
-import motionResolvers from './types/Motion/resolvers';
-import petitionerResolvers from './types/Petitioner/resolvers';
-import townMeetingVoteResolvers from './types/TownMeetingVote/resolvers';
+import precinctResolvers from './graphql/types/Precinct/resolvers';
+import electionResolvers from './graphql/types/Election/resolvers';
+import townMeetingSessionResolvers from './graphql/types/TownMeetingSession/resolvers';
+import voteTypeResolvers from './graphql/types/VoteType/resolvers';
+import personResolvers from './graphql/types/Person/resolvers';
+import committeeResolvers from './graphql/types/Committee/resolvers';
+import departmentResolvers from './graphql/types/Department/resolvers';
+import committeeMemberResolvers from './graphql/types/CommitteeMember/resolvers';
+import officeResolvers from './graphql/types/Office/resolvers';
+import raceResolvers from './graphql/types/Race/resolvers';
+import candidateResolvers from './graphql/types/Candidate/resolvers';
+import electionResultResolvers from './graphql/types/ElectionResult/resolvers';
+import termResolvers from './graphql/types/Term/resolvers';
+import warrantArticleResolvers from './graphql/types/WarrantArticle/resolvers';
+import motionResolvers from './graphql/types/Motion/resolvers';
+import petitionerResolvers from './graphql/types/Petitioner/resolvers';
+import townMeetingVoteResolvers from './graphql/types/TownMeetingVote/resolvers';
 
 const JWKS = createRemoteJWKSet(
   new URL(
@@ -92,6 +92,7 @@ export async function onRequest(context) {
   // Parse the request to get the query and variables
   const { query, variables } = await context.request.json();
 
+  /*
   // Get the Cookie header
   const cookieHeader = context.request.headers.get('Cookie');
 
@@ -109,7 +110,7 @@ export async function onRequest(context) {
   // const idToken = authorizationHeader && authorizationHeader.split(' ')[1];
 
   // Verify the JWT
-  try {
+   try {
     await jwtVerify(idToken, JWKS);
   } catch (error) {
     // If the JWT is invalid, return an error response
@@ -117,6 +118,7 @@ export async function onRequest(context) {
       status: 401,
     });
   }
+  */
 
   // Run the GraphQL query and return the response
   const response = await graphql({

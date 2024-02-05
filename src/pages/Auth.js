@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { AuthContext } from '../contexts/AuthProvider';
 
 const Auth = () => {
-  const { setIdToken } = React.useContext(AuthContext);
+  const { setAuthData } = useContext(AuthContext);
 
   // Add/remove the Google Sign-In script to the DOM
   useEffect(() => {
@@ -31,8 +31,8 @@ const Auth = () => {
         }),
       }).then(async (response) => {
         if (response.ok) {
-          const { idToken } = await response.json();
-          setIdToken(idToken);
+          const data = await response.json();
+          setAuthData(data);
         } else {
           console.error(
             'Auth.js Error:',
@@ -48,7 +48,7 @@ const Auth = () => {
     return () => {
       delete window.handleCredentialResponse;
     };
-  }, [setIdToken]);
+  }, [setAuthData]);
 
   const GOOGLE_CLIENT_ID =
     '72845727988-iquthaap2ui57ttr9rfefuvu5imlank3.apps.googleusercontent.com';

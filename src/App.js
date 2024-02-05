@@ -1,4 +1,10 @@
-import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
+import {
+  createRoutesFromElements,
+  createBrowserRouter,
+  Outlet,
+  Route,
+  RouterProvider,
+} from 'react-router-dom';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import Box from '@mui/material/Box';
@@ -6,11 +12,6 @@ import Box from '@mui/material/Box';
 import { AuthProvider } from './contexts/AuthProvider';
 
 import AppBar from './components/AppBar';
-import HomePage from './pages/HomePage';
-import GraphiQL from './pages/GraphiQL';
-import Precincts from './pages/Precincts';
-import Auth from './pages/Auth';
-import MaterialTesting from './pages/MaterialTesting';
 
 const lightTheme = createTheme({
   palette: {
@@ -788,20 +789,20 @@ const darkTheme = createTheme({
 });
 
 // 3️⃣ Router singleton created
-const router = createBrowserRouter([
-  {
-    path: '',
-    Component: Layout,
-    children: [
-      { path: '/', Component: HomePage },
-      { path: '/graphiql', Component: GraphiQL },
-      { path: '/precincts', Component: Precincts },
-      { path: '/auth', Component: Auth },
-      { path: '/material-testing', Component: MaterialTesting },
-    ],
-  },
-  { path: '*', Component: Root },
-]);
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="" element={<Layout />}>
+      <Route path="/" lazy={() => import('./pages/HomePage')} />
+      <Route path="/graphiql" lazy={() => import('./pages/GraphiQL')} />
+      <Route path="/precincts" lazy={() => import('./pages/Precincts')} />
+      <Route path="/auth" lazy={() => import('./pages/Auth')} />
+      <Route
+        path="/material-testing"
+        lazy={() => import('./pages/MaterialTesting')}
+      />
+    </Route>,
+  ),
+);
 
 // 4️⃣ RouterProvider added
 function App() {

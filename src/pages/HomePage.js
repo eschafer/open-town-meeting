@@ -1,7 +1,7 @@
 import React from 'react';
 
-const HomePage = () => {
+export function Component() {
   return <h1>Home Page</h1>;
-};
+}
 
-export default HomePage;
+Component.displayName = 'HomePage';

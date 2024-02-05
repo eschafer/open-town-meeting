@@ -4,7 +4,7 @@ import { AgGridReact } from 'ag-grid-react'; // React Grid Logic
 import 'ag-grid-community/styles/ag-grid.css'; // Core CSS
 import 'ag-grid-community/styles/ag-theme-quartz.css'; // Theme
 
-const Precincts = () => {
+export function Component() {
   const [rowData, setRowData] = useState(null);
 
   // Column Definitions: Defines & controls grid columns.
@@ -46,6 +46,6 @@ const Precincts = () => {
       <AgGridReact rowData={rowData} columnDefs={colDefs} />
     </div>
   );
-};
+}
 
-export default Precincts;
+Component.displayName = 'Precincts';

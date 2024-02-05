@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { AuthContext } from '../contexts/AuthProvider';
 
-const Auth = () => {
+export function Component() {
   const { setAuthData } = useContext(AuthContext);
 
   // Add/remove the Google Sign-In script to the DOM
@@ -73,6 +73,6 @@ const Auth = () => {
       ></div>
     </>
   );
-};
+}
 
-export default Auth;
+Component.displayName = 'Auth';

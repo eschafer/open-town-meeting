@@ -1,6 +1,8 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
 
-export default function ButtonUsage() {
+export function Component() {
   return <Button variant="contained">Hello world</Button>;
 }
+
+Component.displayName = 'MaterialTesting';

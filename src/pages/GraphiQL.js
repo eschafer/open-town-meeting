@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import GraphiQL from 'graphiql';
 import 'graphiql/graphiql.min.css';
 
-function GraphiQLExample() {
+export function Component() {
   const [apiUrl] = useState('/graphql');
 
   function graphQLFetcher(graphQLParams) {
@@ -16,4 +16,4 @@ function GraphiQLExample() {
   return <GraphiQL fetcher={graphQLFetcher} />;
 }
 
-export default GraphiQLExample;
+Component.displayName = 'GraphiQL';

@@ -27,3 +27,11 @@ database/generated/
 wrangler.toml
 .wrangler/
 .dev.vars
+
+/.cache
+/functions/\[\[path\]\].js
+/functions/\[\[path\]\].js.map
+/functions/metafile.*
+/functions/version.txt
+/public/build
+.dev.vars

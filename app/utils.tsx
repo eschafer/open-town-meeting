@@ -3,8 +3,8 @@ interface ResponseData {
 }
 
 export async function fetchGraphQL({ query, request }: { query: string, request: Request }) {
-  let url = new URL(request.url);
-  let response = await fetch(`${url.origin}/graphql`, {
+  const url = new URL(request.url);
+  const response = await fetch(`${url.origin}/graphql`, {
     method: 'post',
     headers: {
       'Content-Type': 'application/json',

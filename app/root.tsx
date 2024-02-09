@@ -20,7 +20,7 @@ import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
-import MenuIcon from '@mui/icons-material/Menu';
+import { Menu as MenuIcon } from '@mui/icons-material';
 import { AuthProvider } from './auth';
 
 export const links: LinksFunction = () => [
@@ -169,7 +169,7 @@ export default function App() {
                         aria-label="menu"
                         sx={{ mr: 2 }}
                       >
-                        menu icon
+                        <MenuIcon />
                       </IconButton>
                       <Typography
                         variant="h6"

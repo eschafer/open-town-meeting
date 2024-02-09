@@ -1,7 +1,11 @@
-export default function WarrantArticles() {
+import Typography from '@mui/material/Typography';
+
+export default function Budget() {
   return (
     <div>
-      <h1>Budget</h1>
+      <Typography variant="h1" gutterBottom>
+        Budget
+      </Typography>
       <p>Budget will go here</p>
     </div>
   );

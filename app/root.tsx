@@ -1,6 +1,5 @@
-import type { LinksFunction } from "@remix-run/cloudflare";
-
-import { cssBundleHref } from "@remix-run/css-bundle";
+import type { LinksFunction } from '@remix-run/cloudflare';
+import { cssBundleHref } from '@remix-run/css-bundle';
 import {
   Links,
   LiveReload,
@@ -9,13 +8,36 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
-} from "@remix-run/react";
-import { AuthProvider } from "./auth";
+} from '@remix-run/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-
+import MuiLink from '@mui/material/Link';
+import Container from '@mui/material/Container';
+import CssBaseline from '@mui/material/CssBaseline';
+import Stack from '@mui/material/Stack';
+import Typography from '@mui/material/Typography';
+import Box from '@mui/system/Box';
+import AppBar from '@mui/material/AppBar';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Button from '@mui/material/Button';
+import MenuIcon from '@mui/icons-material/Menu';
+import { AuthProvider } from './auth';
 
 export const links: LinksFunction = () => [
-  ...(cssBundleHref ? [{ rel: "stylesheet", href: cssBundleHref }] : []),
+  ...(cssBundleHref ? [{ rel: 'stylesheet', href: cssBundleHref }] : []),
+  {
+    rel: 'preload',
+    href: 'https://fonts.googleapis.com',
+  },
+  {
+    rel: 'preload',
+    href: 'https://fonts.gstatic.com',
+    crossOrigin: 'anonymous',
+  },
+  {
+    rel: 'stylesheet',
+    href: 'https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Inter:wght@400;700&display=swap',
+  },
 ];
 
 const lightTheme = createTheme({
@@ -37,73 +59,168 @@ const lightTheme = createTheme({
   typography: {
     h1: {
       fontFamily:
-        '"Merriweather Web", "Georgia", "Cambria", "Times New Roman", "Times", serif ',
+        '"Merriweather", "Georgia", "Cambria", "Times New Roman", "Times", serif',
+      fontSize: '2.5rem',
+      fontWeight: 700,
+      lineHeight: 1.2,
     },
     h2: {
       fontFamily:
-        '"Merriweather Web", "Georgia", "Cambria", "Times New Roman", "Times", serif ',
+        '"Merriweather", "Georgia", "Cambria", "Times New Roman", "Times", serif',
+      fontSize: '1.71rem',
+      fontWeight: 700,
+      lineHeight: 1.2,
     },
     h3: {
       fontFamily:
-        '"Merriweather Web", "Georgia", "Cambria", "Times New Roman", "Times", serif ',
+        '"Merriweather", "Georgia", "Cambria", "Times New Roman", "Times", serif',
+      fontSize: '1.22rem',
+      fontWeight: 700,
+      lineHeight: 1.2,
     },
     h4: {
       fontFamily:
-        '"Merriweather Web", "Georgia", "Cambria", "Times New Roman", "Times", serif ',
+        '"Merriweather", "Georgia", "Cambria", "Times New Roman", "Times", serif',
+      fontSize: '.98rem',
+      fontWeight: 700,
+      lineHeight: 1.2,
     },
     h5: {
       fontFamily:
-        '"Merriweather Web", "Georgia", "Cambria", "Times New Roman", "Times", serif ',
+        '"Inter",-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+      fontSize: '1rem',
+      fontWeight: 700,
+      lineHeight: 1.4,
     },
-    h6: {
+    body1: {
       fontFamily:
-        '"Merriweather Web", "Georgia", "Cambria", "Times New Roman", "Times", serif ',
+        '"Inter",-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+      fontSize: '1.22rem',
+      fontWeight: 400,
+      lineHeight: 1.5,
     },
-    fontFamily: '"Inter","Roboto", "Helvetica", "Arial", sans-serif',
+    body2: {
+      fontFamily:
+        '"Inter",-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+      fontSize: '1.06rem',
+      fontWeight: 400,
+      lineHeight: 1.5,
+    },
+    button: {
+      fontFamily:
+        'Source Sans Pro Web,Helvetica Neue,Helvetica,Roboto,Arial,sans-serif;',
+      fontSize: '1.06rem',
+      fontWeight: 700,
+      lineHeight: 0.9,
+      textTransform: 'inherit',
+    },
+    caption: {
+      fontFamily:
+        '"Inter",-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+      fontSize: '1rem',
+      fontWeight: 700,
+      lineHeight: 1.5,
+    },
+    overline: {
+      fontFamily:
+        '"Inter",-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+      fontSize: '0.88rem',
+      fontWeight: 400,
+      lineHeight: 1.5,
+      textTransform: 'uppercase',
+      letterSpacing: '.1em',
+    },
+    fontFamily:
+      '"Inter",-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
     fontSize: 16,
   },
 });
 
 export default function App() {
   const navLinks = [
-    { to: "/warrant-articles", label: "Warrant Articles" },
-    { to: "/budget", label: "Budget" },
-    { to: "/town-meeting-members", label: "Town Meeting Members" },
-    { to: "/meetings", label: "Meetings" },
-    { to: "/committees", label: "Committees" },
-  ]
+    { to: '/warrant-articles', label: 'Warrant Articles' },
+    { to: '/budget', label: 'Budget' },
+    { to: '/town-meeting-members', label: 'Town Meeting Members' },
+    { to: '/meetings', label: 'Meetings' },
+    { to: '/committees', label: 'Committees' },
+  ];
   return (
-    <html lang="en">
-      <head>
-        <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <Meta />
-        <Links />
-      </head>
-      <body>
-        <AuthProvider>
-          <ThemeProvider theme={lightTheme}>
-            <ul>
-              {navLinks.map((link) => (
-                <li key={link.to}>
-                  <NavLink
-                    to={link.to}
-                    className={({ isActive, isPending }) =>
-                      isPending ? "pending" : isActive ? "active" : ""
-                    }
+    <>
+      <CssBaseline />
+      <html lang="en">
+        <head>
+          <meta charSet="utf-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <Meta />
+          <Links />
+        </head>
+        <body>
+          <AuthProvider>
+            <ThemeProvider theme={lightTheme}>
+              <Box component="header">
+                <a href="#main-content">Skip to main content</a>
+                <Box sx={{ flexGrow: 1 }}>
+                  <AppBar position="static">
+                    <Toolbar>
+                      <IconButton
+                        size="large"
+                        edge="start"
+                        color="inherit"
+                        aria-label="menu"
+                        sx={{ mr: 2 }}
+                      >
+                        menu icon
+                      </IconButton>
+                      <Typography
+                        variant="h6"
+                        component="div"
+                        sx={{ flexGrow: 1 }}
+                      >
+                        Open Town Meeting
+                      </Typography>
+                      <Button color="inherit">Login</Button>
+                    </Toolbar>
+                  </AppBar>
+                </Box>
+                <nav aria-label="Primary navigation">
+                  <Stack
+                    component="ul"
+                    direction="row"
+                    spacing={4}
+                    justifyContent="center"
+                    alignItems="center"
                   >
-                    {link.label}
-                  </NavLink>
-                </li>
-              ))}
-            </ul>
-            <Outlet />
-          </ThemeProvider>
-        </AuthProvider>
-        <ScrollRestoration />
-        <Scripts />
-        <LiveReload />
-      </body>
-    </html>
+                    {navLinks.map((link) => (
+                      <Box component="li" key={link.to} display="inline-block">
+                        <MuiLink
+                          component={NavLink}
+                          to={link.to}
+                          underline="none"
+                          display="inline-block"
+                          p={1}
+                        >
+                          <Typography variant="button" component="div">
+                            {link.label}
+                          </Typography>
+                        </MuiLink>
+                      </Box>
+                    ))}
+                  </Stack>
+                </nav>
+              </Box>
+              <main id="main-content">
+                <Outlet />
+              </main>
+              <footer>
+                <Typography variant="caption" component="p"></Typography>
+              </footer>
+            </ThemeProvider>
+          </AuthProvider>
+          <ScrollRestoration />
+          <Scripts />
+          <LiveReload />
+        </body>
+      </html>
+    </>
   );
 }

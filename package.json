@@ -9,7 +9,9 @@
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "wrangler pages dev --compatibility-date=2023-06-21 ./public",
     "typecheck": "tsc",
-    "pages:deploy": "npm run build && wrangler pages deploy ./public"
+    "pages:deploy": "npm run build && wrangler pages deploy ./public",
+    "db:command": "node scripts/db-command.js",
+    "db:file": "node scripts/db-file.js"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
@@ -36,6 +38,7 @@
     "@types/react": "^18.2.20",
     "@types/react-dom": "^18.2.7",
     "@typescript-eslint/eslint-plugin": "^6.7.4",
+    "dotenv": "^16.4.1",
     "eslint": "^8.38.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-import-resolver-typescript": "^3.6.1",

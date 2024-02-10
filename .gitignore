@@ -35,3 +35,5 @@ wrangler.toml
 /functions/version.txt
 /public/build
 .dev.vars
+
+.env

@@ -1,12 +1,12 @@
 import Typography from '@mui/material/Typography';
 
-export default function Meetings() {
+export default function TownMeeting() {
   return (
     <div>
       <Typography variant="h1" gutterBottom>
-        Meetings
+        Town Meeting
       </Typography>
-      <p>Meetings will go here</p>
+      <p>Town Meeting info will go here</p>
     </div>
   );
 }

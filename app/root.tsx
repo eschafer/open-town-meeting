@@ -140,8 +140,8 @@ export default function App() {
   const navLinks = [
     { to: '/warrant-articles', label: 'Warrant Articles' },
     { to: '/budget', label: 'Budget' },
+    { to: '/town-meeting', label: 'Town Meeting' },
     { to: '/town-meeting-members', label: 'Town Meeting Members' },
-    { to: '/meetings', label: 'Meetings' },
     { to: '/committees', label: 'Committees' },
   ];
   return (
@@ -160,7 +160,7 @@ export default function App() {
               <Box component="header">
                 <a href="#main-content">Skip to main content</a>
                 <Box sx={{ flexGrow: 1 }}>
-                  <AppBar position="static">
+                  <AppBar position="static" color="transparent" elevation={0}>
                     <Toolbar>
                       <IconButton
                         size="large"

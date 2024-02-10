@@ -248,3 +248,14 @@ CREATE TABLE IF NOT EXISTS town_meeting_votes (
     FOREIGN KEY (motion_id) REFERENCES motions(motion_id),
     FOREIGN KEY (vote_type_id) REFERENCES vote_types(vote_type_id)
 );
+
+CREATE VIEW IF NOT EXISTS town_meeting_vote_tallies AS
+SELECT
+    motion_id,
+    vote_type_id,
+    COUNT(*) as vote_count
+FROM
+    town_meeting_votes
+GROUP BY
+    motion_id,
+    vote_type_id;

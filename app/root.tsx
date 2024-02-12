@@ -1,6 +1,7 @@
 import type { LinksFunction } from '@remix-run/cloudflare';
 import { cssBundleHref } from '@remix-run/css-bundle';
 import {
+  Link,
   Links,
   LiveReload,
   Meta,
@@ -11,7 +12,6 @@ import {
 } from '@remix-run/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import MuiLink from '@mui/material/Link';
-import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
@@ -21,6 +21,7 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import { Menu as MenuIcon } from '@mui/icons-material';
+import Grid from '@mui/material/Unstable_Grid2';
 import { AuthProvider } from './auth';
 
 export const links: LinksFunction = () => [
@@ -157,63 +158,69 @@ export default function App() {
         <body>
           <AuthProvider>
             <ThemeProvider theme={lightTheme}>
-              <Box component="header">
-                <a href="#main-content">Skip to main content</a>
-                <Box sx={{ flexGrow: 1 }}>
-                  <AppBar position="static" color="transparent" elevation={0}>
-                    <Toolbar>
-                      <IconButton
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="menu"
-                        sx={{ mr: 2 }}
-                      >
-                        <MenuIcon />
-                      </IconButton>
-                      <Typography
-                        variant="h6"
-                        component="div"
-                        sx={{ flexGrow: 1 }}
-                      >
-                        Open Town Meeting
-                      </Typography>
-                      <Button color="inherit">Login</Button>
-                    </Toolbar>
-                  </AppBar>
-                </Box>
-                <nav aria-label="Primary navigation">
-                  <Stack
-                    component="ul"
-                    direction="row"
-                    spacing={4}
-                    justifyContent="center"
-                    alignItems="center"
-                  >
-                    {navLinks.map((link) => (
-                      <Box component="li" key={link.to} display="inline-block">
-                        <MuiLink
-                          component={NavLink}
-                          to={link.to}
-                          underline="none"
-                          display="inline-block"
-                          p={1}
+              <Box display="flex" flexDirection="column" minHeight="100vh">
+                <Box component="header">
+                  <a href="#main-content">Skip to main content</a>
+                  <Box sx={{ flexGrow: 1 }}>
+                    <AppBar position="static" color="transparent" elevation={0}>
+                      <Toolbar>
+                        <IconButton
+                          size="large"
+                          edge="start"
+                          color="inherit"
+                          aria-label="menu"
+                          sx={{ mr: 2 }}
                         >
-                          <Typography variant="button" component="div">
-                            {link.label}
-                          </Typography>
-                        </MuiLink>
-                      </Box>
-                    ))}
-                  </Stack>
-                </nav>
+                          <MenuIcon />
+                        </IconButton>
+                        <Typography
+                          variant="h6"
+                          component="div"
+                          sx={{ flexGrow: 1 }}
+                        >
+                          Open Town Meeting
+                        </Typography>
+                        <Button color="inherit">Login</Button>
+                      </Toolbar>
+                    </AppBar>
+                  </Box>
+                  <Box component="nav" aria-label="Primary navigation">
+                    <Stack
+                      component="ul"
+                      direction="row"
+                      spacing={4}
+                      justifyContent="center"
+                      alignItems="center"
+                    >
+                      {navLinks.map((link) => (
+                        <Box
+                          component="li"
+                          key={link.to}
+                          display="inline-block"
+                        >
+                          <MuiLink
+                            component={NavLink}
+                            to={link.to}
+                            underline="none"
+                            display="inline-block"
+                            p={1}
+                          >
+                            <Typography variant="button" component="div">
+                              {link.label}
+                            </Typography>
+                          </MuiLink>
+                        </Box>
+                      ))}
+                    </Stack>
+                  </Box>
+                </Box>
+                <Box component="main" id="main-content" flexGrow={1}>
+                  <Outlet />
+                </Box>
+                <Box component="footer">
+                  <Link to="/privacy">Privacy Policy</Link>
+                </Box>
               </Box>
-              <main id="main-content">
-                <Outlet />
-              </main>
-              <footer>
-                <Typography variant="caption" component="p"></Typography>
-              </footer>
             </ThemeProvider>
           </AuthProvider>
           <ScrollRestoration />

@@ -218,7 +218,19 @@ export default function App() {
                   <Outlet />
                 </Box>
                 <Box component="footer">
-                  <Link to="/privacy">Privacy Policy</Link>
+                  <Box component="ul">
+                    <Box component="li">
+                      <Link to="/accessibility">Accessibility</Link>
+                    </Box>
+                    <Box component="li">
+                      <Link to="/privacy">Privacy Policy</Link>
+                    </Box>
+                    <Box component="li">
+                      <a href="mailto:info@opentownmeeting.org">
+                        info@opentownmeeting.org
+                      </a>
+                    </Box>
+                  </Box>
                 </Box>
               </Box>
             </ThemeProvider>

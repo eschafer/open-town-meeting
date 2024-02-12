@@ -27,7 +27,9 @@ export default function Privacy() {
     <Box margin="0 auto" maxWidth="68ex">
       <h1>{data.title}</h1>
       <p>
-        Last updated <span className="color8351f9">{data.lastUpdated}</span>
+        <strong>
+          Last updated <span className="color8351f9">{data.lastUpdated}</span>
+        </strong>
       </p>
       <p>
         This privacy notice for{' '}

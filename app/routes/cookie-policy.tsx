@@ -1,3 +1,5 @@
+import Box from '@mui/material/Box';
+
 export default function CookiePolicy() {
   const data = {
     lastUpdated: 'February 11, 2024',
@@ -15,7 +17,7 @@ export default function CookiePolicy() {
   };
 
   return (
-    <>
+    <Box margin="0 auto" maxWidth="68ex">
       <h1 style={{ marginTop: '0.2em!important' }}>Cookie Policy</h1>
       <p>
         <strong>Last updated</strong>
@@ -26,7 +28,7 @@ export default function CookiePolicy() {
       <p>
         This Cookie Policy explains how{' '}
         <span className="color8351f9">{data.companyName} </span>
-        <span style={{ color: '#0e101a' }}>(” “</span>
+        <span style={{ color: '#0e101a' }}>(“</span>
         <span style={{ color: '#0e101a' }}>
           <strong>we</strong>
         </span>
@@ -41,7 +43,7 @@ export default function CookiePolicy() {
         <span style={{ color: '#0e101a' }}>”)</span> uses cookies and similar
         technologies to recognize you when you visit our websites at{' '}
         <span className="color8351f9">{data.websiteUrl}</span> (“
-        <strong>Websites</strong>“). It explains what these technologies are and
+        <strong>Websites</strong>”). It explains what these technologies are and
         why we use them, as well as your rights to control our use of them.
       </p>
       <p>
@@ -542,6 +544,6 @@ export default function CookiePolicy() {
         technologies, please email us at{' '}
         <span className="color8351f9">{data.email}</span>.
       </p>
-    </>
+    </Box>
   );
 }

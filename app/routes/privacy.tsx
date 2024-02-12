@@ -167,6 +167,8 @@ export default function Privacy() {
         13. HOW CAN YOU CONTACT US ABOUT THIS NOTICE?
         <br />
         14. HOW CAN YOU REVIEW, UPDATE, OR DELETE THE DATA WE COLLECT FROM YOU?
+        <br />
+        15. WEBSITE DISCLAIMER
       </p>
       <h2>1. WHAT INFORMATION DO WE COLLECT?</h2>
       <p>
@@ -741,6 +743,18 @@ export default function Privacy() {
         that information, or delete it in some circumstances. To request to
         review, update, or delete your personal information, please send an
         email to <span className="color8351f9">{data.email}</span>.
+      </p>
+      <h2>15. WEBSITE DISCLAIMER</h2>
+      <p>
+        The information provided by {data.companyName} on {data.websiteUrl} (“
+        <strong>the Site</strong>”) is for general informational purposes only.
+        All information on the Site is provided in good faith, however we make
+        no representation or warranty of any kind, express or implied, regarding
+        the accuracy, adequacy, validity, reliability, availability, or
+        completeness of any information on the Site. UNDER NO CIRCUMSTANCE SHALL
+        WE HAVE ANY LIABILITY TO YOU FOR ANY LOSS OR DAMAGE OF ANY KIND INCURRED
+        AS A RESULT OF THE USE OF THE SITE. YOUR USE OF THE SITE AND YOUR
+        RELIANCE ON ANY INFORMATION ON THE SITE IS SOLELY AT YOUR OWN RISK.
       </p>
     </Box>
   );

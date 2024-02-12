@@ -1,6 +1,9 @@
+import { Link } from '@remix-run/react';
+import Box from '@mui/material/Box';
+
 export default function Privacy() {
   const data = {
-    title: 'Privacy Notice',
+    title: 'Privacy Policy',
     lastUpdated: 'February 11, 2024',
     companyName: 'opentownmeeting.org',
     websiteUrl: (
@@ -14,14 +17,14 @@ export default function Privacy() {
       </a>
     ),
     cookieNoticeUrl: (
-      <a href="https://www.opentownmeeting.org/cookie-notice">
-        https://www.opentownmeeting.org/cookie-notice
-      </a>
+      <Link to="/cookie-policy">
+        https://www.opentownmeeting.org/cookie-policy
+      </Link>
     ),
   };
 
   return (
-    <>
+    <Box margin="0 auto" maxWidth="68ex">
       <h1>{data.title}</h1>
       <p>
         Last updated <span className="color8351f9">{data.lastUpdated}</span>
@@ -379,7 +382,7 @@ export default function Privacy() {
           <strong>To deliver targeted advertising to you.</strong> We may
           process your information to develop and display personalized content
           and advertising tailored to your interests, location, and more. For
-          more information see our Cookie Notice:{' '}
+          more information see our Cookie Policy:{' '}
           <span className="color8351f9">{data.cookieNoticeUrl}</span>.
         </li>
         <li>
@@ -491,7 +494,7 @@ export default function Privacy() {
         We may use cookies and similar tracking technologies (like web beacons
         and pixels) to access or store information. Specific information about
         how we use such technologies and how you can refuse certain cookies is
-        set out in our Cookie Notice:{' '}
+        set out in our Cookie Policy:{' '}
         <span className="color8351f9">{data.cookieNoticeUrl}</span>.
       </p>
       <h2>6. HOW DO WE HANDLE YOUR SOCIAL LOGINS?</h2>
@@ -686,7 +689,7 @@ export default function Privacy() {
         you can usually choose to set your browser to remove cookies and to
         reject cookies. If you choose to remove cookies or reject cookies, this
         could affect certain features or services of our Services. For further
-        information, please see our Cookie Notice:{' '}
+        information, please see our Cookie Policy:{' '}
         <span className="color8351f9">{data.cookieNoticeUrl}</span>.
       </p>
       <p>
@@ -737,6 +740,6 @@ export default function Privacy() {
         review, update, or delete your personal information, please send an
         email to <span className="color8351f9">{data.email}</span>.
       </p>
-    </>
+    </Box>
   );
 }

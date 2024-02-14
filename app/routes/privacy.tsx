@@ -34,10 +34,10 @@ export default function Privacy() {
       <p>
         This privacy notice for{' '}
         <span className="color8351f9">{data.companyName}</span> (“
-        <strong>we</strong>,” “<strong>us</strong>,” or “<strong>our</strong>“),
+        <strong>we</strong>,” “<strong>us</strong>,” or “<strong>our</strong>”),
         owned and operated by Elizabeth Schafer, describes how and why we might
-        collect, store, use, and/or share (“<strong>process</strong>“) your
-        information when you use our services (“<strong>Services</strong>“),
+        collect, store, use, and/or share (“<strong>process</strong>”) your
+        information when you use our services (“<strong>Services</strong>”),
         such as when you:
       </p>
       <ul>

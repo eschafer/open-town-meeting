@@ -15,14 +15,24 @@ import MuiLink from '@mui/material/Link';
 import CssBaseline from '@mui/material/CssBaseline';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/system/Box';
+import { Box, GlobalStyles } from '@mui/system';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import { Menu as MenuIcon } from '@mui/icons-material';
-import Grid from '@mui/material/Unstable_Grid2';
 import { AuthProvider } from './auth';
+
+const FONTS = {
+  INTER: {
+    FAMILY:
+      '"Inter",-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+  },
+  MERRIWEATHER: {
+    FAMILY:
+      '"Merriweather", "Georgia", "Cambria", "Times New Roman", "Times", serif',
+  },
+};
 
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: 'stylesheet', href: cssBundleHref }] : []),
@@ -59,50 +69,43 @@ const lightTheme = createTheme({
   },
   typography: {
     h1: {
-      fontFamily:
-        '"Merriweather", "Georgia", "Cambria", "Times New Roman", "Times", serif',
+      fontFamily: FONTS.MERRIWEATHER.FAMILY,
       fontSize: '2.5rem',
       fontWeight: 700,
       lineHeight: 1.2,
     },
     h2: {
-      fontFamily:
-        '"Merriweather", "Georgia", "Cambria", "Times New Roman", "Times", serif',
+      fontFamily: FONTS.MERRIWEATHER.FAMILY,
       fontSize: '1.71rem',
       fontWeight: 700,
       lineHeight: 1.2,
     },
     h3: {
-      fontFamily:
-        '"Merriweather", "Georgia", "Cambria", "Times New Roman", "Times", serif',
+      fontFamily: FONTS.MERRIWEATHER.FAMILY,
       fontSize: '1.22rem',
       fontWeight: 700,
       lineHeight: 1.2,
     },
     h4: {
-      fontFamily:
-        '"Merriweather", "Georgia", "Cambria", "Times New Roman", "Times", serif',
+      fontFamily: FONTS.MERRIWEATHER.FAMILY,
       fontSize: '.98rem',
       fontWeight: 700,
       lineHeight: 1.2,
     },
     h5: {
-      fontFamily:
-        '"Inter",-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+      fontFamily: FONTS.INTER.FAMILY,
       fontSize: '1rem',
       fontWeight: 700,
       lineHeight: 1.4,
     },
     body1: {
-      fontFamily:
-        '"Inter",-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+      fontFamily: FONTS.INTER.FAMILY,
       fontSize: '1.22rem',
       fontWeight: 400,
       lineHeight: 1.5,
     },
     body2: {
-      fontFamily:
-        '"Inter",-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+      fontFamily: FONTS.INTER.FAMILY,
       fontSize: '1.06rem',
       fontWeight: 400,
       lineHeight: 1.5,
@@ -116,23 +119,20 @@ const lightTheme = createTheme({
       textTransform: 'inherit',
     },
     caption: {
-      fontFamily:
-        '"Inter",-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+      fontFamily: FONTS.INTER.FAMILY,
       fontSize: '1rem',
       fontWeight: 700,
       lineHeight: 1.5,
     },
     overline: {
-      fontFamily:
-        '"Inter",-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+      fontFamily: FONTS.INTER.FAMILY,
       fontSize: '0.88rem',
       fontWeight: 400,
       lineHeight: 1.5,
       textTransform: 'uppercase',
       letterSpacing: '.1em',
     },
-    fontFamily:
-      '"Inter",-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+    fontFamily: FONTS.INTER.FAMILY,
     fontSize: 16,
   },
 });
@@ -147,7 +147,6 @@ export default function App() {
   ];
   return (
     <>
-      <CssBaseline />
       <html lang="en">
         <head>
           <meta charSet="utf-8" />
@@ -158,13 +157,51 @@ export default function App() {
         <body>
           <AuthProvider>
             <ThemeProvider theme={lightTheme}>
+              <CssBaseline />
+              <GlobalStyles
+                styles={`
+                  :root {
+                    font-family: ${FONTS.INTER.FAMILY};
+                    font-feature-settings: 'ss02' 1, 'ss03' 1, 'liga' 1, 'calt' 1; /* liga & calt are fix for Chrome */
+                  }
+                  .skip-link {
+                    clip: rect(0 0 0 0);
+                    border: 0;
+                    height: 1px;
+                    margin: -1px;
+                    overflow: hidden;
+                    padding: 0;
+                    position: absolute;
+                    white-space: nowrap;
+                    width: 1px;
+                  }
+                  .skip-link:focus {
+                    clip: auto;
+                    height: auto;
+                    width: auto;
+                    background-color: #ffffff;
+                    padding: 1rem;
+                    z-index: 1000;
+                  }
+                `}
+              />
               <Box display="flex" flexDirection="column" minHeight="100vh">
-                <Box component="header">
-                  <a href="#main-content">Skip to main content</a>
-                  <Box sx={{ flexGrow: 1 }}>
-                    <AppBar position="static" color="transparent" elevation={0}>
-                      <Toolbar>
-                        <IconButton
+                <AppBar
+                  position="static"
+                  elevation={2}
+                  sx={{ backgroundColor: '#ffffff' }}
+                >
+                  <a href="#main-content" className="skip-link">
+                    Skip to main content
+                  </a>
+                  <Toolbar
+                    sx={{
+                      // backgroundColor: '#000000',
+                      // color: '#ffffff',
+                      textDecoration: 'none',
+                    }}
+                  >
+                    {/*<IconButton
                           size="large"
                           edge="start"
                           color="inherit"
@@ -172,63 +209,101 @@ export default function App() {
                           sx={{ mr: 2 }}
                         >
                           <MenuIcon />
-                        </IconButton>
-                        <Typography
-                          variant="h6"
-                          component="div"
-                          sx={{ flexGrow: 1 }}
-                        >
-                          Open Town Meeting
-                        </Typography>
-                        <Button color="inherit">Login</Button>
-                      </Toolbar>
-                    </AppBar>
-                  </Box>
-                  <Box component="nav" aria-label="Primary navigation">
+                        </IconButton>*/}
+                    <Typography
+                      variant="h2"
+                      component="div"
+                      sx={{ flexGrow: 1 }}
+                    >
+                      <Link
+                        to="/"
+                        style={{ color: '#000000', textDecoration: 'none' }}
+                      >
+                        Open Town Meeting
+                      </Link>
+                    </Typography>
+                    <Button color="inherit">Login</Button>
+                  </Toolbar>
+                  <Toolbar
+                    component="nav"
+                    aria-label="Primary navigation"
+                    sx={{ minHeight: 'auto !important' }}
+                  >
                     <Stack
                       component="ul"
                       direction="row"
                       spacing={4}
-                      justifyContent="center"
                       alignItems="center"
+                      sx={{
+                        display: 'flex',
+                        flexWrap: 'wrap',
+                        margin: '0 -1rem',
+                        padding: 0,
+                      }}
                     >
                       {navLinks.map((link) => (
                         <Box
                           component="li"
                           key={link.to}
-                          display="inline-block"
+                          sx={{
+                            display: 'inline-block',
+                          }}
                         >
                           <MuiLink
                             component={NavLink}
                             to={link.to}
                             underline="none"
                             display="inline-block"
-                            p={1}
+                            sx={{
+                              position: 'relative',
+                              padding: '1rem',
+
+                              '&.active::after': {
+                                backgroundColor: '#2672de',
+                                borderRadius: '0',
+                                content: '""',
+                                display: 'block',
+                                position: 'absolute',
+                                height: '.25rem',
+                                left: '1rem',
+                                right: '1rem',
+                                bottom: '0',
+                              },
+                            }}
                           >
-                            <Typography variant="button" component="div">
+                            <Typography
+                              variant="button"
+                              component="div"
+                              sx={{ whiteSpace: 'nowrap' }}
+                            >
                               {link.label}
                             </Typography>
                           </MuiLink>
                         </Box>
                       ))}
                     </Stack>
-                  </Box>
-                </Box>
-                <Box component="main" id="main-content" flexGrow={1}>
+                  </Toolbar>
+                </AppBar>
+                <Box
+                  component="main"
+                  id="main-content"
+                  flexGrow={1}
+                  sx={{ padding: '3rem 1.5rem' }}
+                >
                   <Outlet />
                 </Box>
                 <Box component="footer">
                   <Box component="ul">
                     <Box component="li">
+                      <a href="mailto:info@opentownmeeting.org">
+                        info@opentownmeeting.org
+                      </a>
+                    </Box>
+                    <Box component="li">
                       <Link to="/accessibility">Accessibility</Link>
                     </Box>
                     <Box component="li">
                       <Link to="/privacy">Privacy Policy</Link>
-                    </Box>
-                    <Box component="li">
-                      <a href="mailto:info@opentownmeeting.org">
-                        info@opentownmeeting.org
-                      </a>
                     </Box>
                   </Box>
                 </Box>

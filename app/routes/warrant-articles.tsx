@@ -60,7 +60,6 @@ export const loader = async ({ request }: { request: Request }) => {
   `;
 
   const data = await fetchGraphQL({ query, request });
-  console.log(data);
 
   const rows = data.allWarrantArticles.map((article) => {
     return {

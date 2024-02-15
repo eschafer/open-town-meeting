@@ -28,26 +28,34 @@ const FONTS = {
     FAMILY:
       '"Inter",-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
   },
-  MERRIWEATHER: {
+  FRAUNCES: {
     FAMILY:
-      '"Merriweather", "Georgia", "Cambria", "Times New Roman", "Times", serif',
+      '"Fraunces", "Georgia", "Cambria", "Times New Roman", "Times", serif',
   },
 };
 
 export const links: LinksFunction = () => [
   ...(cssBundleHref ? [{ rel: 'stylesheet', href: cssBundleHref }] : []),
   {
-    rel: 'preload',
+    rel: 'preconnect',
     href: 'https://fonts.googleapis.com',
   },
   {
-    rel: 'preload',
+    rel: 'preconnect',
     href: 'https://fonts.gstatic.com',
     crossOrigin: 'anonymous',
   },
   {
     rel: 'stylesheet',
-    href: 'https://fonts.googleapis.com/css2?family=Merriweather:wght@700&family=Inter:wght@400;700&display=swap',
+    href: 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,SOFT,WONK@9..144,100,0..1&display=swap',
+  },
+  {
+    rel: 'preconnect',
+    href: 'https://rsms.me/',
+  },
+  {
+    rel: 'stylesheet',
+    href: 'https://rsms.me/inter/inter.css',
   },
 ];
 
@@ -69,27 +77,43 @@ const lightTheme = createTheme({
   },
   typography: {
     h1: {
-      fontFamily: FONTS.MERRIWEATHER.FAMILY,
+      fontFamily: FONTS.FRAUNCES.FAMILY,
       fontSize: '2.5rem',
-      fontWeight: 700,
+      fontOpticalSizing: 'auto',
+      fontWeight: 400,
+      fontStyle: 'normal',
+      fontVariationSettings: `"SOFT" 100, "WONK" 0`,
+      letterSpacing: '-0.0625rem',
       lineHeight: 1.2,
     },
     h2: {
-      fontFamily: FONTS.MERRIWEATHER.FAMILY,
+      fontFamily: FONTS.FRAUNCES.FAMILY,
       fontSize: '1.71rem',
-      fontWeight: 700,
+      fontOpticalSizing: 'auto',
+      fontWeight: 400,
+      fontStyle: 'normal',
+      fontVariationSettings: `"SOFT" 100, "WONK" 0`,
+      letterSpacing: '-0.0625rem',
       lineHeight: 1.2,
     },
     h3: {
-      fontFamily: FONTS.MERRIWEATHER.FAMILY,
+      fontFamily: FONTS.FRAUNCES.FAMILY,
       fontSize: '1.22rem',
-      fontWeight: 700,
+      fontOpticalSizing: 'auto',
+      fontWeight: 400,
+      fontStyle: 'normal',
+      fontVariationSettings: `"SOFT" 100, "WONK" 0`,
+      letterSpacing: '-0.0625rem',
       lineHeight: 1.2,
     },
     h4: {
-      fontFamily: FONTS.MERRIWEATHER.FAMILY,
+      fontFamily: FONTS.FRAUNCES.FAMILY,
       fontSize: '.98rem',
-      fontWeight: 700,
+      fontOpticalSizing: 'auto',
+      fontWeight: 400,
+      fontStyle: 'normal',
+      fontVariationSettings: `"SOFT" 100, "WONK" 0`,
+      letterSpacing: '-0.0625rem',
       lineHeight: 1.2,
     },
     h5: {
@@ -139,11 +163,9 @@ const lightTheme = createTheme({
 
 export default function App() {
   const navLinks = [
-    { to: '/warrant-articles', label: 'Warrant Articles' },
-    { to: '/budget', label: 'Budget' },
     { to: '/town-meeting', label: 'Town Meeting' },
+    { to: '/warrant-articles', label: 'Warrant Articles' },
     { to: '/town-meeting-members', label: 'Town Meeting Members' },
-    { to: '/committees', label: 'Committees' },
   ];
   return (
     <>

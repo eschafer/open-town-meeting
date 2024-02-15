@@ -41,7 +41,7 @@ function createNestedResolver(
           const ps = context.db
             .prepare(`SELECT * from ${tableName} WHERE ${idName} = ?`)
             .bind(root[toCamelCase(idName)]);
-          const data = await ps.run();
+          const data = await ps.all();
 
           if (data.results.length === 0) {
             return null;
@@ -115,7 +115,7 @@ export function createResolvers({
           const ps = context.db
             .prepare(`SELECT * from ${tableName} WHERE ${idName} = ?`)
             .bind(args.id);
-          const data = await ps.run();
+          const data = await ps.all();
 
           if (data.results.length === 0) {
             return null;

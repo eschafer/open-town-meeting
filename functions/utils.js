@@ -33,7 +33,20 @@ function createNestedResolver(
   const nestedResolver = {
     [parentSingularName.charAt(0).toUpperCase() + parentSingularName.slice(1)]:
       {
-        [singularName]: async (root, args, context) => {
+        [singularName]: async (root, args, context, info) => {
+          // If the type of the nested group is the same as an ancestor type,
+          // return null to prevent circular queries.
+          let currentPath = info.path;
+          while (currentPath) {
+            if (
+              currentPath.typename ===
+              singularName.charAt(0).toUpperCase() + singularName.slice(1)
+            ) {
+              // throw new Error('Circular query detected.');
+            }
+            currentPath = currentPath.prev;
+          }
+
           if (!root[toCamelCase(idName)]) {
             return null;
           }
@@ -62,12 +75,63 @@ function createNestedResolver(
   return nestedResolver;
 }
 
+function createNestedGroupResolver(
+  { singularName, pluralName, tableName, idName },
+  parentSingularName,
+  parentIdName,
+) {
+  const nestedGroupResolver = {
+    [parentSingularName.charAt(0).toUpperCase() + parentSingularName.slice(1)]:
+      {
+        [pluralName]: async (root, args, context, info) => {
+          // If the type of the nested group is the same as an ancestor type,
+          // return null to prevent circular queries.
+          let currentPath = info.path;
+          while (currentPath) {
+            if (
+              currentPath.typename ===
+              singularName.charAt(0).toUpperCase() + singularName.slice(1)
+            ) {
+              // throw new Error('Circular query detected.');
+            }
+            currentPath = currentPath.prev;
+          }
+
+          if (!root[toCamelCase(parentIdName)]) {
+            return null;
+          }
+          const ps = context.db
+            .prepare(`SELECT * from ${tableName} WHERE ${parentIdName} = ?`)
+            .bind(root[toCamelCase(parentIdName)]);
+          const data = await ps.all();
+
+          if (data.results.length === 0) {
+            return null;
+          }
+
+          // const result = convertKeysToCamelCase(data.results[0]);
+          const result = data.results.map(convertKeysToCamelCase);
+
+          if (!data.success) {
+            throw new Error(
+              `No ${tableName} found with id ${root[toCamelCase(idName)]}`,
+            );
+          }
+          return result;
+        },
+      },
+  };
+
+  return nestedGroupResolver;
+}
+
 export function createResolvers({
   singularName,
   pluralName,
   tableName,
   idName,
   nested,
+  nestedGroup,
 }) {
   const nestedResolvers =
     nested?.length > 0
@@ -76,9 +140,19 @@ export function createResolvers({
         })
       : [];
 
+  const nestedGroupResolvers =
+    nestedGroup?.length > 0
+      ? nestedGroup.map((type) => {
+          return createNestedGroupResolver(type, singularName, idName);
+        })
+      : [];
+
   let otherResolvers = {};
   if (nestedResolvers.length > 0) {
     otherResolvers = merge(...nestedResolvers);
+  }
+  if (nestedGroupResolvers.length > 0) {
+    otherResolvers = merge(otherResolvers, ...nestedGroupResolvers);
   }
 
   const resolvers = merge(

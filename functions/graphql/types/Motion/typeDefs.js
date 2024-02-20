@@ -5,6 +5,10 @@ type Motion {
   motionTitle: String!
   motionDescription: String
   threshold: String
+
+  petitioners: [Petitioner]
+  townMeetingVotes: [TownMeetingVote]
+
   createdAt: Int!
   updatedAt: Int!
 }

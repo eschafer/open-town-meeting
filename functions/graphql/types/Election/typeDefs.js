@@ -2,6 +2,9 @@ const typeDefs = `
 type Election {
   electionId: ID!
   electionDate: String!
+
+  races: [Race]
+
   createdAt: Int!
   updatedAt: Int!
 }

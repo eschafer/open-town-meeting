@@ -1,8 +1,8 @@
 const typeDefs = `
 type CommitteeMember {
   committeeMemberId: ID!
-  committeeId: ID!
-  personId: ID!
+  committee: Committee
+  person: Person
   startDate: String
   endDate: String
   position: String

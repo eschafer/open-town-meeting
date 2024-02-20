@@ -3,6 +3,10 @@ type Office {
   officeId: ID!
   officeName: String!
   precinct: Precinct
+
+  races: [Race]
+  terms: [Term]
+
   createdAt: Int!
   updatedAt: Int!
 }

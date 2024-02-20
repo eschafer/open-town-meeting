@@ -5,6 +5,14 @@ const resolvers = createResolvers({
   pluralName: 'elections',
   tableName: 'elections',
   idName: 'election_id',
+  nestedGroup: [
+    {
+      singularName: 'race',
+      pluralName: 'races',
+      tableName: 'races',
+      idName: 'race_id',
+    },
+  ],
 });
 
 export default resolvers;

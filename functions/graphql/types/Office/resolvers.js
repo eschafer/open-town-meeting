@@ -13,6 +13,20 @@ const resolvers = createResolvers({
       idName: 'precinct_id',
     },
   ],
+  nestedGroup: [
+    {
+      singularName: 'race',
+      pluralName: 'races',
+      tableName: 'races',
+      idName: 'race_id',
+    },
+    {
+      singularName: 'term',
+      pluralName: 'terms',
+      tableName: 'terms',
+      idName: 'term_id',
+    },
+  ],
 });
 
 export default resolvers;

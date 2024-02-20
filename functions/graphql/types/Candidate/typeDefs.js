@@ -3,6 +3,9 @@ type Candidate {
   candidateId: ID!
   person: Person!
   race: Race!
+
+  electionResults: [ElectionResult]
+
   createdAt: Int!
   updatedAt: Int!
 }

@@ -21,6 +21,7 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import { Menu as MenuIcon } from '@mui/icons-material';
+import Container from '@mui/material/Container';
 import { AuthProvider } from './auth';
 
 const FONTS = {
@@ -72,7 +73,7 @@ const lightTheme = createTheme({
       main: '#d32f2f',
     },
     background: {
-      default: '#f7f7f6',
+      default: '#f5f7fa',
     },
   },
   typography: {
@@ -156,8 +157,8 @@ const lightTheme = createTheme({
       textTransform: 'uppercase',
       letterSpacing: '.1em',
     },
-    fontFamily: FONTS.INTER.FAMILY,
-    fontSize: 16,
+    // fontFamily: FONTS.INTER.FAMILY,
+    // fontSize: 16,
   },
 });
 
@@ -210,7 +211,7 @@ export default function App() {
               <Box display="flex" flexDirection="column" minHeight="100vh">
                 <AppBar
                   position="static"
-                  elevation={2}
+                  elevation={0}
                   sx={{ backgroundColor: '#ffffff' }}
                 >
                   <a href="#main-content" className="skip-link">
@@ -218,8 +219,8 @@ export default function App() {
                   </a>
                   <Toolbar
                     sx={{
-                      // backgroundColor: '#000000',
-                      // color: '#ffffff',
+                      backgroundColor: '#ffffff',
+                      color: '#202124',
                       textDecoration: 'none',
                     }}
                   >
@@ -239,22 +240,15 @@ export default function App() {
                     >
                       <Link
                         to="/"
-                        style={{ color: '#000000', textDecoration: 'none' }}
+                        style={{ color: '#202124', textDecoration: 'none' }}
                       >
                         Open Town Meeting
                       </Link>
                     </Typography>
-                    <Button color="inherit">Login</Button>
-                  </Toolbar>
-                  <Toolbar
-                    component="nav"
-                    aria-label="Primary navigation"
-                    sx={{ minHeight: 'auto !important' }}
-                  >
                     <Stack
                       component="ul"
                       direction="row"
-                      spacing={4}
+                      spacing={0}
                       alignItems="center"
                       sx={{
                         display: 'flex',
@@ -310,24 +304,38 @@ export default function App() {
                   component="main"
                   id="main-content"
                   flexGrow={1}
-                  sx={{ padding: '3rem 1.5rem' }}
+                  sx={{ padding: '1.5rem 0 3rem' }}
                 >
-                  <Outlet />
+                  <Container>
+                    <Outlet />
+                  </Container>
                 </Box>
-                <Box component="footer">
-                  <Box component="ul">
-                    <Box component="li">
-                      <a href="mailto:info@opentownmeeting.org">
-                        info@opentownmeeting.org
-                      </a>
+                <Box
+                  component="footer"
+                  sx={{
+                    background: '#2d2e2f',
+                    color: '#ffffff',
+                    fontSize: '1rem',
+                  }}
+                >
+                  <Container>
+                    <Box
+                      component="ul"
+                      sx={{
+                        listStyle: 'none',
+                        '& a': {
+                          color: '#ffffff',
+                        },
+                      }}
+                    >
+                      <Box component="li">
+                        <Link to="/accessibility">Accessibility</Link>
+                      </Box>
+                      <Box component="li">
+                        <Link to="/privacy">Privacy Policy</Link>
+                      </Box>
                     </Box>
-                    <Box component="li">
-                      <Link to="/accessibility">Accessibility</Link>
-                    </Box>
-                    <Box component="li">
-                      <Link to="/privacy">Privacy Policy</Link>
-                    </Box>
-                  </Box>
+                  </Container>
                 </Box>
               </Box>
             </ThemeProvider>

@@ -3,6 +3,9 @@ type TownMeetingSession {
   townMeetingSessionId: ID!
   startDate: String!
   sessionName: String!
+
+  warrantArticles: [WarrantArticle]
+
   createdAt: Int!
   updatedAt: Int!
 }

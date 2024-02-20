@@ -41,6 +41,14 @@ const resolvers = createResolvers({
       ],
     },
   ],
+  nestedGroup: [
+    {
+      singularName: 'electionResult',
+      pluralName: 'electionResults',
+      tableName: 'election_results',
+      idName: 'election_result_id',
+    },
+  ],
 });
 
 export default resolvers;

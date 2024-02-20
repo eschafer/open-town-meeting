@@ -5,6 +5,9 @@ type WarrantArticle {
   articleNumber: Int!
   articleTitle: String!
   articleDescription: String
+
+  motions: [Motion]
+
   createdAt: Int!
   updatedAt: Int!
 }

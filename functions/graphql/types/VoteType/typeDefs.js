@@ -2,6 +2,9 @@ const typeDefs = `
 type VoteType {
   voteTypeId: ID!
   voteTypeName: String!
+
+  townMeetingVotes: [TownMeetingVote]
+
   createdAt: Int!
   updatedAt: Int!
 }

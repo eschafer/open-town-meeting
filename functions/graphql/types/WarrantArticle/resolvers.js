@@ -13,6 +13,14 @@ const resolvers = createResolvers({
       idName: 'town_meeting_session_id',
     },
   ],
+  nestedGroup: [
+    {
+      singularName: 'motion',
+      pluralName: 'motions',
+      tableName: 'motions',
+      idName: 'motion_id',
+    },
+  ],
 });
 
 export default resolvers;

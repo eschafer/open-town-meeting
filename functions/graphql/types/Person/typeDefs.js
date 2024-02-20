@@ -8,6 +8,13 @@ type Person {
   address: String
   email: String
   phone: String
+
+  committeeMembers: [CommitteeMember]
+  candidates: [Candidate]
+  terms: [Term]
+  petitioners: [Petitioner]
+  townMeetingVotes: [TownMeetingVote]
+
   createdAt: Int!
   updatedAt: Int!
 }

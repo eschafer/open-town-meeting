@@ -4,6 +4,9 @@ type Precinct {
   precinctNumber: Int!
   censusYear: Int!
   pollingPlace: String
+
+  offices: [Office]
+
   createdAt: Int!
   updatedAt: Int!
 }

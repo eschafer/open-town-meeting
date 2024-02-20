@@ -4,6 +4,9 @@ type Committee {
   committeeName: String!
   committeeDescription: String
   committeeUrl: String
+
+  committeeMembers: [CommitteeMember]
+
   createdAt: Int!
   updatedAt: Int!
 }

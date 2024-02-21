@@ -26,6 +26,18 @@ const resolvers = createResolvers({
       tableName: 'town_meeting_votes',
       idName: 'town_meeting_vote_id',
     },
+    {
+      singularName: 'townMeetingVoteTally',
+      pluralName: 'townMeetingVoteTallies',
+      tableName: 'town_meeting_vote_tallies',
+      idName: 'town_meeting_vote_tally_id',
+    },
+    {
+      singularName: 'townMeetingVoteResult',
+      pluralName: 'townMeetingVoteResults',
+      tableName: 'town_meeting_vote_results',
+      idName: 'town_meeting_vote_result_id',
+    },
   ],
 });
 

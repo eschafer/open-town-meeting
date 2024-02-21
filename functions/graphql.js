@@ -21,6 +21,8 @@ import warrantArticleTypeDefs from './graphql/types/WarrantArticle/typeDefs';
 import motionTypeDefs from './graphql/types/Motion/typeDefs';
 import petitionerTypeDefs from './graphql/types/Petitioner/typeDefs';
 import townMeetingVoteTypeDefs from './graphql/types/TownMeetingVote/typeDefs';
+import townMeetingVoteTallyTypeDefs from './graphql/types/TownMeetingVoteTally/typeDefs';
+import townMeetingVoteResultTypeDefs from './graphql/types/TownMeetingVoteResult/typeDefs';
 
 import precinctResolvers from './graphql/types/Precinct/resolvers';
 import electionResolvers from './graphql/types/Election/resolvers';
@@ -39,6 +41,8 @@ import warrantArticleResolvers from './graphql/types/WarrantArticle/resolvers';
 import motionResolvers from './graphql/types/Motion/resolvers';
 import petitionerResolvers from './graphql/types/Petitioner/resolvers';
 import townMeetingVoteResolvers from './graphql/types/TownMeetingVote/resolvers';
+import townMeetingVoteTallyResolvers from './graphql/types/TownMeetingVoteTally/resolvers';
+import townMeetingVoteResultResolvers from './graphql/types/TownMeetingVoteResult/resolvers';
 
 const JWKS = createRemoteJWKSet(
   new URL(
@@ -64,6 +68,8 @@ const typeDefs = [
   motionTypeDefs,
   petitionerTypeDefs,
   townMeetingVoteTypeDefs,
+  townMeetingVoteTallyTypeDefs,
+  townMeetingVoteResultTypeDefs,
 ];
 
 const resolvers = merge(
@@ -84,6 +90,8 @@ const resolvers = merge(
   motionResolvers,
   petitionerResolvers,
   townMeetingVoteResolvers,
+  townMeetingVoteTallyResolvers,
+  townMeetingVoteResultResolvers,
 );
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });

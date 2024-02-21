@@ -4,10 +4,13 @@ type Motion {
   warrantArticle: WarrantArticle!
   motionTitle: String!
   motionDescription: String
+  motionType: String!
   threshold: String
 
   petitioners: [Petitioner]
   townMeetingVotes: [TownMeetingVote]
+  townMeetingVoteTallies: [TownMeetingVoteTally]
+  townMeetingVoteResults: [TownMeetingVoteResult]
 
   createdAt: Int!
   updatedAt: Int!
@@ -18,6 +21,7 @@ input MotionInput {
   warrantArticleId: ID
   motionTitle: String
   motionDescription: String
+  motionType: String
   threshold: String
   createdAt: Int
   updatedAt: Int

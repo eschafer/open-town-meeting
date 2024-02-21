@@ -98,8 +98,8 @@ CREATE TABLE IF NOT EXISTS committee_members (
     created_at INTEGER NOT NULL,
     updated_at INTEGER NOT NULL,
 
-    FOREIGN KEY (person_id) REFERENCES people(person_id),
     FOREIGN KEY (committee_id) REFERENCES committees(committee_id)
+    FOREIGN KEY (person_id) REFERENCES people(person_id),
 );
 
 -- office_id,office_name,precinct_id,created_at,updated_at
@@ -208,7 +208,10 @@ CREATE TABLE IF NOT EXISTS motions (
 
     motion_title TEXT NOT NULL,
     motion_description TEXT,
+    motion_type TEXT, -- petitioner, amendment/substitute, referral
     threshold TEXT, -- majority, 2/3, etc.
+    voice_vote_passed INTEGER, -- 1 if passed, 0 if failed
+    order_within_article INTEGER,
 
     created_at INTEGER NOT NULL,
     updated_at INTEGER NOT NULL,
@@ -228,8 +231,10 @@ CREATE TABLE IF NOT EXISTS petitioners (
     created_at INTEGER NOT NULL,
     updated_at INTEGER NOT NULL,
 
+    FOREIGN KEY (motion_id) REFERENCES motions(motion_id),
     FOREIGN KEY (person_id) REFERENCES people(person_id),
-    FOREIGN KEY (motion_id) REFERENCES motions(motion_id)
+    FOREIGN KEY (department_id) REFERENCES departments(department_id),
+    FOREIGN KEY (committee_id) REFERENCES committees(committee_id)
 );
 
 -- town_meeting_vote_id,person_id,motion_id,vote_type_id,created_at,updated_at
@@ -238,7 +243,6 @@ CREATE TABLE IF NOT EXISTS town_meeting_votes (
 
     person_id INTEGER NOT NULL,
     motion_id INTEGER NOT NULL,
-
     vote_type_id INTEGER,
 
     created_at INTEGER NOT NULL,
@@ -253,9 +257,38 @@ CREATE VIEW IF NOT EXISTS town_meeting_vote_tallies AS
 SELECT
     motion_id,
     vote_type_id,
-    COUNT(*) as vote_count
+    COUNT(*) as vote_count,
+    motion_id || '-' || COALESCE(vote_type_id, '0') as town_meeting_vote_tally_id
 FROM
     town_meeting_votes
 GROUP BY
     motion_id,
     vote_type_id;
+
+CREATE VIEW IF NOT EXISTS town_meeting_vote_results AS
+SELECT
+    m.motion_id,
+    m.threshold,
+    m.voice_vote_passed,
+    t.yes_votes,
+    t.no_votes,
+    m.motion_id as town_meeting_vote_result_id,
+    CASE
+        WHEN m.voice_vote_passed IS NOT NULL THEN m.voice_vote_passed
+        WHEN t.yes_votes IS NULL OR t.no_votes IS NULL THEN NULL
+        WHEN m.threshold = 'majority' AND t.yes_votes > (t.yes_votes + t.no_votes) / 2 THEN 1
+        WHEN m.threshold = '2/3' AND t.yes_votes > (t.yes_votes + t.no_votes) * 2 / 3 THEN 1
+        ELSE 0
+    END as is_passed
+FROM
+    motions m
+LEFT JOIN (
+    SELECT
+        motion_id,
+        SUM(CASE WHEN vote_type_id = (SELECT vote_type_id FROM vote_types WHERE vote_type_name = 'yes') THEN 1 ELSE 0 END) as yes_votes,
+        SUM(CASE WHEN vote_type_id = (SELECT vote_type_id FROM vote_types WHERE vote_type_name = 'no') THEN 1 ELSE 0 END) as no_votes
+    FROM
+        town_meeting_votes
+    GROUP BY
+        motion_id
+) t ON m.motion_id = t.motion_id;

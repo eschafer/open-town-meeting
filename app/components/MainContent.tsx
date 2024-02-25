@@ -1,24 +1,21 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, NavLink, Outlet } from '@remix-run/react';
 import {
   AppBar,
+  Avatar,
   Box,
-  Button,
   Container,
+  IconButton,
   Link as MuiLink,
   Menu,
   MenuItem,
   Stack,
   Toolbar,
+  Tooltip,
   Typography,
 } from '@mui/material';
-import {
-  GoogleAuthProvider,
-  signInWithCustomToken,
-  signInWithPopup,
-} from 'firebase/auth';
+import { Person as PersonIcon } from '@mui/icons-material';
 import { useAuth } from '~/contexts/AuthProvider';
-import { completeGoogleSignIn } from '~/utils';
 
 export default function MainContent() {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -31,19 +28,6 @@ export default function MainContent() {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
-  useEffect(() => {
-    window.handleCredentialResponse = async (response) => {
-      // exchange the google credential for a firebase token, and validate the token, then store the token in a session
-      const signInResponse = await completeGoogleSignIn(response);
-      const data = await signInResponse.json();
-    };
-
-    // Clean up the function when the component is unmounted
-    return () => {
-      delete window.handleCredentialResponse;
-    };
-  }, []);
 
   const navLinks = [
     { to: '/town-meeting', label: 'Town Meeting' },
@@ -68,15 +52,6 @@ export default function MainContent() {
             textDecoration: 'none',
           }}
         >
-          {/*<IconButton
-                  size="large"
-                  edge="start"
-                  color="inherit"
-                  aria-label="menu"
-                  sx={{ mr: 2 }}
-                >
-                  <MenuIcon />
-                </IconButton>*/}
           <Typography variant="h2" component="div" sx={{ flexGrow: 1 }}>
             <Link to="/" style={{ color: '#202124', textDecoration: 'none' }}>
               Open Town Meeting
@@ -134,15 +109,20 @@ export default function MainContent() {
                 </MuiLink>
               </Box>
             ))}
-            <Button
-              aria-controls="simple-menu"
-              aria-haspopup="true"
-              onClick={handleClick}
-            >
-              Menu
-            </Button>
+            <Tooltip title="Account">
+              <IconButton
+                onClick={handleClick}
+                size="small"
+                // TODO: aria controls
+              >
+                <Avatar>
+                  {!user && <PersonIcon />}
+                  {user && user.displayName[0]}
+                </Avatar>
+              </IconButton>
+            </Tooltip>
             <Menu
-              id="simple-menu"
+              id="account-menu"
               anchorEl={anchorEl}
               keepMounted
               open={Boolean(anchorEl)}

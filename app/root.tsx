@@ -1,28 +1,16 @@
-import type { LinksFunction } from '@remix-run/cloudflare';
-import { cssBundleHref } from '@remix-run/css-bundle';
 import {
-  Link,
   Links,
   LiveReload,
   Meta,
-  NavLink,
-  Outlet,
   Scripts,
   ScrollRestoration,
 } from '@remix-run/react';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import MuiLink from '@mui/material/Link';
-import CssBaseline from '@mui/material/CssBaseline';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import { Box, GlobalStyles } from '@mui/system';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Button from '@mui/material/Button';
-import { Menu as MenuIcon } from '@mui/icons-material';
-import Container from '@mui/material/Container';
-import { AuthProvider } from './auth';
+import { LinksFunction } from '@remix-run/cloudflare';
+import { cssBundleHref } from '@remix-run/css-bundle';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { CssBaseline, GlobalStyles } from '@mui/material';
+import { AuthProvider } from '~/contexts/AuthProvider';
+import MainContent from '~/components/MainContent';
 
 const FONTS = {
   INTER: {
@@ -163,11 +151,55 @@ const lightTheme = createTheme({
 });
 
 export default function App() {
-  const navLinks = [
-    { to: '/town-meeting', label: 'Town Meeting' },
-    { to: '/warrant-articles', label: 'Warrant Articles' },
-    { to: '/town-meeting-members', label: 'Town Meeting Members' },
-  ];
+  /*useEffect(() => {
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+      apiKey: 'AIzaSyB_advhmPGSFw5j1YBsprIVt_oHa4e7Nrc',
+      authDomain: 'open-town-meeting.firebaseapp.com',
+      databaseURL: 'https://open-town-meeting-default-rtdb.firebaseio.com',
+      projectId: 'open-town-meeting',
+      storageBucket: 'open-town-meeting.appspot.com',
+      messagingSenderId: '72845727988',
+      appId: '1:72845727988:web:49882b0f0a178dcd15a6a1',
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+
+    // Initialize Firebase Authentication and get a reference to the service
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log('user is signed in', user);
+        // https://firebase.google.com/docs/reference/js/auth.user
+      } else {
+        console.log('user is signed out');
+      }
+    });
+
+    // Initialize Realtime Database and get a reference to the service
+    const db = getDatabase(app);
+
+    const dataRef = ref(db, 'data');
+
+    const listener = (snapshot) => {
+      const data = snapshot.val();
+      console.log(data);
+    };
+
+    onValue(dataRef, listener);
+
+    return () => {
+      // Cleanup
+      off(dataRef, listener);
+    };
+  }, []);*/
+
+  // const GOOGLE_CLIENT_ID =
+  //  '72845727988-iquthaap2ui57ttr9rfefuvu5imlank3.apps.googleusercontent.com';
+
   return (
     <>
       <html lang="en">
@@ -208,136 +240,7 @@ export default function App() {
                   }
                 `}
               />
-              <Box display="flex" flexDirection="column" minHeight="100vh">
-                <AppBar
-                  position="static"
-                  elevation={0}
-                  sx={{ backgroundColor: '#ffffff' }}
-                >
-                  <a href="#main-content" className="skip-link">
-                    Skip to main content
-                  </a>
-                  <Toolbar
-                    sx={{
-                      backgroundColor: '#ffffff',
-                      color: '#202124',
-                      textDecoration: 'none',
-                    }}
-                  >
-                    {/*<IconButton
-                          size="large"
-                          edge="start"
-                          color="inherit"
-                          aria-label="menu"
-                          sx={{ mr: 2 }}
-                        >
-                          <MenuIcon />
-                        </IconButton>*/}
-                    <Typography
-                      variant="h2"
-                      component="div"
-                      sx={{ flexGrow: 1 }}
-                    >
-                      <Link
-                        to="/"
-                        style={{ color: '#202124', textDecoration: 'none' }}
-                      >
-                        Open Town Meeting
-                      </Link>
-                    </Typography>
-                    <Stack
-                      component="ul"
-                      direction="row"
-                      spacing={0}
-                      alignItems="center"
-                      sx={{
-                        display: 'flex',
-                        flexWrap: 'wrap',
-                        margin: '0 -1rem',
-                        padding: 0,
-                      }}
-                    >
-                      {navLinks.map((link) => (
-                        <Box
-                          component="li"
-                          key={link.to}
-                          sx={{
-                            display: 'inline-block',
-                          }}
-                        >
-                          <MuiLink
-                            component={NavLink}
-                            to={link.to}
-                            underline="none"
-                            display="inline-block"
-                            sx={{
-                              position: 'relative',
-                              padding: '1rem',
-
-                              '&.active::after': {
-                                backgroundColor: '#2672de',
-                                borderRadius: '0',
-                                content: '""',
-                                display: 'block',
-                                position: 'absolute',
-                                height: '.25rem',
-                                left: '1rem',
-                                right: '1rem',
-                                bottom: '0',
-                              },
-                            }}
-                          >
-                            <Typography
-                              variant="button"
-                              component="div"
-                              sx={{ whiteSpace: 'nowrap' }}
-                            >
-                              {link.label}
-                            </Typography>
-                          </MuiLink>
-                        </Box>
-                      ))}
-                    </Stack>
-                  </Toolbar>
-                </AppBar>
-                <Box
-                  component="main"
-                  id="main-content"
-                  flexGrow={1}
-                  sx={{ padding: '1.5rem 0 3rem' }}
-                >
-                  <Container>
-                    <Outlet />
-                  </Container>
-                </Box>
-                <Box
-                  component="footer"
-                  sx={{
-                    background: '#2d2e2f',
-                    color: '#ffffff',
-                    fontSize: '1rem',
-                  }}
-                >
-                  <Container>
-                    <Box
-                      component="ul"
-                      sx={{
-                        listStyle: 'none',
-                        '& a': {
-                          color: '#ffffff',
-                        },
-                      }}
-                    >
-                      <Box component="li">
-                        <Link to="/accessibility">Accessibility</Link>
-                      </Box>
-                      <Box component="li">
-                        <Link to="/privacy">Privacy Policy</Link>
-                      </Box>
-                    </Box>
-                  </Container>
-                </Box>
-              </Box>
+              <MainContent />
             </ThemeProvider>
           </AuthProvider>
           <ScrollRestoration />

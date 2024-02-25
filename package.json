@@ -50,7 +50,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "prettier": "^3.2.5",
     "typescript": "^5.1.0",
-    "wrangler": "^3.24.0"
+    "wrangler": "^3.28.4"
   },
   "engines": {
     "node": ">=18.0.0"

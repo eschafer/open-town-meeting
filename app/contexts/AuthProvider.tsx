@@ -1,10 +1,10 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import {
-  getAuth,
+  getIdToken,
+  GoogleAuthProvider,
   onAuthStateChanged,
   signInWithPopup,
   signOut as firebaseSignOut,
-  GoogleAuthProvider,
 } from 'firebase/auth';
 import { auth } from '~/utils/firebase';
 
@@ -14,12 +14,31 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, setUser);
+    const unsubscribe = onAuthStateChanged(auth, async (newUser) => {
+      setUser(newUser);
+
+      if (newUser) {
+        const token = await getIdToken(newUser);
+
+        await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ token }),
+        });
+      } else {
+        await fetch('/api/auth/logout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
+      }
+    });
 
     // return a cleanup function to unsubscribe from the listener
-    return () => {
-      unsubscribe();
-    };
+    return unsubscribe;
   }, [auth]);
 
   const signIn = async () => {

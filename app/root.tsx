@@ -151,34 +151,7 @@ const lightTheme = createTheme({
 });
 
 export default function App() {
-  /*useEffect(() => {
-    // Your web app's Firebase configuration
-    const firebaseConfig = {
-      apiKey: 'AIzaSyB_advhmPGSFw5j1YBsprIVt_oHa4e7Nrc',
-      authDomain: 'open-town-meeting.firebaseapp.com',
-      databaseURL: 'https://open-town-meeting-default-rtdb.firebaseio.com',
-      projectId: 'open-town-meeting',
-      storageBucket: 'open-town-meeting.appspot.com',
-      messagingSenderId: '72845727988',
-      appId: '1:72845727988:web:49882b0f0a178dcd15a6a1',
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-
-    // Initialize Firebase Authentication and get a reference to the service
-    const auth = getAuth(app);
-    const provider = new GoogleAuthProvider();
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        console.log('user is signed in', user);
-        // https://firebase.google.com/docs/reference/js/auth.user
-      } else {
-        console.log('user is signed out');
-      }
-    });
-
+  /*
     // Initialize Realtime Database and get a reference to the service
     const db = getDatabase(app);
 
@@ -195,10 +168,7 @@ export default function App() {
       // Cleanup
       off(dataRef, listener);
     };
-  }, []);*/
-
-  // const GOOGLE_CLIENT_ID =
-  //  '72845727988-iquthaap2ui57ttr9rfefuvu5imlank3.apps.googleusercontent.com';
+  */
 
   return (
     <>

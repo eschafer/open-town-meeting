@@ -1,17 +1,21 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import {
+  getAuth,
   getIdToken,
   GoogleAuthProvider,
   onAuthStateChanged,
   signInWithPopup,
   signOut as firebaseSignOut,
 } from 'firebase/auth';
-import { auth } from '~/utils/firebase';
+import { initializeApp } from 'firebase/app';
 
 const AuthContext = createContext(null);
 
-export function AuthProvider({ children }) {
+export function AuthProvider({ children, firebaseConfig }) {
   const [user, setUser] = useState(null);
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (newUser) => {

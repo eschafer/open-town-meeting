@@ -19,6 +19,12 @@ extend type Query {
   allElectionResults(filter: ElectionResultInput): [ElectionResult!]!
   electionResultById(id: ID!): ElectionResult
 }
+
+extend type Mutation {
+  createElectionResult(input: ElectionResultInput!): ElectionResult
+  updateElectionResult(id: ID!, input: ElectionResultInput!): ElectionResult
+  deleteElectionResult(id: ID!): ElectionResult
+}
 `;
 
 export default typeDefs;

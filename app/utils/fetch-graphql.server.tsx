@@ -9,26 +9,20 @@ export default async function fetchGraphQL({
   query: string;
   request: Request;
 }) {
-  console.log('fetchGraphQL');
   const url = new URL(request.url);
   const cookies = request.headers.get('Cookie');
-  const idToken = cookies
+  const userToken = cookies
     ?.split(';')
-    .find((cookie) => cookie.trim().startsWith('idToken='))
+    .find((cookie) => cookie.trim().startsWith('userToken='))
     ?.split('=')[1];
 
-  console.log('1');
   const response = await fetch(`${url.origin}/graphql`, {
     method: 'post',
     headers: {
       'Content-Type': 'application/json',
     },
-    // credentials: 'include',
-    body: JSON.stringify({ query, idToken }),
+    body: JSON.stringify({ query, userToken }),
   });
-  console.log('2 response', response);
-
-  console.log('fetchGraphQL response', response);
 
   if (!response.ok) {
     throw new Error(`Error fetching data: ${response.statusText}`);

@@ -24,6 +24,12 @@ type Query {
   allPrecincts(filter: PrecinctInput): [Precinct!]!
   precinctById(id: ID!): Precinct
 }
+
+type Mutation {
+  createPrecinct(input: PrecinctInput!): Precinct
+  updatePrecinct(id: ID!, input: PrecinctInput!): Precinct
+  deletePrecinct(id: ID!): Precinct
+}
 `;
 
 export default typeDefs;

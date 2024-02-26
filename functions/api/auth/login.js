@@ -5,7 +5,7 @@ export async function onRequestPost({ request }) {
     const { token } = await request.json();
 
     if (!token) {
-      throw new Error('Missing token');
+      throw new Error('Missing user token');
     }
 
     const response = await validateFirebaseIdToken(token);
@@ -19,7 +19,7 @@ export async function onRequestPost({ request }) {
   } catch (error) {
     let status = 500;
 
-    if (error.message === 'Missing token') {
+    if (error.message === 'Missing user token') {
       status = 401;
     }
 

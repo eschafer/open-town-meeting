@@ -23,6 +23,12 @@ extend type Query {
   allTownMeetingVoteResults(filter: TownMeetingVoteResultInput): [TownMeetingVoteResult!]!
   townMeetingVoteResultById(id: ID!): TownMeetingVoteResult
 }
+
+extend type Mutation {
+  createTownMeetingVoteResult(input: TownMeetingVoteResultInput!): TownMeetingVoteResult
+  updateTownMeetingVoteResult(id: ID!, input: TownMeetingVoteResultInput!): TownMeetingVoteResult
+  deleteTownMeetingVoteResult(id: ID!): TownMeetingVoteResult
+}
 `;
 
 export default typeDefs;

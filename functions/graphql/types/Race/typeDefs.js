@@ -23,6 +23,12 @@ extend type Query {
   allRaces(filter: RaceInput): [Race!]!
   raceById(id: ID!): Race
 }
+
+extend type Mutation {
+  createRace(input: RaceInput!): Race
+  updateRace(id: ID!, input: RaceInput): Race
+  deleteRace(id: ID!): Race
+}
 `;
 
 export default typeDefs;

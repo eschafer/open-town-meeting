@@ -36,6 +36,12 @@ extend type Query {
   allPeople(filter: PersonInput): [Person!]!
   personById(id: ID!): Person
 }
+
+extend type Mutation {
+  createPerson(input: PersonInput!): Person
+  updatePerson(id: ID!, input: PersonInput!): Person
+  deletePerson(id: ID!): Person
+}
 `;
 
 export default typeDefs;

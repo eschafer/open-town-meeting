@@ -31,6 +31,12 @@ extend type Query {
   allMotions(filter: MotionInput): [Motion!]!
   motionById(id: ID!): Motion
 }
+
+extend type Mutation {
+  createMotion(input: MotionInput!): Motion
+  updateMotion(id: ID!, input: MotionInput!): Motion
+  deleteMotion(id: ID!): Motion
+}
 `;
 
 export default typeDefs;

@@ -19,6 +19,12 @@ extend type Query {
   allDepartments(filter: DepartmentInput): [Department!]!
   departmentById(id: ID!): Department
 }
+
+extend type Mutation {
+  createDepartment(input: DepartmentInput!): Department
+  updateDepartment(id: ID!, input: DepartmentInput!): Department
+  deleteDepartment(id: ID!): Department
+}
 `;
 
 export default typeDefs;

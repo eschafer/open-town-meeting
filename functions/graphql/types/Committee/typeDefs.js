@@ -24,6 +24,12 @@ extend type Query {
   allCommittees(filter: CommitteeInput): [Committee!]!
   committeeById(id: ID!): Committee
 }
+
+extend type Mutation {
+  createCommittee(input: CommitteeInput!): Committee
+  updateCommittee(id: ID!, input: CommitteeInput!): Committee
+  deleteCommittee(id: ID!): Committee
+}
 `;
 
 export default typeDefs;

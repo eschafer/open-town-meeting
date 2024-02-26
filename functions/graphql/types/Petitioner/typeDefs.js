@@ -23,6 +23,12 @@ extend type Query {
   allPetitioners(filter: PetitionerInput): [Petitioner!]!
   petitionerById(id: ID!): Petitioner
 }
+
+extend type Mutation {
+  createPetitioner(input: PetitionerInput!): Petitioner
+  updatePetitioner(id: ID!, input: PetitionerInput!): Petitioner
+  deletePetitioner(id: ID!): Petitioner
+}
 `;
 
 export default typeDefs;

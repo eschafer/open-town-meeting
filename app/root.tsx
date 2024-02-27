@@ -182,7 +182,7 @@ export const loader: LoaderFunction = async (args: LoaderFunctionArgs) => {
 };
 
 export default function App() {
-  const firebaseConfig = useLoaderData<typeof loader>();
+  const firebaseConfig: FirebaseOptions = useLoaderData();
 
   return (
     <>

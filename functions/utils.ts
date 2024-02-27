@@ -93,15 +93,11 @@ function createNestedResolver(
   { singularName, tableName, idName }: ResolverConfig,
   parentSingularName: string,
 ) {
-  console.log('createNestedResolver');
   const nestedResolver: { [key: string]: { [key: string]: ResolverFunction } } =
     {
       [parentSingularName.charAt(0).toUpperCase() +
       parentSingularName.slice(1)]: {
         [singularName]: async (root, args, context, info) => {
-          console.log('ROOT', root);
-          console.log('ARGS', args);
-          console.log('CONTEXT', context);
           // If the type of the nested group is the same as an ancestor type,
           // return null to prevent circular queries.
           let currentPath: Path | undefined = info.path;

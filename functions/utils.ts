@@ -19,13 +19,19 @@ type ResolverContext = {
 type ResolverFunction = (
   root: Record<string, unknown>,
   args: {
-    filter?: Record<string, unknown>;
-    id?: number;
-    input?: Record<string, unknown>;
+    filter: Record<string, unknown>;
+    id: number;
+    input: Record<string, unknown>;
   },
   context: ResolverContext,
   info: GraphQLResolveInfo,
 ) => Promise<unknown>;
+
+type Resolvers = {
+  [typeName: string]: {
+    [fieldName: string]: ResolverFunction;
+  };
+};
 
 function toCamelCase(str: string): string {
   return str.replace(/([-_][a-z])/g, (group) =>
@@ -212,23 +218,23 @@ export function createResolvers({
   nested,
   nestedGroup,
 }: ResolverConfig): Record<string, Record<string, unknown>> {
-  let nestedResolvers: ResolverConfig[] = [];
+  let nestedResolvers: Resolvers[] = [];
   if (nested && nested.length > 0) {
     nestedResolvers = nested.map((type) => {
       return createNestedResolver(type, singularName);
     });
   }
 
-  const nestedGroupResolvers =
-    nestedGroup?.length > 0
-      ? nestedGroup.map((type) => {
-          return createNestedGroupResolver(type, singularName, idName);
-        })
-      : [];
+  const nestedGroupResolvers: Resolvers[] = [];
+  if (nestedGroup && nestedGroup.length > 0) {
+    nestedGroup.map((type) => {
+      return createNestedGroupResolver(type, singularName, idName);
+    });
+  }
 
-  let otherResolvers = {};
+  let otherResolvers: Resolvers = {};
   if (nestedResolvers.length > 0) {
-    otherResolvers = merge(...nestedResolvers);
+    otherResolvers = merge({}, ...nestedResolvers);
   }
   if (nestedGroupResolvers.length > 0) {
     otherResolvers = merge(otherResolvers, ...nestedGroupResolvers);
@@ -243,12 +249,12 @@ export function createResolvers({
       context,
     ) => {
       let query = `SELECT * from ${tableName}`;
-      let values = [];
+      const values: unknown[] = [];
 
       if (args.filter) {
         const filter = convertKeysToSnakeCase(args.filter);
         const filters = Object.entries(filter);
-        const conditions = filters.map(([key, value], index) => {
+        const conditions = filters.map(([key, value]) => {
           values.push(value);
           return `${key} = ?`;
         });
@@ -295,7 +301,7 @@ export function createResolvers({
     [key: string]: ResolverFunction;
   } = {
     [`create${singularName.charAt(0).toUpperCase() + singularName.slice(1)}`]:
-      async (root, args, context): Promise<Record<string, unknown> | null> => {
+      async (root, args, context) => {
         const timestamp = getUnixTimestamp();
 
         const input = Object.assign({}, convertKeysToSnakeCase(args.input), {
@@ -325,7 +331,7 @@ export function createResolvers({
         };
       },
     [`update${singularName.charAt(0).toUpperCase() + singularName.slice(1)}`]:
-      async (root, args, context): Promise<Record<string, unknown> | null> => {
+      async (root, args, context) => {
         const timestamp = getUnixTimestamp();
 
         if (!args.id) {
@@ -357,7 +363,7 @@ export function createResolvers({
         return convertKeysToCamelCase(updatedData.results[0]);
       },
     /*[`delete${singularName.charAt(0).toUpperCase() + singularName.slice(1)}`]:
-      async (root, args, context): Promise<Record<string, unknown> | null> => {
+      async (root, args, context) => {
         if (!args.id) {
           throw new Error(`No ${tableName} found with id ${args.id}`);
         }

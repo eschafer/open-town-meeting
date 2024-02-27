@@ -9,11 +9,7 @@ import Markdown from 'react-markdown';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { fetchGraphQL } from '~/utils';
 
-interface WarrantArticle {
-  articleNumber: string;
-  articleTitle: string;
-  articleDescription: string;
-}
+import type { WarrantArticle } from '~/types';
 
 export function ErrorBoundary() {
   const error = useRouteError();

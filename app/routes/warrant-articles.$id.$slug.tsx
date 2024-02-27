@@ -9,6 +9,12 @@ import Markdown from 'react-markdown';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { fetchGraphQL } from '~/utils';
 
+interface WarrantArticle {
+  articleNumber: string;
+  articleTitle: string;
+  articleDescription: string;
+}
+
 export function ErrorBoundary() {
   const error = useRouteError();
 
@@ -46,10 +52,11 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
     }
   `;
 
-  const data = await fetchGraphQL({ query, request });
+  const data = (await fetchGraphQL({ query, request })) as {
+    allWarrantArticles: WarrantArticle[];
+  };
 
-  const { articleNumber, articleTitle, articleDescription } =
-    data.allWarrantArticles[0];
+  const { articleNumber, articleTitle } = data.allWarrantArticles[0];
 
   return json({
     articleNumber,
@@ -61,7 +68,7 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 }
 
 export default function WarrantArticle() {
-  const data = useLoaderData();
+  const data = useLoaderData() as WarrantArticle;
 
   return (
     <>

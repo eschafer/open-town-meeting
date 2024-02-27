@@ -1,35 +1,35 @@
-const typeDefs = `
-type Committee {
-  committeeId: ID!
-  committeeName: String!
-  committeeDescription: String
-  committeeUrl: String
+const typeDefs = /* GraphQL */ `
+  type Committee {
+    committeeId: ID!
+    committeeName: String!
+    committeeDescription: String
+    committeeUrl: String
 
-  committeeMembers: [CommitteeMember]
+    committeeMembers: [CommitteeMember]
 
-  createdAt: Int!
-  updatedAt: Int!
-}
+    createdAt: Int!
+    updatedAt: Int!
+  }
 
-input CommitteeInput {
-  committeeId: ID
-  committeeName: String
-  committeeDescription: String
-  committeeUrl: String
-  createdAt: Int
-  updatedAt: Int
-}
+  input CommitteeInput {
+    committeeId: ID
+    committeeName: String
+    committeeDescription: String
+    committeeUrl: String
+    createdAt: Int
+    updatedAt: Int
+  }
 
-extend type Query {
-  allCommittees(filter: CommitteeInput): [Committee!]!
-  committeeById(id: ID!): Committee
-}
+  extend type Query {
+    allCommittees(filter: CommitteeInput): [Committee!]!
+    committeeById(id: ID!): Committee
+  }
 
-extend type Mutation {
-  createCommittee(input: CommitteeInput!): Committee
-  updateCommittee(id: ID!, input: CommitteeInput!): Committee
-  deleteCommittee(id: ID!): Committee
-}
+  extend type Mutation {
+    createCommittee(input: CommitteeInput!): Committee
+    updateCommittee(id: ID!, input: CommitteeInput!): Committee
+    deleteCommittee(id: ID!): Committee
+  }
 `;
 
 export default typeDefs;

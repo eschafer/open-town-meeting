@@ -1,8 +1,14 @@
 import validateFirebaseIdToken from '../../utils/validate-firebase-id-token';
 
-export async function onRequestPost({ request }) {
+import type { FetchEvent } from '@cloudflare/workers-types';
+
+type LoginRequestBody = {
+  token: string;
+};
+
+export async function onRequestPost({ request }: FetchEvent) {
   try {
-    const { token } = await request.json();
+    const { token }: LoginRequestBody = await request.json();
 
     if (!token) {
       throw new Error('Missing user token');
@@ -19,11 +25,20 @@ export async function onRequestPost({ request }) {
   } catch (error) {
     let status = 500;
 
-    if (error.message === 'Missing user token') {
-      status = 401;
+    if (error instanceof Error) {
+      if (error.message === 'Missing user token') {
+        status = 401;
+      }
+
+      return new Response(JSON.stringify({ error: error.message }), {
+        status,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
     }
 
-    return new Response(JSON.stringify({ error: error.message }), {
+    return new Response(JSON.stringify({ error: 'Internal Server Error' }), {
       status,
       headers: {
         'Content-Type': 'application/json',

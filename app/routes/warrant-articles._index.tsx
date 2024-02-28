@@ -6,6 +6,7 @@ import {
   Link,
 } from '@remix-run/react';
 
+import { useState } from 'react';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
@@ -19,8 +20,6 @@ import {
   SubdirectoryArrowRight,
 } from '@mui/icons-material';
 import Breadcrumbs from '../components/Breadcrumbs';
-
-import type { WarrantArticle } from '~/types';
 
 export function ErrorBoundary() {
   const error = useRouteError();
@@ -69,15 +68,36 @@ export const loader = async ({ request }: { request: Request }) => {
     }
   `;
 
-  const data = (await fetchGraphQL({ query, request })) as {
-    allWarrantArticles: WarrantArticle[];
-  };
+  const data = await fetchGraphQL({ query, request });
 
-  return json(data.allWarrantArticles);
+  const rows = data.allWarrantArticles.map((article) => {
+    return {
+      sessionStartDate: article.townMeetingSession.startDate,
+      sessionName: article.townMeetingSession.sessionName,
+      articleId: article.warrantArticleId,
+      articleNumber: article.articleNumber,
+      articleTitle: article.articleTitle,
+      articleDescription: article.articleDescription,
+    };
+  });
+
+  return json(rows);
 };
 
 export default function WarrantArticles() {
-  const rows: WarrantArticle[] = useLoaderData();
+  const rows = useLoaderData();
+
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(50);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
 
   return (
     <>
@@ -115,7 +135,7 @@ export default function WarrantArticles() {
                   <Stack direction="column" spacing={1}>
                     <Typography variant="h5">
                       <Link
-                        to={`${item.warrantArticleId}/WA${item.articleNumber}-${item.articleTitle}`}
+                        to={`${item.articleId}/WA${item.articleNumber}-${item.articleTitle}`}
                       >
                         {item.articleTitle}
                       </Link>
@@ -125,9 +145,7 @@ export default function WarrantArticles() {
                     </Typography>
                     <Stack direction="row" spacing={1}>
                       <Chip
-                        label={new Date(
-                          item.townMeetingSession.startDate,
-                        ).getFullYear()}
+                        label={new Date(item.sessionStartDate).getFullYear()}
                         icon={<CalendarMonth style={{ color: '#5c4809' }} />}
                         size="small"
                         sx={{
@@ -146,9 +164,9 @@ export default function WarrantArticles() {
                         }}
                       />
                       {/* this is for stm within tm */}
-                      {item.townMeetingSession.sessionName !== 'ATM' && (
+                      {item.sessionName !== 'ATM' && (
                         <Chip
-                          label={item.townMeetingSession.sessionName}
+                          label={item.sessionName}
                           icon={
                             <SubdirectoryArrowRight
                               style={{ color: '#ffffff' }}

@@ -5,22 +5,9 @@ import resolvers from './graphql/resolvers';
 import validateFirebaseIdToken from './utils/validate-firebase-id-token';
 import cookie from 'cookie';
 
-import type { FetchEvent } from '@cloudflare/workers-types';
-
-interface CustomFetchEvent extends FetchEvent {
-  env: {
-    DB: string;
-  };
-}
-
-interface GraphQLRequestBody {
-  query: string;
-  variables: Record<string, unknown>;
-}
-
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 
-export async function onRequest({ request, env }: CustomFetchEvent) {
+export async function onRequest({ request, env }) {
   const url = new URL(request.url);
   const contentType = request.headers.get('content-type');
 
@@ -28,17 +15,9 @@ export async function onRequest({ request, env }: CustomFetchEvent) {
     return new Response('Method not allowed', { status: 405 });
   }
 
-  if (contentType === null) {
-    return new Response('Content-Type header is required', { status: 400 });
-  }
-
   if (url.pathname === '/graphql' && contentType.includes('application/json')) {
-    const body: GraphQLRequestBody = await request.json();
+    const body = await request.json();
     const { query, variables } = body;
-
-    if (!query) {
-      return new Response('Query is required', { status: 400 });
-    }
 
     const operationType = query.trim().startsWith('mutation')
       ? 'mutation'

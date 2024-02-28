@@ -6,15 +6,12 @@ import {
   ScrollRestoration,
   useLoaderData,
 } from '@remix-run/react';
-import { json, LinksFunction, LoaderFunction } from '@remix-run/cloudflare';
+import { json, LinksFunction } from '@remix-run/cloudflare';
 import { cssBundleHref } from '@remix-run/css-bundle';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { CssBaseline, GlobalStyles } from '@mui/material';
 import { AuthProvider } from '~/contexts/AuthProvider';
 import MainContent from '~/components/MainContent';
-
-import type { LoaderFunctionArgs } from '@remix-run/cloudflare';
-import type { FirebaseOptions } from 'firebase/app';
 
 const FONTS = {
   INTER: {
@@ -154,21 +151,9 @@ const lightTheme = createTheme({
   },
 });
 
-interface Env {
-  FIREBASE_API_KEY: string;
-  FIREBASE_AUTH_DOMAIN: string;
-  FIREBASE_DATABASE_URL: string;
-  FIREBASE_PROJECT_ID: string;
-  FIREBASE_STORAGE_BUCKET: string;
-  FIREBASE_MESSAGING_SENDER_ID: string;
-  FIREBASE_APP_ID: string;
-}
-
-export const loader: LoaderFunction = async (args: LoaderFunctionArgs) => {
-  const context = args.context as typeof args.context & { env: Env };
-
+export async function loader({ context }) {
   // Google says it's okay to expose the Firebase config in the client
-  const firebaseConfig: FirebaseOptions = {
+  const firebaseConfig = {
     apiKey: context.env.FIREBASE_API_KEY,
     authDomain: context.env.FIREBASE_AUTH_DOMAIN,
     databaseURL: context.env.FIREBASE_DATABASE_URL,
@@ -178,11 +163,30 @@ export const loader: LoaderFunction = async (args: LoaderFunctionArgs) => {
     appId: context.env.FIREBASE_APP_ID,
   };
 
-  return json(firebaseConfig);
-};
+  return json({ firebaseConfig });
+}
 
 export default function App() {
-  const firebaseConfig: FirebaseOptions = useLoaderData();
+  const { firebaseConfig } = useLoaderData();
+
+  /*
+    // Initialize Realtime Database and get a reference to the service
+    const db = getDatabase(app);
+
+    const dataRef = ref(db, 'data');
+
+    const listener = (snapshot) => {
+      const data = snapshot.val();
+      console.log(data);
+    };
+
+    onValue(dataRef, listener);
+
+    return () => {
+      // Cleanup
+      off(dataRef, listener);
+    };
+  */
 
   return (
     <>

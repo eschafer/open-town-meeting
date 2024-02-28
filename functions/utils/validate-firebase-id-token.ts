@@ -5,39 +5,18 @@ const PUBLIC_KEYS_URL =
 const ISSUER = 'https://securetoken.google.com/open-town-meeting';
 const AUDIENCE = 'open-town-meeting';
 
-type PublicKeyRecord = Record<string, string>;
-
-interface JWTHeader {
-  kid: string;
-}
-
 // Fetch the public keys from Google's public key endpoint
-async function fetchPublicKeys(): Promise<PublicKeyRecord> {
-  try {
-    const publicKeysResponse = await fetch(PUBLIC_KEYS_URL);
+async function fetchPublicKeys(): Promise<Record<string, string>> {
+  const publicKeysResponse = await fetch(PUBLIC_KEYS_URL);
+  const publicKeys: Record<string, string> = await publicKeysResponse.json();
 
-    if (!publicKeysResponse.ok) {
-      throw new Error(
-        `Failed to fetch public keys: ${publicKeysResponse.statusText}`,
-      );
-    }
-
-    const publicKeys: PublicKeyRecord = await publicKeysResponse.json();
-
-    return publicKeys;
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      throw error; // Re-throw the error to be handled by the caller
-    } else {
-      throw new Error('Failed to fetch public keys: unknown error');
-    }
-  }
+  return publicKeys;
 }
 
 // Validate a Firebase ID token
 export default async function validateFirebaseIdToken(
   token: string,
-): Promise<JWTPayload | Error> {
+): Promise<JWTPayload> {
   if (typeof token !== 'string') {
     throw new Error('Invalid token: token must be a string');
   }
@@ -47,7 +26,7 @@ export default async function validateFirebaseIdToken(
     const publicKeys = await fetchPublicKeys();
 
     // Decode the token to get the key ID (kid)
-    const header: JWTHeader = JSON.parse(atob(token.split('.')[0]));
+    const header: { kid: string } = JSON.parse(atob(token.split('.')[0]));
 
     // Use the kid to select the correct public key
     const publicKeyPem: string = publicKeys[header.kid];
@@ -65,11 +44,7 @@ export default async function validateFirebaseIdToken(
     });
     const payload: JWTPayload = response.payload;
     return payload;
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      throw error;
-    } else {
-      throw new Error('Invalid token: unknown error');
-    }
+  } catch (error) {
+    throw new Error(`Invalid token: ${error.message}`);
   }
 }

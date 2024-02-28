@@ -1,4 +1,4 @@
-import { MouseEvent, useState } from 'react';
+import { useState } from 'react';
 import { Link, NavLink, Outlet } from '@remix-run/react';
 import {
   AppBar,
@@ -17,23 +17,11 @@ import {
 import { Person as PersonIcon } from '@mui/icons-material';
 import { useAuth } from '~/contexts/AuthProvider';
 
-import type { User } from 'firebase/auth';
-
 export default function MainContent() {
-  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const { user, signIn, signOut } = useAuth();
 
-  const auth = useAuth();
-  if (!auth) {
-    return null;
-  }
-
-  const {
-    user,
-    signIn,
-    signOut,
-  }: { user: User | null; signIn: () => void; signOut: () => void } = auth;
-
-  const handleClick = (event: MouseEvent<HTMLElement>) => {
+  const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
@@ -129,7 +117,7 @@ export default function MainContent() {
               >
                 <Avatar>
                   {!user && <PersonIcon />}
-                  {user?.displayName?.charAt(0)}
+                  {user && user.displayName[0]}
                 </Avatar>
               </IconButton>
             </Tooltip>

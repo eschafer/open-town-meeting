@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 import {
   getAuth,
   getIdToken,
@@ -7,12 +13,31 @@ import {
   signInWithPopup,
   signOut as firebaseSignOut,
 } from 'firebase/auth';
-import { initializeApp } from 'firebase/app';
+import { FirebaseError, initializeApp } from 'firebase/app';
 
-const AuthContext = createContext(null);
+import type { FirebaseOptions } from 'firebase/app';
+import type { User } from 'firebase/auth';
 
-export function AuthProvider({ children, firebaseConfig }) {
-  const [user, setUser] = useState(null);
+interface AuthContextType {
+  user: User | null;
+  signIn: () => Promise<void>; // Replace '() => void' with the actual type of 'signIn'
+  signOut: () => Promise<void>; // Replace '() => void' with the actual type of 'signOut'
+}
+
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  signIn: async () => {},
+  signOut: async () => {},
+});
+
+export function AuthProvider({
+  children,
+  firebaseConfig,
+}: {
+  children: ReactNode;
+  firebaseConfig: FirebaseOptions;
+}) {
+  const [user, setUser] = useState<User | null>(null);
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
@@ -49,25 +74,35 @@ export function AuthProvider({ children, firebaseConfig }) {
     const provider = new GoogleAuthProvider();
     try {
       await signInWithPopup(auth, provider);
-    } catch (error) {
-      console.log(error.code, error.message);
+    } catch (error: unknown) {
+      if (error instanceof FirebaseError) {
+        console.error(error.code, error.message);
+      } else {
+        console.error(error);
+      }
     }
   };
 
   const signOut = async () => {
     try {
       await firebaseSignOut(auth);
-    } catch (error) {
-      console.log(error.code, error.message);
+    } catch (error: unknown) {
+      if (error instanceof FirebaseError) {
+        console.log(error.code, error.message);
+      } else {
+        console.error(error);
+      }
     }
   };
 
-  const value = { user, signIn, signOut };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user, signIn, signOut }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 // create a hook to use the auth context
-export function useAuth() {
+export function useAuth(): AuthContextType | null {
   return useContext(AuthContext);
 }

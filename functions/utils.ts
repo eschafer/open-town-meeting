@@ -221,9 +221,9 @@ export function createResolvers({
     });
   }
 
-  const nestedGroupResolvers: Resolvers[] = [];
+  let nestedGroupResolvers: Array<Record<string, Record<string, unknown>>> = [];
   if (nestedGroup && nestedGroup.length > 0) {
-    nestedGroup.map((type) => {
+    nestedGroupResolvers = nestedGroup.map((type) => {
       return createNestedGroupResolver(type, singularName, idName);
     });
   }

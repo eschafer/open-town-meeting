@@ -12,7 +12,7 @@ const typeDefs = /* GraphQL */ `
     townMeetingVoteId: StringFilter
     personId: StringFilter
     motionId: StringFilter
-    voteTypeID: StringFilterNullable
+    voteTypeId: StringFilterNullable
     createdAt: NumberFilter
     updatedAt: NumberFilter
   }

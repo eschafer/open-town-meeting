@@ -11,7 +11,7 @@ const typeDefs = /* GraphQL */ `
 
   input TownMeetingVoteResultInput {
     townMeetingVoteResultId: StringFilter
-    motionId: StringFilter
+    motion: MotionInput
     threshold: StringFilterNullable
     voiceVotePassed: BooleanFilterNullable
     yesVotes: NumberFilterNullable

@@ -14,7 +14,7 @@ const typeDefs = /* GraphQL */ `
   input OfficeInput {
     officeId: StringFilter
     officeName: StringFilter
-    precinctId: NumberFilterNullable
+    precinctId: StringFilterNullable
     createdAt: NumberFilter
     updatedAt: NumberFilter
   }

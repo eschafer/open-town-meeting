@@ -167,9 +167,7 @@ function createNestedResolvers(config: ResolverConfig): Resolvers[] {
   });
 }
 
-function createNestedGroupResolvers(
-  config: ResolverConfig,
-): Array<Record<string, Record<string, unknown>>> {
+function createNestedGroupResolvers(config: ResolverConfig): Resolvers[] {
   const { nestedGroup } = config;
   if (!nestedGroup || nestedGroup.length === 0) {
     return [];
@@ -190,8 +188,7 @@ export function createResolvers(
   const nestedResolvers: Resolvers[] = createNestedResolvers(config);
 
   // Create resolvers for nested groups
-  const nestedGroupResolvers: Array<Record<string, Record<string, unknown>>> =
-    createNestedGroupResolvers(config);
+  const nestedGroupResolvers: Resolvers[] = createNestedGroupResolvers(config);
 
   // Merge all resolvers
   const otherResolvers: Resolvers = merge(
@@ -201,16 +198,12 @@ export function createResolvers(
   );
 
   const { singularName, pluralName, tableName, idName } = config;
+  const listQueryName = `all${pluralName.charAt(0).toUpperCase() + pluralName.slice(1)}`;
+  const itemQueryName = `${singularName}ById`;
 
   // Create resolvers for the main type
-  const queryObject: {
-    [key: string]: ResolverFunction;
-  } = {
-    [`all${pluralName.charAt(0).toUpperCase() + pluralName.slice(1)}`]: async (
-      root,
-      args,
-      context,
-    ) => {
+  const queryObject: { [key: string]: ResolverFunction } = {
+    [listQueryName]: async (root, args, context) => {
       let query = `SELECT * from ${tableName}`;
       const values: unknown[] = [];
 
@@ -307,7 +300,7 @@ export function createResolvers(
 
       return results;
     },
-    [`${singularName}ById`]: async (
+    [itemQueryName]: async (
       root,
       args,
       context,

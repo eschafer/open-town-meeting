@@ -1,31 +1,15 @@
-export function toCamelCase(str: string): string {
-  return str.replace(/([-_][a-z])/g, (group) =>
-    group.toUpperCase().replace('-', '').replace('_', ''),
-  );
-}
+import { camelCase, mapKeys, snakeCase } from 'lodash';
 
-export function convertKeysToCamelCase(
+export function mapKeysToCamelCase(
   obj: Record<string, unknown>,
 ): Record<string, unknown> {
-  const newObj: Record<string, unknown> = {};
-  for (const key in obj) {
-    newObj[toCamelCase(key)] = obj[key];
-  }
-  return newObj;
+  return mapKeys(obj, (value, key) => camelCase(key));
 }
 
-export function toSnakeCase(str: string): string {
-  return str.replace(/[A-Z]/g, (letter) => `_${letter.toLowerCase()}`);
-}
-
-export function convertKeysToSnakeCase(
+export function mapKeysToSnakeCase(
   obj: Record<string, unknown>,
 ): Record<string, unknown> {
-  const newObj: Record<string, unknown> = {};
-  for (const key in obj) {
-    newObj[toSnakeCase(key)] = obj[key];
-  }
-  return newObj;
+  return mapKeys(obj, (value, key) => snakeCase(key));
 }
 
 export function getUnixTimestamp(): number {

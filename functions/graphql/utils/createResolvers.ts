@@ -1,11 +1,9 @@
-import { merge } from 'lodash';
+import { camelCase, merge, snakeCase } from 'lodash';
 import {
-  convertKeysToCamelCase,
-  convertKeysToSnakeCase,
+  mapKeysToCamelCase,
+  mapKeysToSnakeCase,
   getUnixTimestamp,
   tables,
-  toCamelCase,
-  toSnakeCase,
 } from './helpers';
 
 import type { GraphQLResolveInfo } from 'graphql';
@@ -63,7 +61,7 @@ function createNestedResolver(
             currentPath = currentPath.prev;
           }
 
-          if (!root[toCamelCase(idName)]) {
+          if (!root[camelCase(idName)]) {
             return null;
           }
 
@@ -79,18 +77,18 @@ function createNestedResolver(
 
           const ps = context.db
             .prepare(`SELECT * from ${tableName} WHERE ${idName} = ?`)
-            .bind(root[toCamelCase(idName)]);
+            .bind(root[camelCase(idName)]);
           const data = await ps.all();
 
           if (data.results.length === 0) {
             return null;
           }
 
-          const result = convertKeysToCamelCase(data.results[0]);
+          const result = mapKeysToCamelCase(data.results[0]);
 
           if (!data.success) {
             throw new Error(
-              `No ${tableName} found with id ${root[toCamelCase(idName)]}`,
+              `No ${tableName} found with id ${root[camelCase(idName)]}`,
             );
           }
           return result;
@@ -130,24 +128,24 @@ function createNestedGroupResolver(
             currentPath = currentPath.prev;
           }
 
-          if (!root[toCamelCase(parentIdName)]) {
+          if (!root[camelCase(parentIdName)]) {
             return null;
           }
           const ps = context.db
             .prepare(`SELECT * from ${tableName} WHERE ${parentIdName} = ?`)
-            .bind(root[toCamelCase(parentIdName)]);
+            .bind(root[camelCase(parentIdName)]);
           const data = await ps.all();
 
           if (data.results.length === 0) {
             return null;
           }
 
-          // const result = convertKeysToCamelCase(data.results[0]);
-          const result = data.results.map(convertKeysToCamelCase);
+          // const result = mapKeysToCamelCase(data.results[0]);
+          const result = data.results.map(mapKeysToCamelCase);
 
           if (!data.success) {
             throw new Error(
-              `No ${tableName} found with id ${root[toCamelCase(idName)]}`,
+              `No ${tableName} found with id ${root[camelCase(idName)]}`,
             );
           }
           return result;
@@ -208,11 +206,11 @@ export function createResolvers({
 
       // If there are filters, add them to the query
       if (args.filter) {
-        const filter = convertKeysToSnakeCase(args.filter);
+        const filter = mapKeysToSnakeCase(args.filter);
         const filters = Object.entries(filter);
 
         const processFilter = (filterKeyCamelCase, filterValue) => {
-          const filterKey = toSnakeCase(filterKeyCamelCase);
+          const filterKey = snakeCase(filterKeyCamelCase);
           const conditions = [];
           if (filterValue && typeof filterValue === 'object') {
             const innerFilters = Object.entries(filterValue);
@@ -295,7 +293,7 @@ export function createResolvers({
       const ps = context.db.prepare(query).bind(...values);
       const data = await ps.all();
 
-      const results = data.results.map(convertKeysToCamelCase);
+      const results = data.results.map(mapKeysToCamelCase);
 
       return results;
     },
@@ -317,7 +315,7 @@ export function createResolvers({
         return null;
       }
 
-      const result = convertKeysToCamelCase(data.results[0]);
+      const result = mapKeysToCamelCase(data.results[0]);
 
       if (!data.success) {
         throw new Error(`No ${tableName} found with id ${args.id}`);
@@ -335,7 +333,7 @@ export function createResolvers({
       async (root, args, context) => {
         const timestamp = getUnixTimestamp();
 
-        const input = Object.assign({}, convertKeysToSnakeCase(args.input), {
+        const input = Object.assign({}, mapKeysToSnakeCase(args.input), {
           created_at: timestamp,
           updated_at: timestamp,
         });
@@ -356,7 +354,7 @@ export function createResolvers({
 
         return {
           ...args.input,
-          [toCamelCase(idName)]: data.meta.last_row_id,
+          [camelCase(idName)]: data.meta.last_row_id,
           createdAt: timestamp,
           updatedAt: timestamp,
         };
@@ -369,7 +367,7 @@ export function createResolvers({
           throw new Error(`No ${tableName} found with id ${args.id}`);
         }
 
-        const input = Object.assign({}, convertKeysToSnakeCase(args.input), {
+        const input = Object.assign({}, mapKeysToSnakeCase(args.input), {
           updated_at: timestamp,
         });
 
@@ -391,7 +389,7 @@ export function createResolvers({
         const updatedData = await selectPs.all();
 
         // Convert the updated row to camel case
-        return convertKeysToCamelCase(updatedData.results[0]);
+        return mapKeysToCamelCase(updatedData.results[0]);
       },
     /*[`delete${singularName.charAt(0).toUpperCase() + singularName.slice(1)}`]:
       async (root, args, context) => {
@@ -415,7 +413,7 @@ export function createResolvers({
 
         return {
           ...args.input,
-          [toCamelCase(idName)]: args.id,
+          [camelCase(idName)]: args.id,
         };
       },*/
   };

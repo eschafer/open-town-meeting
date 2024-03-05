@@ -1,4 +1,8 @@
+import inputTypeDefs from '../inputTypeDefs';
+
 const typeDefs = /* GraphQL */ `
+  ${inputTypeDefs}
+
   """
   A Brookline precinct based off a specific census year.
   """
@@ -36,12 +40,12 @@ const typeDefs = /* GraphQL */ `
   }
 
   input PrecinctInput {
-    precinctId: ID
-    precinctNumber: Int
-    censusYear: Int
-    pollingPlace: String
-    createdAt: Int
-    updatedAt: Int
+    precinctId: StringFilter
+    precinctNumber: NumberFilter
+    censusYear: NumberFilter
+    pollingPlace: StringFilterNullable
+    createdAt: NumberFilter
+    updatedAt: NumberFilter
   }
 
   type Query {

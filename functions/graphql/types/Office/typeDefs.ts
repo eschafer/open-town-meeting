@@ -12,11 +12,11 @@ const typeDefs = /* GraphQL */ `
   }
 
   input OfficeInput {
-    officeId: ID
-    officeName: String
-    precinct: PrecinctInput
-    createdAt: Int
-    updatedAt: Int
+    officeId: StringFilter
+    officeName: StringFilter
+    precinctId: NumberFilterNullable
+    createdAt: NumberFilter
+    updatedAt: NumberFilter
   }
 
   extend type Query {

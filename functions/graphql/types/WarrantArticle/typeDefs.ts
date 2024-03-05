@@ -13,13 +13,13 @@ const typeDefs = /* GraphQL */ `
   }
 
   input WarrantArticleInput {
-    warrantArticleId: ID
-    townMeetingSessionId: ID
-    articleNumber: Int
-    articleTitle: String
-    articleDescription: String
-    createdAt: Int
-    updatedAt: Int
+    warrantArticleId: StringFilter
+    townMeetingSessionId: StringFilter
+    articleNumber: NumberFilter
+    articleTitle: StringFilter
+    articleDescription: StringFilterNullable
+    createdAt: NumberFilter
+    updatedAt: NumberFilter
   }
 
   extend type Query {

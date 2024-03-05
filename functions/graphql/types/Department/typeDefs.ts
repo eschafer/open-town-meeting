@@ -8,11 +8,11 @@ const typeDefs = /* GraphQL */ `
   }
 
   input DepartmentInput {
-    departmentId: ID
-    departmentName: String
-    departmentUrl: String
-    createdAt: Int
-    updatedAt: Int
+    departmentId: StringFilter
+    departmentName: StringFilter
+    departmentUrl: StringFilterNullable
+    createdAt: NumberFilter
+    updatedAt: NumberFilter
   }
 
   extend type Query {

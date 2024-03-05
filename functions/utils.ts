@@ -250,12 +250,81 @@ export function createResolvers({
       if (args.filter) {
         const filter = convertKeysToSnakeCase(args.filter);
         const filters = Object.entries(filter);
-        const conditions = filters.map(([key, value]) => {
-          values.push(value);
-          return `${key} = ?`;
-        });
 
-        query += ` WHERE ${conditions.join(' AND ')}`;
+        if (filters[0][1] && typeof filters[0][1] === 'object') {
+          const conditions = filters.map(([key, value]) => {
+            const innerFilters = Object.entries(value);
+            const innerConditions = innerFilters.map(
+              ([innerKey, innerValue]) => {
+                if (innerKey === 'isNull') {
+                  if (innerValue) {
+                    return `${key} IS NULL`;
+                  } else {
+                    return `${key} IS NOT NULL`;
+                  }
+                } else if (
+                  typeof innerValue === 'number' ||
+                  typeof innerValue === 'string'
+                ) {
+                  switch (innerKey) {
+                    // number and ISO date (YYYY-MM-DD) filters
+                    case 'eq':
+                      values.push(innerValue);
+                      return `${key} = ?`;
+                    case 'ne':
+                      values.push(innerValue);
+                      return `${key} != ?`;
+                    case 'gt':
+                      values.push(innerValue);
+                      return `${key} > ?`;
+                    case 'gte':
+                      values.push(innerValue);
+                      return `${key} >= ?`;
+                    case 'lt':
+                      values.push(innerValue);
+                      return `${key} < ?`;
+                    case 'lte':
+                      values.push(innerValue);
+                      return `${key} <= ?`;
+
+                    // string filters
+                    case 'exact':
+                      values.push(innerValue);
+                      return `${key} = ?`;
+                    case 'contains':
+                      values.push(`%${innerValue}%`);
+                      return `${key} LIKE ?`;
+                    case 'startsWith':
+                      values.push(`${innerValue}%`);
+                      return `${key} LIKE ?`;
+                    case 'endsWith':
+                      values.push(`%${innerValue}`);
+                      return `${key} LIKE ?`;
+
+                    default:
+                      throw new Error(`Invalid filter key: ${innerKey}`);
+                  }
+                } else {
+                  throw new Error(`Invalid filter value: ${innerValue}`);
+                }
+              },
+            );
+            return innerConditions.join(' AND ');
+          });
+
+          query += ` WHERE ${conditions.join(' AND ')}`;
+        } else {
+          const conditions = filters.map(([key, value]) => {
+            if (typeof value === 'boolean') {
+              values.push(value ? 1 : 0);
+            } else {
+              values.push(value);
+            }
+            return `${key} = ?`;
+          });
+
+          query += ` WHERE ${conditions.join(' AND ')}`;
+        }
       }
 
       const ps = context.db.prepare(query).bind(...values);

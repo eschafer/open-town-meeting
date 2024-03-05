@@ -11,11 +11,11 @@ const typeDefs = /* GraphQL */ `
   }
 
   input TownMeetingSessionInput {
-    townMeetingSessionId: ID
-    startDate: String
-    sessionName: String
-    createdAt: Int
-    updatedAt: Int
+    townMeetingSessionId: StringFilter
+    startDate: DateFilter
+    sessionName: StringFilter
+    createdAt: NumberFilter
+    updatedAt: NumberFilter
   }
 
   extend type Query {

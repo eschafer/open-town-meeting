@@ -10,13 +10,13 @@ const typeDefs = /* GraphQL */ `
   }
 
   input RaceInput {
-    raceId: ID
-    officeId: ID
-    electionId: ID
-    termLength: Int
-    seatsOpen: Int
-    createdAt: Int
-    updatedAt: Int
+    raceId: StringFilter
+    officeId: StringFilter
+    electionId: StringFilter
+    termLength: NumberFilter
+    seatsOpen: NumberFilter
+    createdAt: NumberFilter
+    updatedAt: NumberFilter
   }
 
   extend type Query {

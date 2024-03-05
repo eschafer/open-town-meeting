@@ -4,7 +4,7 @@ const typeDefs = /* GraphQL */ `
     warrantArticle: WarrantArticle!
     motionTitle: String!
     motionDescription: String
-    motionType: String!
+    motionType: String
     threshold: String
 
     petitioners: [Petitioner]
@@ -17,14 +17,14 @@ const typeDefs = /* GraphQL */ `
   }
 
   input MotionInput {
-    motionId: ID
-    warrantArticleId: ID
-    motionTitle: String
-    motionDescription: String
-    motionType: String
-    threshold: String
-    createdAt: Int
-    updatedAt: Int
+    motionId: StringFilter
+    warrantArticleId: StringFilter
+    motionTitle: StringFilter
+    motionDescription: StringFilterNullable
+    motionType: StringFilterNullable
+    threshold: StringFilterNullable
+    createdAt: NumberFilter
+    updatedAt: NumberFilter
   }
 
   extend type Query {

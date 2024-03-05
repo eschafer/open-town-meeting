@@ -10,13 +10,13 @@ const typeDefs = /* GraphQL */ `
   }
 
   input PetitionerInput {
-    petitionerId: ID
-    motionId: ID
-    personId: ID
-    departmentId: ID
-    committeeId: ID
-    createdAt: Int
-    updatedAt: Int
+    petitionerId: StringFilter
+    motionId: StringFilter
+    personId: StringFilterNullable
+    departmentId: StringFilterNullable
+    committeeId: StringFilterNullable
+    createdAt: NumberFilter
+    updatedAt: NumberFilter
   }
 
   extend type Query {

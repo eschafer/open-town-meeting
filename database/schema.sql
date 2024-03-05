@@ -6,8 +6,8 @@ CREATE TABLE IF NOT EXISTS precincts (
     census_year INTEGER NOT NULL,
     polling_place TEXT,
 
-    created_at INTEGER NOT NULL,
-    updated_at INTEGER NOT NULL,
+    created_at INTEGER NOT NULL, -- UNIX timestamp
+    updated_at INTEGER NOT NULL, -- UNIX timestamp
 
     UNIQUE (precinct_number, census_year)
 );
@@ -26,11 +26,11 @@ CREATE TABLE IF NOT EXISTS elections (
 CREATE TABLE IF NOT EXISTS town_meeting_sessions (
     town_meeting_session_id INTEGER PRIMARY KEY,
 
-    start_date TEXT NOT NULL,
+    start_date TEXT NOT NULL, -- ISO 8601 format (YYYY-MM-DD)
     session_name TEXT NOT NULL,
 
-    created_at INTEGER NOT NULL,
-    updated_at INTEGER NOT NULL,
+    created_at INTEGER NOT NULL, -- UNIX timestamp
+    updated_at INTEGER NOT NULL, -- UNIX timestamp
 
     UNIQUE (start_date, session_name)
 );
@@ -41,8 +41,8 @@ CREATE TABLE IF NOT EXISTS vote_types (
 
     vote_type_name TEXT NOT NULL UNIQUE, -- yes, no, abstain
 
-    created_at INTEGER NOT NULL,
-    updated_at INTEGER NOT NULL
+    created_at INTEGER NOT NULL, -- UNIX timestamp
+    updated_at INTEGER NOT NULL -- UNIX timestamp
 );
 
 -- person_id,first_name,middle_name,last_name,name_suffix,address,email,phone,created_at,updated_at
@@ -57,8 +57,8 @@ CREATE TABLE IF NOT EXISTS people (
     email TEXT,
     phone TEXT,
 
-    created_at INTEGER NOT NULL,
-    updated_at INTEGER NOT NULL
+    created_at INTEGER NOT NULL, -- UNIX timestamp
+    updated_at INTEGER NOT NULL -- UNIX timestamp
 );
 
 -- committee_id,committee_name,committee_description,committee_url,created_at,updated_at
@@ -69,8 +69,8 @@ CREATE TABLE IF NOT EXISTS committees (
     committee_description TEXT,
     committee_url TEXT,
 
-    created_at INTEGER NOT NULL,
-    updated_at INTEGER NOT NULL
+    created_at INTEGER NOT NULL, -- UNIX timestamp
+    updated_at INTEGER NOT NULL -- UNIX timestamp
 );
 
 -- department_id,department_name,department_url,created_at,updated_at
@@ -80,8 +80,8 @@ CREATE TABLE IF NOT EXISTS departments (
     department_name TEXT NOT NULL,
     department_url TEXT,
 
-    created_at INTEGER NOT NULL,
-    updated_at INTEGER NOT NULL
+    created_at INTEGER NOT NULL, -- UNIX timestamp
+    updated_at INTEGER NOT NULL -- UNIX timestamp
 );
 
 -- committee_member_id,committee_id,person_id,start_date,end_date,position,appointing_authority,created_at,updated_at
@@ -90,13 +90,13 @@ CREATE TABLE IF NOT EXISTS committee_members (
 
     committee_id INTEGER NOT NULL,
     person_id INTEGER NOT NULL,
-    start_date TEXT,
-    end_date TEXT,
+    start_date TEXT, -- ISO 8601 format (YYYY-MM-DD)
+    end_date TEXT, -- ISO 8601 format (YYYY-MM-DD)
     position TEXT,
     appointing_authority TEXT,
 
-    created_at INTEGER NOT NULL,
-    updated_at INTEGER NOT NULL,
+    created_at INTEGER NOT NULL, -- UNIX timestamp
+    updated_at INTEGER NOT NULL, -- UNIX timestamp
 
     FOREIGN KEY (committee_id) REFERENCES committees(committee_id)
     FOREIGN KEY (person_id) REFERENCES people(person_id),
@@ -109,8 +109,8 @@ CREATE TABLE IF NOT EXISTS offices (
     office_name TEXT NOT NULL,
     precinct_id INTEGER, -- NULL if town-wide
 
-    created_at INTEGER NOT NULL,
-    updated_at INTEGER NOT NULL,
+    created_at INTEGER NOT NULL, -- UNIX timestamp
+    updated_at INTEGER NOT NULL, -- UNIX timestamp
 
     FOREIGN KEY (precinct_id) REFERENCES precincts(precinct_id),
     UNIQUE (office_name, precinct_id),
@@ -126,8 +126,8 @@ CREATE TABLE IF NOT EXISTS races (
     term_length INTEGER NOT NULL,
     seats_open INTEGER NOT NULL,
 
-    created_at INTEGER NOT NULL,
-    updated_at INTEGER NOT NULL,
+    created_at INTEGER NOT NULL, -- UNIX timestamp
+    updated_at INTEGER NOT NULL, -- UNIX timestamp
 
     FOREIGN KEY (office_id) REFERENCES offices(office_id),
     FOREIGN KEY (election_id) REFERENCES elections(election_id),
@@ -142,8 +142,8 @@ CREATE TABLE IF NOT EXISTS candidates (
     person_id INTEGER NOT NULL,
     race_id INTEGER NOT NULL,
 
-    created_at INTEGER NOT NULL,
-    updated_at INTEGER NOT NULL,
+    created_at INTEGER NOT NULL, -- UNIX timestamp
+    updated_at INTEGER NOT NULL, -- UNIX timestamp
 
     FOREIGN KEY (person_id) REFERENCES people(person_id),
     FOREIGN KEY (race_id) REFERENCES races(race_id),
@@ -160,8 +160,8 @@ CREATE TABLE IF NOT EXISTS election_results (
 
     vote_count INTEGER,
 
-    created_at INTEGER NOT NULL,
-    updated_at INTEGER NOT NULL,
+    created_at INTEGER NOT NULL, -- UNIX timestamp
+    updated_at INTEGER NOT NULL, -- UNIX timestamp
 
     FOREIGN KEY (candidate_id) REFERENCES candidates(candidate_id)
 );
@@ -173,11 +173,11 @@ CREATE TABLE IF NOT EXISTS terms (
     person_id INTEGER NOT NULL,
     office_id INTEGER NOT NULL,
 
-    start_date TEXT NOT NULL,
-    end_date TEXT NOT NULL,
+    start_date TEXT NOT NULL, -- ISO 8601 format (YYYY-MM-DD)
+    end_date TEXT NOT NULL, -- ISO 8601 format (YYYY-MM-DD)
 
-    created_at INTEGER NOT NULL,
-    updated_at INTEGER NOT NULL,
+    created_at INTEGER NOT NULL, -- UNIX timestamp
+    updated_at INTEGER NOT NULL, -- UNIX timestamp
 
     FOREIGN KEY (person_id) REFERENCES people(person_id),
     FOREIGN KEY (office_id) REFERENCES offices(office_id)
@@ -193,8 +193,8 @@ CREATE TABLE IF NOT EXISTS warrant_articles (
     article_title TEXT NOT NULL,
     article_description TEXT,
 
-    created_at INTEGER NOT NULL,
-    updated_at INTEGER NOT NULL,
+    created_at INTEGER NOT NULL, -- UNIX timestamp
+    updated_at INTEGER NOT NULL, -- UNIX timestamp
 
     FOREIGN KEY (town_meeting_session_id) REFERENCES town_meeting_sessions(town_meeting_session_id)
     UNIQUE (town_meeting_session_id, warrant_article_id)
@@ -213,8 +213,8 @@ CREATE TABLE IF NOT EXISTS motions (
     voice_vote_passed INTEGER, -- 1 if passed, 0 if failed
     order_within_article INTEGER,
 
-    created_at INTEGER NOT NULL,
-    updated_at INTEGER NOT NULL,
+    created_at INTEGER NOT NULL, -- UNIX timestamp
+    updated_at INTEGER NOT NULL, -- UNIX timestamp
 
     FOREIGN KEY (warrant_article_id) REFERENCES warrant_articles(warrant_article_id)
 );
@@ -228,8 +228,8 @@ CREATE TABLE IF NOT EXISTS petitioners (
     department_id INTEGER,
     committee_id INTEGER,
 
-    created_at INTEGER NOT NULL,
-    updated_at INTEGER NOT NULL,
+    created_at INTEGER NOT NULL, -- UNIX timestamp
+    updated_at INTEGER NOT NULL, -- UNIX timestamp
 
     FOREIGN KEY (motion_id) REFERENCES motions(motion_id),
     FOREIGN KEY (person_id) REFERENCES people(person_id),
@@ -245,8 +245,8 @@ CREATE TABLE IF NOT EXISTS town_meeting_votes (
     motion_id INTEGER NOT NULL,
     vote_type_id INTEGER,
 
-    created_at INTEGER NOT NULL,
-    updated_at INTEGER NOT NULL,
+    created_at INTEGER NOT NULL, -- UNIX timestamp
+    updated_at INTEGER NOT NULL, -- UNIX timestamp
 
     FOREIGN KEY (person_id) REFERENCES people(person_id),
     FOREIGN KEY (motion_id) REFERENCES motions(motion_id),

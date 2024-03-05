@@ -10,13 +10,13 @@ const typeDefs = /* GraphQL */ `
   }
 
   input TownMeetingVoteResultInput {
-    townMeetingVoteResultId: ID
-    motionId: ID
-    threshold: String
-    voiceVotePassed: Boolean
-    yesVotes: Int
-    noVotes: Int
-    isPassed: Boolean
+    townMeetingVoteResultId: StringFilter
+    motionId: StringFilter
+    threshold: StringFilterNullable
+    voiceVotePassed: BooleanFilterNullable
+    yesVotes: NumberFilterNullable
+    noVotes: NumberFilterNullable
+    isPassed: BooleanFilterNullable
   }
 
   extend type Query {

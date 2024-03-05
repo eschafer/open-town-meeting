@@ -10,13 +10,13 @@ const typeDefs = /* GraphQL */ `
   }
 
   input TermInput {
-    termId: ID
-    personId: ID
-    officeId: ID
-    startDate: String
-    endDate: String
-    createdAt: Int
-    updatedAt: Int
+    termId: StringFilter
+    personId: StringFilter
+    officeId: StringFilter
+    startDate: DateFilter
+    endDate: DateFilter
+    createdAt: NumberFilter
+    updatedAt: NumberFilter
   }
 
   extend type Query {

@@ -9,12 +9,12 @@ const typeDefs = /* GraphQL */ `
   }
 
   input TownMeetingVoteInput {
-    townMeetingVoteId: ID
-    personId: ID
-    motionId: ID
-    voteTypeID: ID
-    createdAt: Int
-    updatedAt: Int
+    townMeetingVoteId: StringFilter
+    personId: StringFilter
+    motionId: StringFilter
+    voteTypeID: StringFilterNullable
+    createdAt: NumberFilter
+    updatedAt: NumberFilter
   }
 
   extend type Query {

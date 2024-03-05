@@ -20,16 +20,16 @@ const typeDefs = /* GraphQL */ `
   }
 
   input PersonInput {
-    personId: ID
-    firstName: String
-    middleName: String
-    lastName: String
-    nameSuffix: String
-    address: String
-    email: String
-    phone: String
-    createdAt: Int
-    updatedAt: Int
+    personId: StringFilter
+    firstName: StringFilter
+    middleName: StringFilterNullable
+    lastName: StringFilter
+    nameSuffix: StringFilterNullable
+    address: StringFilterNullable
+    email: StringFilterNullable
+    phone: StringFilterNullable
+    createdAt: NumberFilter
+    updatedAt: NumberFilter
   }
 
   extend type Query {

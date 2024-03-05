@@ -7,10 +7,10 @@ const typeDefs = /* GraphQL */ `
   }
 
   input TownMeetingVoteTallyInput {
-    townMeetingVoteTallyId: ID
-    motionId: ID
-    voteTypeId: ID
-    voteCount: Int
+    townMeetingVoteTallyId: StringFilter
+    motionId: StringFilterNullable
+    voteTypeId: StringFilterNullable
+    voteCount: NumberFilter
   }
 
   extend type Query {

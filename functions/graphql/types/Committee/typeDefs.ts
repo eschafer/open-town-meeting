@@ -12,12 +12,12 @@ const typeDefs = /* GraphQL */ `
   }
 
   input CommitteeInput {
-    committeeId: ID
-    committeeName: String
-    committeeDescription: String
-    committeeUrl: String
-    createdAt: Int
-    updatedAt: Int
+    committeeId: StringFilter
+    committeeName: StringFilter
+    committeeDescription: StringFilterNullable
+    committeeUrl: StringFilterNullable
+    createdAt: NumberFilter
+    updatedAt: NumberFilter
   }
 
   extend type Query {

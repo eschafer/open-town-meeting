@@ -10,10 +10,10 @@ const typeDefs = /* GraphQL */ `
   }
 
   input VoteTypeInput {
-    voteTypeId: ID
-    voteTypeName: String
-    createdAt: Int
-    updatedAt: Int
+    voteTypeId: StringFilter
+    voteTypeName: StringFilter
+    createdAt: NumberFilter
+    updatedAt: NumberFilter
   }
 
   extend type Query {

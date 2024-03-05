@@ -206,6 +206,9 @@ function createNestedGroupResolver(
   return nestedGroupResolver;
 }
 
+/*
+ * Create resolvers for a given type
+ */
 export function createResolvers({
   singularName,
   pluralName,
@@ -214,6 +217,7 @@ export function createResolvers({
   nested,
   nestedGroup,
 }: ResolverConfig): Record<string, Record<string, unknown>> {
+  // Create resolvers for nested types
   let nestedResolvers: Resolvers[] = [];
   if (nested && nested.length > 0) {
     nestedResolvers = nested.map((type) => {
@@ -221,6 +225,7 @@ export function createResolvers({
     });
   }
 
+  // Create resolvers for nested groups
   let nestedGroupResolvers: Array<Record<string, Record<string, unknown>>> = [];
   if (nestedGroup && nestedGroup.length > 0) {
     nestedGroupResolvers = nestedGroup.map((type) => {
@@ -228,6 +233,7 @@ export function createResolvers({
     });
   }
 
+  // Merge all resolvers
   let otherResolvers: Resolvers = {};
   if (nestedResolvers.length > 0) {
     otherResolvers = merge({}, ...nestedResolvers);
@@ -236,6 +242,7 @@ export function createResolvers({
     otherResolvers = merge(otherResolvers, ...nestedGroupResolvers);
   }
 
+  // Create resolvers for the main type
   const queryObject: {
     [key: string]: ResolverFunction;
   } = {
@@ -247,84 +254,87 @@ export function createResolvers({
       let query = `SELECT * from ${tableName}`;
       const values: unknown[] = [];
 
+      // If there are filters, add them to the query
       if (args.filter) {
         const filter = convertKeysToSnakeCase(args.filter);
         const filters = Object.entries(filter);
 
-        if (filters[0][1] && typeof filters[0][1] === 'object') {
-          const conditions = filters.map(([key, value]) => {
-            const innerFilters = Object.entries(value);
-            const innerConditions = innerFilters.map(
-              ([innerKey, innerValue]) => {
-                if (innerKey === 'isNull') {
-                  if (innerValue) {
-                    return `${key} IS NULL`;
-                  } else {
-                    return `${key} IS NOT NULL`;
-                  }
-                } else if (
-                  typeof innerValue === 'number' ||
-                  typeof innerValue === 'string'
-                ) {
-                  switch (innerKey) {
-                    // number and ISO date (YYYY-MM-DD) filters
-                    case 'eq':
-                      values.push(innerValue);
-                      return `${key} = ?`;
-                    case 'ne':
-                      values.push(innerValue);
-                      return `${key} != ?`;
-                    case 'gt':
-                      values.push(innerValue);
-                      return `${key} > ?`;
-                    case 'gte':
-                      values.push(innerValue);
-                      return `${key} >= ?`;
-                    case 'lt':
-                      values.push(innerValue);
-                      return `${key} < ?`;
-                    case 'lte':
-                      values.push(innerValue);
-                      return `${key} <= ?`;
+        const processFilter = (filterKeyCamelCase, filterValue) => {
+          const filterKey = toSnakeCase(filterKeyCamelCase);
+          const conditions = [];
+          if (filterValue && typeof filterValue === 'object') {
+            const innerFilters = Object.entries(filterValue);
+            innerFilters.forEach(([innerKey, innerValue]) => {
+              if (innerKey === 'isNull') {
+                conditions.push(
+                  `${filterKey} IS ${innerValue ? 'NULL' : 'NOT NULL'}`,
+                );
+              } else if (typeof innerValue === 'object') {
+                // Handle nested filters
+                const nestedConditions = processFilter(innerKey, innerValue);
+                conditions.push(nestedConditions);
+              } else {
+                switch (innerKey) {
+                  // number and ISO date (YYYY-MM-DD) filters
+                  case 'eq':
+                    values.push(innerValue);
+                    conditions.push(`${filterKey} = ?`);
+                    break;
+                  case 'ne':
+                    values.push(innerValue);
+                    conditions.push(`${filterKey} != ?`);
+                    break;
+                  case 'gt':
+                    values.push(innerValue);
+                    conditions.push(`${filterKey} > ?`);
+                    break;
+                  case 'gte':
+                    values.push(innerValue);
+                    conditions.push(`${filterKey} >= ?`);
+                    break;
+                  case 'lt':
+                    values.push(innerValue);
+                    conditions.push(`${filterKey} < ?`);
+                    break;
+                  case 'lte':
+                    values.push(innerValue);
+                    conditions.push(`${filterKey} <= ?`);
+                    break;
 
-                    // string filters
-                    case 'exact':
-                      values.push(innerValue);
-                      return `${key} = ?`;
-                    case 'contains':
-                      values.push(`%${innerValue}%`);
-                      return `${key} LIKE ?`;
-                    case 'startsWith':
-                      values.push(`${innerValue}%`);
-                      return `${key} LIKE ?`;
-                    case 'endsWith':
-                      values.push(`%${innerValue}`);
-                      return `${key} LIKE ?`;
+                  // string filters
+                  case 'exact':
+                    values.push(innerValue);
+                    conditions.push(`${filterKey} = ?`);
+                    break;
+                  case 'contains':
+                    values.push(`%${innerValue}%`);
+                    conditions.push(`${filterKey} LIKE ?`);
+                    break;
+                  case 'startsWith':
+                    values.push(`${innerValue}%`);
+                    conditions.push(`${filterKey} LIKE ?`);
+                    break;
+                  case 'endsWith':
+                    values.push(`%${innerValue}`);
+                    conditions.push(`${filterKey} LIKE ?`);
+                    break;
 
-                    default:
-                      throw new Error(`Invalid filter key: ${innerKey}`);
-                  }
-                } else {
-                  throw new Error(`Invalid filter value: ${innerValue}`);
+                  default:
+                    throw new Error(`Invalid filter key: ${innerKey}`);
                 }
-              },
-            );
-            return innerConditions.join(' AND ');
-          });
+              }
+            });
+          } else {
+            values.push(filterValue);
+            conditions.push(`${filterKey} = ?`);
+          }
+          return conditions.join(' AND ');
+        };
 
-          query += ` WHERE ${conditions.join(' AND ')}`;
-        } else {
-          const conditions = filters.map(([key, value]) => {
-            if (typeof value === 'boolean') {
-              values.push(value ? 1 : 0);
-            } else {
-              values.push(value);
-            }
-            return `${key} = ?`;
-          });
-
-          query += ` WHERE ${conditions.join(' AND ')}`;
-        }
+        const conditions = filters.map(([key, value]) =>
+          processFilter(key, value),
+        );
+        query += ` WHERE ${conditions.join(' AND ')}`;
       }
 
       const ps = context.db.prepare(query).bind(...values);
@@ -362,6 +372,7 @@ export function createResolvers({
     },
   };
 
+  // Create resolvers for mutations
   const mutationObject: {
     [key: string]: ResolverFunction;
   } = {
@@ -454,6 +465,7 @@ export function createResolvers({
       },*/
   };
 
+  // Merge all resolvers
   const resolvers: {
     [key: string]: { [key: string]: ResolverFunction };
   } = merge(

@@ -1,5 +1,5 @@
 interface ResponseData {
-  data: Record<string, unknown[]>;
+  data: Record<string, unknown[] | unknown>;
 }
 
 export default async function fetchGraphQL({

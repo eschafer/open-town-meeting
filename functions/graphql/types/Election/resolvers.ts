@@ -1,4 +1,4 @@
-import { createResolvers } from '../../../utils';
+import { createResolvers } from '../../utils/createResolvers';
 
 const resolvers = createResolvers({
   singularName: 'election',

@@ -265,16 +265,19 @@ export function createResolvers({
           if (filterValue && typeof filterValue === 'object') {
             const innerFilters = Object.entries(filterValue);
             innerFilters.forEach(([innerKey, innerValue]) => {
-              if (innerKey === 'isNull') {
-                conditions.push(
-                  `${filterKey} IS ${innerValue ? 'NULL' : 'NOT NULL'}`,
-                );
-              } else if (typeof innerValue === 'object') {
+              if (typeof innerValue === 'object') {
                 // Handle nested filters
                 const nestedConditions = processFilter(innerKey, innerValue);
                 conditions.push(nestedConditions);
               } else {
                 switch (innerKey) {
+                  // null filters
+                  case 'isNull':
+                    conditions.push(
+                      `${filterKey} IS ${innerValue ? 'NULL' : 'NOT NULL'}`,
+                    );
+                    break;
+
                   // number and ISO date (YYYY-MM-DD) filters
                   case 'eq':
                     values.push(innerValue);

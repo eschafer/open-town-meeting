@@ -156,41 +156,51 @@ function createNestedGroupResolver(
   return nestedGroupResolver;
 }
 
+function createNestedResolvers(config: ResolverConfig): Resolvers[] {
+  const { nested } = config;
+  if (!nested || nested.length === 0) {
+    return [];
+  }
+
+  return nested.map((type) => {
+    return createNestedResolver(type, config.singularName);
+  });
+}
+
+function createNestedGroupResolvers(
+  config: ResolverConfig,
+): Array<Record<string, Record<string, unknown>>> {
+  const { nestedGroup } = config;
+  if (!nestedGroup || nestedGroup.length === 0) {
+    return [];
+  }
+
+  return nestedGroup.map((type) => {
+    return createNestedGroupResolver(type, config.singularName, config.idName);
+  });
+}
+
 /*
  * Create resolvers for a given type
  */
-export function createResolvers({
-  singularName,
-  pluralName,
-  tableName,
-  idName,
-  nested,
-  nestedGroup,
-}: ResolverConfig): Record<string, Record<string, unknown>> {
+export function createResolvers(
+  config: ResolverConfig,
+): Record<string, Record<string, unknown>> {
   // Create resolvers for nested types
-  let nestedResolvers: Resolvers[] = [];
-  if (nested && nested.length > 0) {
-    nestedResolvers = nested.map((type) => {
-      return createNestedResolver(type, singularName);
-    });
-  }
+  const nestedResolvers: Resolvers[] = createNestedResolvers(config);
 
   // Create resolvers for nested groups
-  let nestedGroupResolvers: Array<Record<string, Record<string, unknown>>> = [];
-  if (nestedGroup && nestedGroup.length > 0) {
-    nestedGroupResolvers = nestedGroup.map((type) => {
-      return createNestedGroupResolver(type, singularName, idName);
-    });
-  }
+  const nestedGroupResolvers: Array<Record<string, Record<string, unknown>>> =
+    createNestedGroupResolvers(config);
 
   // Merge all resolvers
-  let otherResolvers: Resolvers = {};
-  if (nestedResolvers.length > 0) {
-    otherResolvers = merge({}, ...nestedResolvers);
-  }
-  if (nestedGroupResolvers.length > 0) {
-    otherResolvers = merge(otherResolvers, ...nestedGroupResolvers);
-  }
+  const otherResolvers: Resolvers = merge(
+    {},
+    ...nestedResolvers,
+    ...nestedGroupResolvers,
+  );
+
+  const { singularName, pluralName, tableName, idName } = config;
 
   // Create resolvers for the main type
   const queryObject: {

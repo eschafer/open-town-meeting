@@ -178,66 +178,32 @@ const createNestedGroupResolvers = (config: ResolverConfig): Resolvers[] => {
   });
 };
 
-const processFilter = (filterKeyCamelCase, filterValue) => {
+// prettier-ignore
+const operators = {
+  isNull: (key: string, value: boolean) => ({ condition: `${key} IS ${value ? 'NULL' : 'NOT NULL'}` }),
+  eq: (key: string, value: number | string) => ({ condition: `${key} = ?`, value }),
+  ne: (key: string, value: number | string) => ({ condition: `${key} != ?`, value }),
+  gt: (key: string, value: number | string) => ({ condition: `${key} > ?`, value }),
+  gte: (key: string, value: number | string) => ({ condition: `${key} >= ?`, value }),
+  lt: (key: string, value: number | string) => ({ condition: `${key} < ?`, value }),
+  lte: (key: string, value: number | string) => ({ condition: `${key} <= ?`, value }),
+  exact: (key: string, value: string) => ({ condition: `${key} = ?`, value }),
+  contains: (key: string, value: string) => ({ condition: `${key} LIKE ?`, value: `%${value}%` }),
+  startsWith: (key: string, value: string) => ({ condition: `${key} LIKE ?`, value: `${value}%` }),
+  endsWith: (key: string, value: string) => ({ condition: `${key} LIKE ?`, value: `%${value}` }),
+};
+
+const processFilter = (
+  filterKeyCamelCase: string,
+  filterValue: number | string,
+) => {
   const filterKey = snakeCase(filterKeyCamelCase);
   const conditions = [];
   if (filterValue && typeof filterValue === 'object') {
     const innerFilters = Object.entries(filterValue);
-    innerFilters.forEach(([innerKey, innerValue]) => {
-      let condition = '';
-      switch (innerKey) {
-        // null filters
-        case 'isNull':
-          condition = `${filterKey} IS ${innerValue ? 'NULL' : 'NOT NULL'}`;
-          conditions.push({ condition });
-          break;
-
-        // number and ISO date (YYYY-MM-DD) filters
-        case 'eq':
-          condition = `${filterKey} = ?`;
-          conditions.push({ condition, value: innerValue });
-          break;
-        case 'ne':
-          condition = `${filterKey} != ?`;
-          conditions.push({ condition, value: innerValue });
-          break;
-        case 'gt':
-          condition = `${filterKey} > ?`;
-          conditions.push({ condition, value: innerValue });
-          break;
-        case 'gte':
-          condition = `${filterKey} >= ?`;
-          conditions.push({ condition, value: innerValue });
-          break;
-        case 'lt':
-          condition = `${filterKey} < ?`;
-          conditions.push({ condition, value: innerValue });
-          break;
-        case 'lte':
-          condition = `${filterKey} <= ?`;
-          conditions.push({ condition, value: innerValue });
-          break;
-
-        // string filters
-        case 'exact':
-          condition = `${filterKey} = ?`;
-          conditions.push({ condition, value: innerValue });
-          break;
-        case 'contains':
-          condition = `${filterKey} LIKE ?`;
-          conditions.push({ condition, value: `%${innerValue}%` });
-          break;
-        case 'startsWith':
-          condition = `${filterKey} LIKE ?`;
-          conditions.push({ condition, value: `${innerValue}%` });
-          break;
-        case 'endsWith':
-          condition = `${filterKey} LIKE ?`;
-          conditions.push({ condition, value: `%${innerValue}` });
-          break;
-
-        default:
-          throw new Error(`Invalid filter key: ${innerKey}`);
+    innerFilters.forEach(([operatorKey, operatorValue]) => {
+      if (operators[operatorKey]) {
+        conditions.push(operators[operatorKey](filterKey, operatorValue));
       }
     });
   } else {
@@ -247,6 +213,35 @@ const processFilter = (filterKeyCamelCase, filterValue) => {
     });
   }
   return conditions;
+};
+
+const buildQuery = (tableName: string, filter?: Record<string, unknown>) => {
+  let query = `SELECT * from ${tableName}`;
+  let values: Array<unknown> = [];
+
+  if (filter) {
+    const conditions = Object.entries(mapKeysToSnakeCase(filter)).flatMap(
+      ([filterKeyCamelCase, filterValue]) =>
+        processFilter(filterKeyCamelCase, filterValue),
+    );
+
+    const conditionStrings = conditions
+      .map(({ condition }) => condition)
+      .join(' AND ');
+
+    values = conditions.flatMap(({ value }) => value);
+
+    query += ` WHERE ${conditionStrings}`;
+  }
+
+  return { query, values };
+};
+
+const executeQuery = async (query: string, values: Array<unknown>, context) => {
+  const ps = context.db.prepare(query).bind(...values);
+  const data = await ps.all();
+
+  return data.results.map(mapKeysToCamelCase);
 };
 
 /*
@@ -275,32 +270,8 @@ export const createResolvers = (
   // Create resolvers for the main type
   const queryObject: { [key: string]: ResolverFunction } = {
     [listQueryName]: async (root, args, context) => {
-      let query = `SELECT * from ${tableName}`;
-      let values: Array<unknown> = [];
-
-      // If there are filters, add them to the query
-      if (args.filter) {
-        const filter = mapKeysToSnakeCase(args.filter);
-        const filters = Object.entries(filter);
-
-        const conditions = filters.flatMap(([key, value]) =>
-          processFilter(key, value),
-        );
-
-        const conditionStrings = conditions
-          .map(({ condition }) => condition)
-          .join(' AND ');
-        values = [...values, ...conditions.flatMap(({ value }) => value)];
-
-        query += ` WHERE ${conditionStrings}`;
-      }
-
-      const ps = context.db.prepare(query).bind(...values);
-      const data = await ps.all();
-
-      const results = data.results.map(mapKeysToCamelCase);
-
-      return results;
+      const { query, values } = buildQuery(tableName, args.filter);
+      return executeQuery(query, values, context);
     },
     [itemQueryName]: async (
       root,
@@ -311,22 +282,14 @@ export const createResolvers = (
         return null;
       }
 
-      const ps = context.db
-        .prepare(`SELECT * from ${tableName} WHERE ${idName} = ?`)
-        .bind(args.id);
-      const data = await ps.all();
+      const query = `SELECT * from ${tableName} WHERE ${idName} = ?`;
+      const data = await executeQuery(query, [args.id], context);
 
       if (data.results.length === 0) {
-        return null;
-      }
-
-      const result = mapKeysToCamelCase(data.results[0]);
-
-      if (!data.success) {
         throw new Error(`No ${tableName} found with id ${args.id}`);
       }
 
-      return result;
+      return data.results[0];
     },
   };
 

@@ -205,7 +205,7 @@ export const createResolvers = (
   const queryObject: { [key: string]: ResolverFunction } = {
     [listQueryName]: async (root, args, context) => {
       let query = `SELECT * from ${tableName}`;
-      const values: unknown[] = [];
+      let values: Array<unknown> = [];
 
       // If there are filters, add them to the query
       if (args.filter) {
@@ -218,56 +218,56 @@ export const createResolvers = (
           if (filterValue && typeof filterValue === 'object') {
             const innerFilters = Object.entries(filterValue);
             innerFilters.forEach(([innerKey, innerValue]) => {
+              let condition = '';
               switch (innerKey) {
                 // null filters
                 case 'isNull':
-                  conditions.push(
-                    `${filterKey} IS ${innerValue ? 'NULL' : 'NOT NULL'}`,
-                  );
+                  condition = `${filterKey} IS ${innerValue ? 'NULL' : 'NOT NULL'}`;
+                  conditions.push({ condition });
                   break;
 
                 // number and ISO date (YYYY-MM-DD) filters
                 case 'eq':
-                  values.push(innerValue);
-                  conditions.push(`${filterKey} = ?`);
+                  condition = `${filterKey} = ?`;
+                  conditions.push({ condition, value: innerValue });
                   break;
                 case 'ne':
-                  values.push(innerValue);
-                  conditions.push(`${filterKey} != ?`);
+                  condition = `${filterKey} != ?`;
+                  conditions.push({ condition, value: innerValue });
                   break;
                 case 'gt':
-                  values.push(innerValue);
-                  conditions.push(`${filterKey} > ?`);
+                  condition = `${filterKey} > ?`;
+                  conditions.push({ condition, value: innerValue });
                   break;
                 case 'gte':
-                  values.push(innerValue);
-                  conditions.push(`${filterKey} >= ?`);
+                  condition = `${filterKey} >= ?`;
+                  conditions.push({ condition, value: innerValue });
                   break;
                 case 'lt':
-                  values.push(innerValue);
-                  conditions.push(`${filterKey} < ?`);
+                  condition = `${filterKey} < ?`;
+                  conditions.push({ condition, value: innerValue });
                   break;
                 case 'lte':
-                  values.push(innerValue);
-                  conditions.push(`${filterKey} <= ?`);
+                  condition = `${filterKey} <= ?`;
+                  conditions.push({ condition, value: innerValue });
                   break;
 
                 // string filters
                 case 'exact':
-                  values.push(innerValue);
-                  conditions.push(`${filterKey} = ?`);
+                  condition = `${filterKey} = ?`;
+                  conditions.push({ condition, value: innerValue });
                   break;
                 case 'contains':
-                  values.push(`%${innerValue}%`);
-                  conditions.push(`${filterKey} LIKE ?`);
+                  condition = `${filterKey} LIKE ?`;
+                  conditions.push({ condition, value: `%${innerValue}%` });
                   break;
                 case 'startsWith':
-                  values.push(`${innerValue}%`);
-                  conditions.push(`${filterKey} LIKE ?`);
+                  condition = `${filterKey} LIKE ?`;
+                  conditions.push({ condition, value: `${innerValue}%` });
                   break;
                 case 'endsWith':
-                  values.push(`%${innerValue}`);
-                  conditions.push(`${filterKey} LIKE ?`);
+                  condition = `${filterKey} LIKE ?`;
+                  conditions.push({ condition, value: `%${innerValue}` });
                   break;
 
                 default:
@@ -275,16 +275,24 @@ export const createResolvers = (
               }
             });
           } else {
-            values.push(filterValue);
-            conditions.push(`${filterKey} = ?`);
+            conditions.push({
+              condition: `${filterKey} = ?`,
+              value: filterValue,
+            });
           }
-          return conditions.join(' AND ');
+          return conditions;
         };
 
-        const conditions = filters.map(([key, value]) =>
+        const conditions = filters.flatMap(([key, value]) =>
           processFilter(key, value),
         );
-        query += ` WHERE ${conditions.join(' AND ')}`;
+
+        const conditionStrings = conditions
+          .map(({ condition }) => condition)
+          .join(' AND ');
+        values = [...values, ...conditions.flatMap(({ value }) => value)];
+
+        query += ` WHERE ${conditionStrings}`;
       }
 
       const ps = context.db.prepare(query).bind(...values);

@@ -269,27 +269,32 @@ export const createResolvers = (
 
   // Create resolvers for the main type
   const queryObject: { [key: string]: ResolverFunction } = {
+    // allPrecincts, allMotions, etc.
     [listQueryName]: async (root, args, context) => {
       const { query, values } = buildQuery(tableName, args.filter);
-      return executeQuery(query, values, context);
+      const results = await executeQuery(query, values, context);
+
+      if (results.length === 0) {
+        const filterString = JSON.stringify(args.filter).replace(/\"/g, "'");
+        throw new Error(`No ${tableName} found with filter ${filterString}`);
+      }
+
+      return results;
     },
+    // precinctById, motionById, etc.
     [itemQueryName]: async (
       root,
       args,
       context,
     ): Promise<Record<string, unknown> | null> => {
-      if (!args.id) {
-        return null;
-      }
-
       const query = `SELECT * from ${tableName} WHERE ${idName} = ?`;
-      const data = await executeQuery(query, [args.id], context);
+      const results = await executeQuery(query, [args.id], context);
 
-      if (data.results.length === 0) {
+      if (results.length === 0) {
         throw new Error(`No ${tableName} found with id ${args.id}`);
       }
 
-      return data.results[0];
+      return results[0];
     },
   };
 

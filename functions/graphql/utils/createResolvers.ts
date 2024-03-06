@@ -218,66 +218,60 @@ export const createResolvers = (
           if (filterValue && typeof filterValue === 'object') {
             const innerFilters = Object.entries(filterValue);
             innerFilters.forEach(([innerKey, innerValue]) => {
-              if (typeof innerValue === 'object') {
-                // Handle nested filters
-                const nestedConditions = processFilter(innerKey, innerValue);
-                conditions.push(nestedConditions);
-              } else {
-                switch (innerKey) {
-                  // null filters
-                  case 'isNull':
-                    conditions.push(
-                      `${filterKey} IS ${innerValue ? 'NULL' : 'NOT NULL'}`,
-                    );
-                    break;
+              switch (innerKey) {
+                // null filters
+                case 'isNull':
+                  conditions.push(
+                    `${filterKey} IS ${innerValue ? 'NULL' : 'NOT NULL'}`,
+                  );
+                  break;
 
-                  // number and ISO date (YYYY-MM-DD) filters
-                  case 'eq':
-                    values.push(innerValue);
-                    conditions.push(`${filterKey} = ?`);
-                    break;
-                  case 'ne':
-                    values.push(innerValue);
-                    conditions.push(`${filterKey} != ?`);
-                    break;
-                  case 'gt':
-                    values.push(innerValue);
-                    conditions.push(`${filterKey} > ?`);
-                    break;
-                  case 'gte':
-                    values.push(innerValue);
-                    conditions.push(`${filterKey} >= ?`);
-                    break;
-                  case 'lt':
-                    values.push(innerValue);
-                    conditions.push(`${filterKey} < ?`);
-                    break;
-                  case 'lte':
-                    values.push(innerValue);
-                    conditions.push(`${filterKey} <= ?`);
-                    break;
+                // number and ISO date (YYYY-MM-DD) filters
+                case 'eq':
+                  values.push(innerValue);
+                  conditions.push(`${filterKey} = ?`);
+                  break;
+                case 'ne':
+                  values.push(innerValue);
+                  conditions.push(`${filterKey} != ?`);
+                  break;
+                case 'gt':
+                  values.push(innerValue);
+                  conditions.push(`${filterKey} > ?`);
+                  break;
+                case 'gte':
+                  values.push(innerValue);
+                  conditions.push(`${filterKey} >= ?`);
+                  break;
+                case 'lt':
+                  values.push(innerValue);
+                  conditions.push(`${filterKey} < ?`);
+                  break;
+                case 'lte':
+                  values.push(innerValue);
+                  conditions.push(`${filterKey} <= ?`);
+                  break;
 
-                  // string filters
-                  case 'exact':
-                    values.push(innerValue);
-                    conditions.push(`${filterKey} = ?`);
-                    break;
-                  case 'contains':
-                    values.push(`%${innerValue}%`);
-                    conditions.push(`${filterKey} LIKE ?`);
-                    break;
-                  case 'startsWith':
-                    values.push(`${innerValue}%`);
-                    conditions.push(`${filterKey} LIKE ?`);
-                    break;
-                  case 'endsWith':
-                    values.push(`%${innerValue}`);
-                    conditions.push(`${filterKey} LIKE ?`);
-                    break;
+                // string filters
+                case 'exact':
+                  values.push(innerValue);
+                  conditions.push(`${filterKey} = ?`);
+                  break;
+                case 'contains':
+                  values.push(`%${innerValue}%`);
+                  conditions.push(`${filterKey} LIKE ?`);
+                  break;
+                case 'startsWith':
+                  values.push(`${innerValue}%`);
+                  conditions.push(`${filterKey} LIKE ?`);
+                  break;
+                case 'endsWith':
+                  values.push(`%${innerValue}`);
+                  conditions.push(`${filterKey} LIKE ?`);
+                  break;
 
-                  default:
-                    throw new Error(`Invalid filter key: ${innerKey}`);
-                }
+                default:
+                  throw new Error(`Invalid filter key: ${innerKey}`);
               }
             });
           } else {

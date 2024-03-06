@@ -10,22 +10,33 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
-  input CandidateInput {
-    candidateId: StringFilter
-    personId: StringFilter
-    raceId: StringFilter
+  input CandidateCreateInput {
+    candidateId: ID
+    personId: ID!
+    raceId: ID!
+  }
+
+  input CandidateUpdateInput {
+    personId: ID
+    raceId: ID
+  }
+
+  input CandidateFilter {
+    candidateId: IdFilter
+    personId: IdFilter
+    raceId: IdFilter
     createdAt: NumberFilter
     updatedAt: NumberFilter
   }
 
   extend type Query {
-    allCandidates(filter: CandidateInput): [Candidate!]!
+    allCandidates(filter: CandidateFilter): [Candidate!]!
     candidateById(id: ID!): Candidate
   }
 
   extend type Mutation {
-    createCandidate(input: CandidateInput!): Candidate
-    updateCandidate(id: ID!, input: CandidateInput!): Candidate
+    createCandidate(input: CandidateCreateInput!): Candidate
+    updateCandidate(id: ID!, input: CandidateUpdateInput!): Candidate
     deleteCandidate(id: ID!): Candidate
   }
 `;

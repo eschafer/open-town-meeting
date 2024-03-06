@@ -9,10 +9,25 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
-  input TermInput {
-    termId: StringFilter
-    personId: StringFilter
-    officeId: StringFilter
+  input TermCreateInput {
+    termId: ID
+    personId: ID!
+    officeId: ID!
+    startDate: String!
+    endDate: String!
+  }
+
+  input TermUpdateInput {
+    personId: ID
+    officeId: ID
+    startDate: String
+    endDate: String
+  }
+
+  input TermFilter {
+    termId: IdFilter
+    personId: IdFilter
+    officeId: IdFilter
     startDate: DateFilter
     endDate: DateFilter
     createdAt: NumberFilter
@@ -20,13 +35,13 @@ const typeDefs = /* GraphQL */ `
   }
 
   extend type Query {
-    allTerms(filter: TermInput): [Term!]!
+    allTerms(filter: TermFilter): [Term!]!
     termById(id: ID!): Term
   }
 
   extend type Mutation {
-    createTerm(input: TermInput!): Term
-    updateTerm(id: ID!, input: TermInput!): Term
+    createTerm(input: TermCreateInput!): Term
+    updateTerm(id: ID!, input: TermUpdateInput!): Term
     deleteTerm(id: ID!): Term
   }
 `;

@@ -39,8 +39,21 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
-  input PrecinctInput {
-    precinctId: StringFilter
+  input PrecinctCreateInput {
+    precinctId: ID
+    precinctNumber: Int!
+    censusYear: Int!
+    pollingPlace: String
+  }
+
+  input PrecinctUpdateInput {
+    precinctNumber: Int
+    censusYear: Int
+    pollingPlace: String
+  }
+
+  input PrecinctFilter {
+    precinctId: IdFilter
     precinctNumber: NumberFilter
     censusYear: NumberFilter
     pollingPlace: StringFilterNullable
@@ -49,13 +62,13 @@ const typeDefs = /* GraphQL */ `
   }
 
   type Query {
-    allPrecincts(filter: PrecinctInput): [Precinct!]!
+    allPrecincts(filter: PrecinctFilter): [Precinct!]!
     precinctById(id: ID!): Precinct
   }
 
   type Mutation {
-    createPrecinct(input: PrecinctInput!): Precinct
-    updatePrecinct(id: ID!, input: PrecinctInput!): Precinct
+    createPrecinct(input: PrecinctCreateInput!): Precinct
+    updatePrecinct(id: ID!, input: PrecinctUpdateInput!): Precinct
     deletePrecinct(id: ID!): Precinct
   }
 `;

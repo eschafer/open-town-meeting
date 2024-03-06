@@ -11,8 +11,21 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
-  input CommitteeInput {
-    committeeId: StringFilter
+  input CommitteeCreateInput {
+    committeeId: ID
+    committeeName: String!
+    committeeDescription: String
+    committeeUrl: String
+  }
+
+  input CommitteeUpdateInput {
+    committeeName: String
+    committeeDescription: String
+    committeeUrl: String
+  }
+
+  input CommitteeFilter {
+    committeeId: IdFilter
     committeeName: StringFilter
     committeeDescription: StringFilterNullable
     committeeUrl: StringFilterNullable
@@ -21,13 +34,13 @@ const typeDefs = /* GraphQL */ `
   }
 
   extend type Query {
-    allCommittees(filter: CommitteeInput): [Committee!]!
+    allCommittees(filter: CommitteeFilter): [Committee!]!
     committeeById(id: ID!): Committee
   }
 
   extend type Mutation {
-    createCommittee(input: CommitteeInput!): Committee
-    updateCommittee(id: ID!, input: CommitteeInput!): Committee
+    createCommittee(input: CommitteeCreateInput!): Committee
+    updateCommittee(id: ID!, input: CommitteeUpdateInput!): Committee
     deleteCommittee(id: ID!): Committee
   }
 `;

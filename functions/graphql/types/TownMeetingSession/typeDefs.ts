@@ -10,8 +10,19 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
-  input TownMeetingSessionInput {
-    townMeetingSessionId: StringFilter
+  input TownMeetingSessionCreateInput {
+    townMeetingSessionId: ID
+    startDate: String!
+    sessionName: String!
+  }
+
+  input TownMeetingSessionUpdateInput {
+    startDate: String
+    sessionName: String
+  }
+
+  input TownMeetingSessionFilter {
+    townMeetingSessionId: IdFilter
     startDate: DateFilter
     sessionName: StringFilter
     createdAt: NumberFilter
@@ -20,18 +31,18 @@ const typeDefs = /* GraphQL */ `
 
   extend type Query {
     allTownMeetingSessions(
-      filter: TownMeetingSessionInput
+      filter: TownMeetingSessionFilter
     ): [TownMeetingSession!]!
     townMeetingSessionById(id: ID!): TownMeetingSession
   }
 
   extend type Mutation {
     createTownMeetingSession(
-      input: TownMeetingSessionInput!
+      input: TownMeetingSessionCreateInput!
     ): TownMeetingSession
     updateTownMeetingSession(
       id: ID!
-      input: TownMeetingSessionInput!
+      input: TownMeetingSessionUpdateInput!
     ): TownMeetingSession
     deleteTownMeetingSession(id: ID!): TownMeetingSession
   }

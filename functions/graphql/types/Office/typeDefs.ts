@@ -11,22 +11,33 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
-  input OfficeInput {
-    officeId: StringFilter
+  input OfficeCreateInput {
+    officeId: ID
+    officeName: String!
+    precinctId: ID
+  }
+
+  input OfficeUpdateInput {
+    officeName: String
+    precinctId: ID
+  }
+
+  input OfficeFilter {
+    officeId: IdFilter
     officeName: StringFilter
-    precinctId: StringFilterNullable
+    precinctId: IdFilterNullable
     createdAt: NumberFilter
     updatedAt: NumberFilter
   }
 
   extend type Query {
-    allOffices(filter: OfficeInput): [Office!]!
+    allOffices(filter: OfficeFilter): [Office!]!
     officeById(id: ID!): Office
   }
 
   extend type Mutation {
-    createOffice(input: OfficeInput!): Office
-    updateOffice(id: ID!, input: OfficeInput!): Office
+    createOffice(input: OfficeCreateInput!): Office
+    updateOffice(id: ID!, input: OfficeUpdateInput!): Office
     deleteOffice(id: ID!): Office
   }
 `;

@@ -3,30 +3,43 @@ const typeDefs = /* GraphQL */ `
     townMeetingVoteId: ID!
     person: Person!
     motion: Motion!
-    voteType: VoteType
+    voteType: VoteType!
     createdAt: Int!
     updatedAt: Int!
   }
 
-  input TownMeetingVoteInput {
-    townMeetingVoteId: StringFilter
-    personId: StringFilter
-    motionId: StringFilter
-    voteTypeId: StringFilterNullable
+  input TownMeetingVoteCreateInput {
+    townMeetingVoteId: ID
+    personId: ID!
+    motionId: ID!
+    voteTypeId: ID!
+  }
+
+  input TownMeetingVoteUpdateInput {
+    personId: ID
+    motionId: ID
+    voteTypeId: ID
+  }
+
+  input TownMeetingVoteFilter {
+    townMeetingVoteId: IdFilter
+    personId: IdFilter
+    motionId: IdFilter
+    voteTypeId: IdFilter
     createdAt: NumberFilter
     updatedAt: NumberFilter
   }
 
   extend type Query {
-    allTownMeetingVotes(filter: TownMeetingVoteInput): [TownMeetingVote!]!
+    allTownMeetingVotes(filter: TownMeetingVoteFilter): [TownMeetingVote!]!
     townMeetingVoteById(id: ID!): TownMeetingVote
   }
 
   extend type Mutation {
-    createTownMeetingVote(input: TownMeetingVoteInput!): TownMeetingVote
+    createTownMeetingVote(input: TownMeetingVoteCreateInput!): TownMeetingVote
     updateTownMeetingVote(
       id: ID!
-      input: TownMeetingVoteInput!
+      input: TownMeetingVoteUpdateInput!
     ): TownMeetingVote
     deleteTownMeetingVote(id: ID!): TownMeetingVote
   }

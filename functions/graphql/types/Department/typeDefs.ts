@@ -7,8 +7,19 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
-  input DepartmentInput {
-    departmentId: StringFilter
+  input DepartmentCreateInput {
+    departmentId: ID
+    departmentName: String!
+    departmentUrl: String
+  }
+
+  input DepartmentUpdateInput {
+    departmentName: String
+    departmentUrl: String
+  }
+
+  input DepartmentFilter {
+    departmentId: IdFilter
     departmentName: StringFilter
     departmentUrl: StringFilterNullable
     createdAt: NumberFilter
@@ -16,13 +27,13 @@ const typeDefs = /* GraphQL */ `
   }
 
   extend type Query {
-    allDepartments(filter: DepartmentInput): [Department!]!
+    allDepartments(filter: DepartmentFilter): [Department!]!
     departmentById(id: ID!): Department
   }
 
   extend type Mutation {
-    createDepartment(input: DepartmentInput!): Department
-    updateDepartment(id: ID!, input: DepartmentInput!): Department
+    createDepartment(input: DepartmentCreateInput!): Department
+    updateDepartment(id: ID!, input: DepartmentUpdateInput!): Department
     deleteDepartment(id: ID!): Department
   }
 `;

@@ -12,9 +12,24 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
-  input WarrantArticleInput {
-    warrantArticleId: StringFilter
-    townMeetingSessionId: StringFilter
+  input WarrantArticleCreateInput {
+    warrantArticleId: ID
+    townMeetingSessionId: ID!
+    articleNumber: Int!
+    articleTitle: String!
+    articleDescription: String
+  }
+
+  input WarrantArticleUpdateInput {
+    townMeetingSessionId: ID
+    articleNumber: Int
+    articleTitle: String
+    articleDescription: String
+  }
+
+  input WarrantArticleFilter {
+    warrantArticleId: IdFilter
+    townMeetingSessionId: IdFilter
     articleNumber: NumberFilter
     articleTitle: StringFilter
     articleDescription: StringFilterNullable
@@ -23,13 +38,16 @@ const typeDefs = /* GraphQL */ `
   }
 
   extend type Query {
-    allWarrantArticles(filter: WarrantArticleInput): [WarrantArticle!]!
+    allWarrantArticles(filter: WarrantArticleFilter): [WarrantArticle!]!
     warrantArticleById(id: ID!): WarrantArticle
   }
 
   extend type Mutation {
-    createWarrantArticle(input: WarrantArticleInput!): WarrantArticle
-    updateWarrantArticle(id: ID!, input: WarrantArticleInput!): WarrantArticle
+    createWarrantArticle(input: WarrantArticleCreateInput!): WarrantArticle
+    updateWarrantArticle(
+      id: ID!
+      input: WarrantArticleUpdateInput!
+    ): WarrantArticle
     deleteWarrantArticle(id: ID!): WarrantArticle
   }
 `;

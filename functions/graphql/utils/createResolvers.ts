@@ -39,10 +39,10 @@ type Resolvers = {
   };
 };
 
-function createNestedResolver(
+const createNestedResolver = (
   { singularName, tableName, idName }: ResolverConfig,
   parentSingularName: string,
-) {
+) => {
   const nestedResolver: { [key: string]: { [key: string]: ResolverFunction } } =
     {
       [parentSingularName.charAt(0).toUpperCase() +
@@ -97,13 +97,13 @@ function createNestedResolver(
     };
 
   return nestedResolver;
-}
+};
 
-function createNestedGroupResolver(
+const createNestedGroupResolver = (
   { singularName, pluralName, tableName, idName }: ResolverConfig,
   parentSingularName: string,
   parentIdName: string,
-): Record<string, Record<string, unknown>> {
+): Record<string, Record<string, unknown>> => {
   const nestedGroupResolver: {
     [key: string]: { [key: string]: ResolverFunction };
   } = {
@@ -154,9 +154,9 @@ function createNestedGroupResolver(
   };
 
   return nestedGroupResolver;
-}
+};
 
-function createNestedResolvers(config: ResolverConfig): Resolvers[] {
+const createNestedResolvers = (config: ResolverConfig): Resolvers[] => {
   const { nested } = config;
   if (!nested || nested.length === 0) {
     return [];
@@ -165,9 +165,9 @@ function createNestedResolvers(config: ResolverConfig): Resolvers[] {
   return nested.map((type) => {
     return createNestedResolver(type, config.singularName);
   });
-}
+};
 
-function createNestedGroupResolvers(config: ResolverConfig): Resolvers[] {
+const createNestedGroupResolvers = (config: ResolverConfig): Resolvers[] => {
   const { nestedGroup } = config;
   if (!nestedGroup || nestedGroup.length === 0) {
     return [];
@@ -176,14 +176,14 @@ function createNestedGroupResolvers(config: ResolverConfig): Resolvers[] {
   return nestedGroup.map((type) => {
     return createNestedGroupResolver(type, config.singularName, config.idName);
   });
-}
+};
 
 /*
  * Create resolvers for a given type
  */
-export function createResolvers(
+export const createResolvers = (
   config: ResolverConfig,
-): Record<string, Record<string, unknown>> {
+): Record<string, Record<string, unknown>> => {
   // Create resolvers for nested types
   const nestedResolvers: Resolvers[] = createNestedResolvers(config);
 
@@ -433,4 +433,4 @@ export function createResolvers(
   );
 
   return resolvers;
-}
+};

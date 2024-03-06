@@ -241,6 +241,10 @@ const executeQuery = async (query: string, values: Array<unknown>, context) => {
   const ps = context.db.prepare(query).bind(...values);
   const data = await ps.all();
 
+  if (!data.success) {
+    throw new Error(`Failed to execute query: ${query}`);
+  }
+
   return data.results.map(mapKeysToCamelCase);
 };
 
@@ -298,72 +302,73 @@ export const createResolvers = (
     },
   };
 
+  const createItemName = `create${singularName.charAt(0).toUpperCase() + singularName.slice(1)}`;
+  const updateItemName = `update${singularName.charAt(0).toUpperCase() + singularName.slice(1)}`;
+
   // Create resolvers for mutations
   const mutationObject: {
     [key: string]: ResolverFunction;
   } = {
-    [`create${singularName.charAt(0).toUpperCase() + singularName.slice(1)}`]:
-      async (root, args, context) => {
-        const timestamp = getUnixTimestamp();
+    [createItemName]: async (root, args, context) => {
+      const timestamp = getUnixTimestamp();
 
-        const input = Object.assign({}, mapKeysToSnakeCase(args.input), {
-          created_at: timestamp,
-          updated_at: timestamp,
-        });
+      const input = Object.assign({}, mapKeysToSnakeCase(args.input), {
+        created_at: timestamp,
+        updated_at: timestamp,
+      });
 
-        const keys = Object.keys(input);
-        const values = Object.values(input);
-        const placeholders = keys.map(() => '?').join(', ');
-        const query = `INSERT INTO ${tableName} (${keys.join(
-          ', ',
-        )}) VALUES (${placeholders})`;
+      const keys = Object.keys(input);
+      const values = Object.values(input);
+      const placeholders = keys.map(() => '?').join(', ');
+      const query = `INSERT INTO ${tableName} (${keys.join(
+        ', ',
+      )}) VALUES (${placeholders})`;
 
-        const ps = context.db.prepare(query).bind(...values);
-        const data = await ps.all();
+      const ps = context.db.prepare(query).bind(...values);
+      const data = await ps.all();
 
-        if (!data.success) {
-          throw new Error(`Failed to create ${singularName}`);
-        }
+      if (!data.success) {
+        throw new Error(`Failed to create ${singularName}`);
+      }
 
-        return {
-          ...args.input,
-          [camelCase(idName)]: data.meta.last_row_id,
-          createdAt: timestamp,
-          updatedAt: timestamp,
-        };
-      },
-    [`update${singularName.charAt(0).toUpperCase() + singularName.slice(1)}`]:
-      async (root, args, context) => {
-        const timestamp = getUnixTimestamp();
+      return {
+        ...args.input,
+        [camelCase(idName)]: data.meta.last_row_id,
+        createdAt: timestamp,
+        updatedAt: timestamp,
+      };
+    },
+    [updateItemName]: async (root, args, context) => {
+      const timestamp = getUnixTimestamp();
 
-        if (!args.id) {
-          throw new Error(`No ${tableName} found with id ${args.id}`);
-        }
+      if (!args.id) {
+        throw new Error(`No ${tableName} found with id ${args.id}`);
+      }
 
-        const input = Object.assign({}, mapKeysToSnakeCase(args.input), {
-          updated_at: timestamp,
-        });
+      const input = Object.assign({}, mapKeysToSnakeCase(args.input), {
+        updated_at: timestamp,
+      });
 
-        const keys = Object.keys(input);
-        const values = Object.values(input);
-        const placeholders = keys.map((key) => `${key} = ?`).join(', ');
-        const query = `UPDATE ${tableName} SET ${placeholders} WHERE ${idName} = ? LIMIT 1`;
+      const keys = Object.keys(input);
+      const values = Object.values(input);
+      const placeholders = keys.map((key) => `${key} = ?`).join(', ');
+      const query = `UPDATE ${tableName} SET ${placeholders} WHERE ${idName} = ? LIMIT 1`;
 
-        const ps = context.db.prepare(query).bind(...values, args.id);
-        const data = await ps.all();
+      const ps = context.db.prepare(query).bind(...values, args.id);
+      const data = await ps.all();
 
-        if (!data.success) {
-          throw new Error(`Failed to update ${singularName}`);
-        }
+      if (!data.success) {
+        throw new Error(`Failed to update ${singularName}`);
+      }
 
-        // After the update, select the updated row
-        const selectQuery = `SELECT * FROM ${tableName} WHERE ${idName} = ?`;
-        const selectPs = context.db.prepare(selectQuery).bind(args.id);
-        const updatedData = await selectPs.all();
+      // After the update, select the updated row
+      const selectQuery = `SELECT * FROM ${tableName} WHERE ${idName} = ?`;
+      const selectPs = context.db.prepare(selectQuery).bind(args.id);
+      const updatedData = await selectPs.all();
 
-        // Convert the updated row to camel case
-        return mapKeysToCamelCase(updatedData.results[0]);
-      },
+      // Convert the updated row to camel case
+      return mapKeysToCamelCase(updatedData.results[0]);
+    },
     /*[`delete${singularName.charAt(0).toUpperCase() + singularName.slice(1)}`]:
       async (root, args, context) => {
         if (!args.id) {

@@ -178,6 +178,77 @@ const createNestedGroupResolvers = (config: ResolverConfig): Resolvers[] => {
   });
 };
 
+const processFilter = (filterKeyCamelCase, filterValue) => {
+  const filterKey = snakeCase(filterKeyCamelCase);
+  const conditions = [];
+  if (filterValue && typeof filterValue === 'object') {
+    const innerFilters = Object.entries(filterValue);
+    innerFilters.forEach(([innerKey, innerValue]) => {
+      let condition = '';
+      switch (innerKey) {
+        // null filters
+        case 'isNull':
+          condition = `${filterKey} IS ${innerValue ? 'NULL' : 'NOT NULL'}`;
+          conditions.push({ condition });
+          break;
+
+        // number and ISO date (YYYY-MM-DD) filters
+        case 'eq':
+          condition = `${filterKey} = ?`;
+          conditions.push({ condition, value: innerValue });
+          break;
+        case 'ne':
+          condition = `${filterKey} != ?`;
+          conditions.push({ condition, value: innerValue });
+          break;
+        case 'gt':
+          condition = `${filterKey} > ?`;
+          conditions.push({ condition, value: innerValue });
+          break;
+        case 'gte':
+          condition = `${filterKey} >= ?`;
+          conditions.push({ condition, value: innerValue });
+          break;
+        case 'lt':
+          condition = `${filterKey} < ?`;
+          conditions.push({ condition, value: innerValue });
+          break;
+        case 'lte':
+          condition = `${filterKey} <= ?`;
+          conditions.push({ condition, value: innerValue });
+          break;
+
+        // string filters
+        case 'exact':
+          condition = `${filterKey} = ?`;
+          conditions.push({ condition, value: innerValue });
+          break;
+        case 'contains':
+          condition = `${filterKey} LIKE ?`;
+          conditions.push({ condition, value: `%${innerValue}%` });
+          break;
+        case 'startsWith':
+          condition = `${filterKey} LIKE ?`;
+          conditions.push({ condition, value: `${innerValue}%` });
+          break;
+        case 'endsWith':
+          condition = `${filterKey} LIKE ?`;
+          conditions.push({ condition, value: `%${innerValue}` });
+          break;
+
+        default:
+          throw new Error(`Invalid filter key: ${innerKey}`);
+      }
+    });
+  } else {
+    conditions.push({
+      condition: `${filterKey} = ?`,
+      value: filterValue,
+    });
+  }
+  return conditions;
+};
+
 /*
  * Create resolvers for a given type
  */
@@ -211,77 +282,6 @@ export const createResolvers = (
       if (args.filter) {
         const filter = mapKeysToSnakeCase(args.filter);
         const filters = Object.entries(filter);
-
-        const processFilter = (filterKeyCamelCase, filterValue) => {
-          const filterKey = snakeCase(filterKeyCamelCase);
-          const conditions = [];
-          if (filterValue && typeof filterValue === 'object') {
-            const innerFilters = Object.entries(filterValue);
-            innerFilters.forEach(([innerKey, innerValue]) => {
-              let condition = '';
-              switch (innerKey) {
-                // null filters
-                case 'isNull':
-                  condition = `${filterKey} IS ${innerValue ? 'NULL' : 'NOT NULL'}`;
-                  conditions.push({ condition });
-                  break;
-
-                // number and ISO date (YYYY-MM-DD) filters
-                case 'eq':
-                  condition = `${filterKey} = ?`;
-                  conditions.push({ condition, value: innerValue });
-                  break;
-                case 'ne':
-                  condition = `${filterKey} != ?`;
-                  conditions.push({ condition, value: innerValue });
-                  break;
-                case 'gt':
-                  condition = `${filterKey} > ?`;
-                  conditions.push({ condition, value: innerValue });
-                  break;
-                case 'gte':
-                  condition = `${filterKey} >= ?`;
-                  conditions.push({ condition, value: innerValue });
-                  break;
-                case 'lt':
-                  condition = `${filterKey} < ?`;
-                  conditions.push({ condition, value: innerValue });
-                  break;
-                case 'lte':
-                  condition = `${filterKey} <= ?`;
-                  conditions.push({ condition, value: innerValue });
-                  break;
-
-                // string filters
-                case 'exact':
-                  condition = `${filterKey} = ?`;
-                  conditions.push({ condition, value: innerValue });
-                  break;
-                case 'contains':
-                  condition = `${filterKey} LIKE ?`;
-                  conditions.push({ condition, value: `%${innerValue}%` });
-                  break;
-                case 'startsWith':
-                  condition = `${filterKey} LIKE ?`;
-                  conditions.push({ condition, value: `${innerValue}%` });
-                  break;
-                case 'endsWith':
-                  condition = `${filterKey} LIKE ?`;
-                  conditions.push({ condition, value: `%${innerValue}` });
-                  break;
-
-                default:
-                  throw new Error(`Invalid filter key: ${innerKey}`);
-              }
-            });
-          } else {
-            conditions.push({
-              condition: `${filterKey} = ?`,
-              value: filterValue,
-            });
-          }
-          return conditions;
-        };
 
         const conditions = filters.flatMap(([key, value]) =>
           processFilter(key, value),

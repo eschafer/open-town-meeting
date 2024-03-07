@@ -22,7 +22,7 @@ import type { User } from 'firebase/auth';
 
 // See root.tsx for the loader function.
 
-export default function MainContent() {
+export default function PublicLayout() {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
 
   const auth = useAuth();

@@ -20,16 +20,23 @@ interface GraphQLRequestBody {
 
 const schema = makeExecutableSchema({ typeDefs, resolvers });
 
+const createErrorResponse = (message: string, status: number) => {
+  return new Response(JSON.stringify({ error: message }), {
+    headers: { 'Content-Type': 'application/json' },
+    status,
+  });
+};
+
 export async function onRequest({ request, env }: CustomFetchEvent) {
   const url = new URL(request.url);
-  const contentType = request.headers.get('content-type');
+  const contentType = (request.headers.get('content-type') || '').split(';')[0];
 
   if (request.method !== 'POST') {
-    return new Response('Method not allowed', { status: 405 });
+    return createErrorResponse('Method not allowed', 405);
   }
 
   if (contentType === null) {
-    return new Response('Content-Type header is required', { status: 400 });
+    return createErrorResponse('Content-Type header is required', 400);
   }
 
   if (url.pathname === '/graphql' && contentType.includes('application/json')) {
@@ -37,7 +44,7 @@ export async function onRequest({ request, env }: CustomFetchEvent) {
     const { query, variables } = body;
 
     if (!query) {
-      return new Response('Query is required', { status: 400 });
+      return createErrorResponse('Query is required', 400);
     }
 
     const operationType = query.trim().startsWith('mutation')
@@ -49,17 +56,13 @@ export async function onRequest({ request, env }: CustomFetchEvent) {
       const userToken = cookies.userToken;
 
       if (!userToken) {
-        return new Response(JSON.stringify({ error: 'Missing user token' }), {
-          status: 401,
-        });
+        return createErrorResponse('Missing user token', 401);
       }
 
       try {
         await validateFirebaseIdToken(userToken);
       } catch (error) {
-        return new Response(JSON.stringify({ error: 'Invalid user token' }), {
-          status: 401,
-        });
+        return createErrorResponse('Invalid user token', 401);
       }
     }
 
@@ -72,13 +75,14 @@ export async function onRequest({ request, env }: CustomFetchEvent) {
         rootValue: resolvers,
         contextValue: { db: env.DB },
       });
-      return new Response(JSON.stringify(response), { status: 200 });
-    } catch (error) {
-      return new Response(JSON.stringify({ error: 'Internal server error' }), {
-        status: 500,
+      return new Response(JSON.stringify(response), {
+        headers: { 'Content-Type': 'application/json' },
+        status: 200,
       });
+    } catch (error) {
+      return createErrorResponse('Internal server error', 500);
     }
   } else {
-    return new Response('Not Found', { status: 404 });
+    return createErrorResponse('Not Found', 404);
   }
 }

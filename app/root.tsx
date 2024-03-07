@@ -2,6 +2,7 @@ import {
   Links,
   LiveReload,
   Meta,
+  Outlet,
   Scripts,
   ScrollRestoration,
   useLoaderData,
@@ -11,7 +12,6 @@ import { cssBundleHref } from '@remix-run/css-bundle';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { CssBaseline, GlobalStyles } from '@mui/material';
 import { AuthProvider } from '~/contexts/AuthProvider';
-import MainContent from '~/components/MainContent';
 
 import type { LoaderFunctionArgs } from '@remix-run/cloudflare';
 import type { FirebaseOptions } from 'firebase/app';
@@ -224,7 +224,7 @@ export default function App() {
                   }
                 `}
               />
-              <MainContent />
+              <Outlet />
             </ThemeProvider>
           </AuthProvider>
           <ScrollRestoration />

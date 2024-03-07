@@ -32,14 +32,14 @@ const AuthContext = createContext<AuthContextType>({
 
 export function AuthProvider({
   children,
-  firebaseConfig,
+  firebaseOptions,
 }: {
   children: ReactNode;
-  firebaseConfig: FirebaseOptions;
+  firebaseOptions: FirebaseOptions;
 }) {
   const [user, setUser] = useState<User | null>(null);
 
-  const app = initializeApp(firebaseConfig);
+  const app = initializeApp(firebaseOptions);
   const auth = getAuth(app);
 
   useEffect(() => {

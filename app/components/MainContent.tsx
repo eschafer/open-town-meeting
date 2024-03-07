@@ -1,6 +1,7 @@
 import { MouseEvent, useState } from 'react';
 import { Link, NavLink, Outlet } from '@remix-run/react';
 import {
+  Alert,
   AppBar,
   Avatar,
   Box,
@@ -18,6 +19,8 @@ import { Person as PersonIcon } from '@mui/icons-material';
 import { useAuth } from '~/contexts/AuthProvider';
 
 import type { User } from 'firebase/auth';
+
+// See root.tsx for the loader function.
 
 export default function MainContent() {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
@@ -49,10 +52,15 @@ export default function MainContent() {
 
   return (
     <Box display="flex" flexDirection="column" minHeight="100vh">
+      <Alert severity="info">
+        👋 Hi! This is a personal project by Elizabeth Schafer.
+      </Alert>
       <AppBar
         position="static"
         elevation={0}
-        sx={{ backgroundColor: '#ffffff' }}
+        sx={{
+          backgroundColor: '#ffffff',
+        }}
       >
         <a href="#main-content" className="skip-link">
           Skip to main content

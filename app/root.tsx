@@ -16,6 +16,16 @@ import MainContent from '~/components/MainContent';
 import type { LoaderFunctionArgs } from '@remix-run/cloudflare';
 import type { FirebaseOptions } from 'firebase/app';
 
+interface Env {
+  FIREBASE_API_KEY: string;
+  FIREBASE_AUTH_DOMAIN: string;
+  FIREBASE_DATABASE_URL: string;
+  FIREBASE_PROJECT_ID: string;
+  FIREBASE_STORAGE_BUCKET: string;
+  FIREBASE_MESSAGING_SENDER_ID: string;
+  FIREBASE_APP_ID: string;
+}
+
 const FONTS = {
   INTER: {
     FAMILY:
@@ -117,13 +127,13 @@ const lightTheme = createTheme({
     },
     body1: {
       fontFamily: FONTS.INTER.FAMILY,
-      fontSize: '1.22rem',
+      fontSize: '1rem',
       fontWeight: 400,
       lineHeight: 1.5,
     },
     body2: {
       fontFamily: FONTS.INTER.FAMILY,
-      fontSize: '1.06rem',
+      fontSize: '1rem',
       fontWeight: 400,
       lineHeight: 1.5,
     },
@@ -154,21 +164,11 @@ const lightTheme = createTheme({
   },
 });
 
-interface Env {
-  FIREBASE_API_KEY: string;
-  FIREBASE_AUTH_DOMAIN: string;
-  FIREBASE_DATABASE_URL: string;
-  FIREBASE_PROJECT_ID: string;
-  FIREBASE_STORAGE_BUCKET: string;
-  FIREBASE_MESSAGING_SENDER_ID: string;
-  FIREBASE_APP_ID: string;
-}
-
 export const loader: LoaderFunction = async (args: LoaderFunctionArgs) => {
   const context = args.context as typeof args.context & { env: Env };
 
   // Google says it's okay to expose the Firebase config in the client
-  const firebaseConfig: FirebaseOptions = {
+  const firebaseOptions: FirebaseOptions = {
     apiKey: context.env.FIREBASE_API_KEY,
     authDomain: context.env.FIREBASE_AUTH_DOMAIN,
     databaseURL: context.env.FIREBASE_DATABASE_URL,
@@ -178,11 +178,11 @@ export const loader: LoaderFunction = async (args: LoaderFunctionArgs) => {
     appId: context.env.FIREBASE_APP_ID,
   };
 
-  return json(firebaseConfig);
+  return json(firebaseOptions);
 };
 
 export default function App() {
-  const firebaseConfig: FirebaseOptions = useLoaderData();
+  const firebaseOptions = useLoaderData<FirebaseOptions>();
 
   return (
     <>
@@ -194,7 +194,7 @@ export default function App() {
           <Links />
         </head>
         <body>
-          <AuthProvider firebaseConfig={firebaseConfig}>
+          <AuthProvider firebaseOptions={firebaseOptions}>
             <ThemeProvider theme={lightTheme}>
               <CssBaseline />
               <GlobalStyles

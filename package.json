@@ -12,8 +12,10 @@
     "start": "wrangler pages dev --compatibility-date=2023-06-21 ./public",
     "typecheck": "tsc",
     "pages:deploy": "npm run build && wrangler pages deploy ./public",
-    "db:command": "node scripts/db-command.js",
-    "db:file": "node scripts/db-file.js"
+    "db:command": "node scripts/db-command.js --location=local --command",
+    "db:command:prod": "node scripts/db-command.js --location=remote --command",
+    "db:file": "node scripts/db-file.js --location=local --file",
+    "db:file:prod": "node scripts/db-file.js --location=remote --file"
   },
   "dependencies": {
     "@emotion/react": "^11.11.3",
@@ -27,6 +29,7 @@
     "@remix-run/css-bundle": "^2.5.1",
     "@remix-run/react": "^2.5.1",
     "@sindresorhus/slugify": "^2.2.1",
+    "arg": "^5.0.2",
     "cookie": "^0.6.0",
     "firebase": "^10.8.0",
     "graphiql": "^3.1.1",

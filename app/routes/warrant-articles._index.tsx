@@ -12,16 +12,17 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
-import { fetchGraphQL } from '../utils';
+import { encodeId, fetchGraphQL } from '../utils';
 import {
   CalendarMonth,
   Gavel,
   SubdirectoryArrowRight,
 } from '@mui/icons-material';
 import Breadcrumbs from '../components/Breadcrumbs';
+import slugify from '@sindresorhus/slugify';
 
 import type { LoaderFunctionArgs } from '@remix-run/cloudflare';
-import type { TownMeetingSession } from '~/types';
+import type { TownMeetingSession, WarrantArticle } from '~/types';
 
 export function ErrorBoundary() {
   const error = useRouteError();
@@ -80,10 +81,9 @@ export const loader: LoaderFunction = async ({
 export default function WarrantArticles() {
   const sessions: TownMeetingSession[] = useLoaderData();
 
-  const articles = sessions.reduce((acc, session) => {
+  const articles: WarrantArticle[] = sessions.reduce((acc, session) => {
     return acc.concat(session.warrantArticles);
   }, []);
-  console.log(articles);
 
   return (
     <>
@@ -121,7 +121,7 @@ export default function WarrantArticles() {
                   <Stack direction="column" spacing={1}>
                     <Typography variant="h5">
                       <Link
-                        to={`${article.warrantArticleId}/WA${article.articleNumber}-${article.articleTitle}`}
+                        to={`wa-${article.articleNumber}-${slugify(article.articleTitle)}-${encodeId(article.warrantArticleId)}`}
                       >
                         {article.articleTitle}
                       </Link>

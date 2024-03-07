@@ -7,7 +7,7 @@ import {
 import Typography from '@mui/material/Typography';
 import Markdown from 'react-markdown';
 import Breadcrumbs from '../components/Breadcrumbs';
-import { fetchGraphQL } from '~/utils';
+import { decodeId, fetchGraphQL } from '~/utils';
 
 import type { WarrantArticle } from '~/types';
 
@@ -38,9 +38,19 @@ export function ErrorBoundary() {
 }
 
 export async function loader({ params, request }: LoaderFunctionArgs) {
+  if (!params.slug) {
+    throw new Error('Invalid warrant article slug');
+  }
+
+  const slug = params.slug;
+  const lastHyphenPosition = slug.lastIndexOf('-');
+
+  const encodedId = slug.substring(lastHyphenPosition + 1);
+  const id = decodeId(encodedId);
+
   const query = `
     query AllWarrantArticles {
-      allWarrantArticles(filter: { warrantArticleId: { eq: "${params.id}" } }) {
+      allWarrantArticles(filter: { warrantArticleId: { eq: "${id}" } }) {
         articleNumber
         articleTitle
         articleDescription

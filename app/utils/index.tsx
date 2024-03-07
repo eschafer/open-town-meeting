@@ -1,3 +1,4 @@
+import { encodeId, decodeId } from './sqids';
 import fetchGraphQL from './fetch-graphql.server';
 
-export { fetchGraphQL };
+export { encodeId, decodeId, fetchGraphQL };

@@ -26,6 +26,7 @@
     "@remix-run/cloudflare-pages": "^2.5.1",
     "@remix-run/css-bundle": "^2.5.1",
     "@remix-run/react": "^2.5.1",
+    "@sindresorhus/slugify": "^2.2.1",
     "cookie": "^0.6.0",
     "firebase": "^10.8.0",
     "graphiql": "^3.1.1",
@@ -35,7 +36,8 @@
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-markdown": "^9.0.1"
+    "react-markdown": "^9.0.1",
+    "sqids": "^0.3.0"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240129.0",

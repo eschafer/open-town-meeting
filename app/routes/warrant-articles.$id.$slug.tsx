@@ -40,7 +40,7 @@ export function ErrorBoundary() {
 export async function loader({ params, request }: LoaderFunctionArgs) {
   const query = `
     query AllWarrantArticles {
-      allWarrantArticles(filter: { warrantArticleId: "${params.id}" }) {
+      allWarrantArticles(filter: { warrantArticleId: { eq: "${params.id}" } }) {
         articleNumber
         articleTitle
         articleDescription

@@ -1,4 +1,4 @@
-import { json } from '@remix-run/cloudflare';
+import { json, LoaderFunction } from '@remix-run/cloudflare';
 import {
   useLoaderData,
   isRouteErrorResponse,
@@ -20,7 +20,8 @@ import {
 } from '@mui/icons-material';
 import Breadcrumbs from '../components/Breadcrumbs';
 
-import type { WarrantArticle } from '~/types';
+import type { LoaderFunctionArgs } from '@remix-run/cloudflare';
+import type { TownMeetingSession } from '~/types';
 
 export function ErrorBoundary() {
   const error = useRouteError();
@@ -48,36 +49,41 @@ export function ErrorBoundary() {
   }
 }
 
-export const loader = async ({ request }: { request: Request }) => {
+export const loader: LoaderFunction = async ({
+  request,
+}: LoaderFunctionArgs) => {
   const query = `
-    query AllWarrantArticles {
-      allWarrantArticles {
-        warrantArticleId
-        articleNumber
-        articleTitle
-        articleDescription
-        createdAt
-        updatedAt
-        townMeetingSession {
-          townMeetingSessionId
-          startDate
-          sessionName
-          createdAt
-          updatedAt
+    query AllTownMeetingSessions {
+      allTownMeetingSessions(filter: { startDate: { gte: "2024-01-01", lte: "2024-12-31" } }) {
+        warrantArticles {
+          warrantArticleId
+          articleNumber
+          articleTitle
+          articleDescription
+          townMeetingSession {
+            townMeetingSessionId
+            startDate
+            sessionName
+          }
         }
       }
     }
   `;
 
   const data = (await fetchGraphQL({ query, request })) as {
-    allWarrantArticles: WarrantArticle[];
+    allTownMeetingSessions: TownMeetingSession[];
   };
 
-  return json(data.allWarrantArticles);
+  return json(data.allTownMeetingSessions);
 };
 
 export default function WarrantArticles() {
-  const rows: WarrantArticle[] = useLoaderData();
+  const sessions: TownMeetingSession[] = useLoaderData();
+
+  const articles = sessions.reduce((acc, session) => {
+    return acc.concat(session.warrantArticles);
+  }, []);
+  console.log(articles);
 
   return (
     <>
@@ -92,7 +98,7 @@ export default function WarrantArticles() {
         spacing={3}
         sx={{ margin: 0, padding: 0, width: '100%', listStyle: 'none' }}
       >
-        {rows.map((item, index) => (
+        {articles.map((article, index) => (
           <Grid
             component="li"
             item
@@ -110,23 +116,23 @@ export default function WarrantArticles() {
               <CardContent>
                 <Stack direction="row" spacing={1}>
                   <Typography variant="h5" component="div">
-                    WA-{item.articleNumber}
+                    WA-{article.articleNumber}
                   </Typography>
                   <Stack direction="column" spacing={1}>
                     <Typography variant="h5">
                       <Link
-                        to={`${item.warrantArticleId}/WA${item.articleNumber}-${item.articleTitle}`}
+                        to={`${article.warrantArticleId}/WA${article.articleNumber}-${article.articleTitle}`}
                       >
-                        {item.articleTitle}
+                        {article.articleTitle}
                       </Link>
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                      {item.articleDescription}
+                      {article.articleDescription}
                     </Typography>
                     <Stack direction="row" spacing={1}>
                       <Chip
                         label={new Date(
-                          item.townMeetingSession.startDate,
+                          article.townMeetingSession.startDate,
                         ).getFullYear()}
                         icon={<CalendarMonth style={{ color: '#5c4809' }} />}
                         size="small"
@@ -146,9 +152,9 @@ export default function WarrantArticles() {
                         }}
                       />
                       {/* this is for stm within tm */}
-                      {item.townMeetingSession.sessionName !== 'ATM' && (
+                      {article.townMeetingSession.sessionName !== 'ATM' && (
                         <Chip
-                          label={item.townMeetingSession.sessionName}
+                          label={article.townMeetingSession.sessionName}
                           icon={
                             <SubdirectoryArrowRight
                               style={{ color: '#ffffff' }}

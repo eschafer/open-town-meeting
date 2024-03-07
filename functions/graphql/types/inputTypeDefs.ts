@@ -1,4 +1,15 @@
 const typeDefs = /* GraphQL */ `
+  input IdFilter {
+    eq: ID
+    ne: ID
+  }
+
+  input IdFilterNullable {
+    eq: ID
+    ne: ID
+    isNull: Boolean
+  }
+
   input NumberFilter {
     eq: Int
     ne: Int

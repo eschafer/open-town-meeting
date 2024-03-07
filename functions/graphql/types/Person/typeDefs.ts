@@ -19,8 +19,29 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
-  input PersonInput {
-    personId: StringFilter
+  input PersonCreateInput {
+    personId: ID
+    firstName: String!
+    middleName: String
+    lastName: String!
+    nameSuffix: String
+    address: String
+    email: String
+    phone: String
+  }
+
+  input PersonUpdateInput {
+    firstName: String
+    middleName: String
+    lastName: String
+    nameSuffix: String
+    address: String
+    email: String
+    phone: String
+  }
+
+  input PersonFilter {
+    personId: IdFilter
     firstName: StringFilter
     middleName: StringFilterNullable
     lastName: StringFilter
@@ -33,13 +54,13 @@ const typeDefs = /* GraphQL */ `
   }
 
   extend type Query {
-    allPeople(filter: PersonInput): [Person!]!
+    allPeople(filter: PersonFilter): [Person!]!
     personById(id: ID!): Person
   }
 
   extend type Mutation {
-    createPerson(input: PersonInput!): Person
-    updatePerson(id: ID!, input: PersonInput!): Person
+    createPerson(input: PersonCreateInput!): Person
+    updatePerson(id: ID!, input: PersonUpdateInput!): Person
     deletePerson(id: ID!): Person
   }
 `;

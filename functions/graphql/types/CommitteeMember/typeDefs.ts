@@ -1,8 +1,8 @@
 const typeDefs = /* GraphQL */ `
   type CommitteeMember {
     committeeMemberId: ID!
-    committee: Committee
-    person: Person
+    committee: Committee!
+    person: Person!
     startDate: String
     endDate: String
     position: String
@@ -11,10 +11,29 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
-  input CommitteeMemberInput {
-    committeeMemberId: StringFilter
-    committeeId: StringFilterNullable
-    personId: StringFilterNullable
+  input CommitteeMemberCreateInput {
+    committeeMemberId: ID
+    committeeId: ID!
+    personId: ID!
+    startDate: String
+    endDate: String
+    position: String
+    appointingAuthority: String
+  }
+
+  input CommitteeMemberUpdateInput {
+    committeeId: ID
+    personId: ID
+    startDate: String
+    endDate: String
+    position: String
+    appointingAuthority: String
+  }
+
+  input CommitteeMemberFilter {
+    committeeMemberId: IdFilter
+    committeeId: IdFilter
+    personId: IdFilter
     startDate: DateFilterNullable
     endDate: DateFilterNullable
     position: StringFilterNullable
@@ -24,15 +43,15 @@ const typeDefs = /* GraphQL */ `
   }
 
   extend type Query {
-    allCommitteeMembers(filter: CommitteeMemberInput): [CommitteeMember!]!
+    allCommitteeMembers(filter: CommitteeMemberFilter): [CommitteeMember!]!
     committeeMemberById(id: ID!): CommitteeMember
   }
 
   extend type Mutation {
-    createCommitteeMember(input: CommitteeMemberInput!): CommitteeMember
+    createCommitteeMember(input: CommitteeMemberCreateInput!): CommitteeMember
     updateCommitteeMember(
       id: ID!
-      input: CommitteeMemberInput!
+      input: CommitteeMemberUpdateInput!
     ): CommitteeMember
     deleteCommitteeMember(id: ID!): CommitteeMember
   }

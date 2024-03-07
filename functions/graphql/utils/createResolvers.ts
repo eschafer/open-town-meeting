@@ -39,10 +39,10 @@ type Resolvers = {
   };
 };
 
-function createNestedResolver(
+const createNestedResolver = (
   { singularName, tableName, idName }: ResolverConfig,
   parentSingularName: string,
-) {
+) => {
   const nestedResolver: { [key: string]: { [key: string]: ResolverFunction } } =
     {
       [parentSingularName.charAt(0).toUpperCase() +
@@ -97,13 +97,13 @@ function createNestedResolver(
     };
 
   return nestedResolver;
-}
+};
 
-function createNestedGroupResolver(
+const createNestedGroupResolver = (
   { singularName, pluralName, tableName, idName }: ResolverConfig,
   parentSingularName: string,
   parentIdName: string,
-): Record<string, Record<string, unknown>> {
+): Record<string, Record<string, unknown>> => {
   const nestedGroupResolver: {
     [key: string]: { [key: string]: ResolverFunction };
   } = {
@@ -154,9 +154,9 @@ function createNestedGroupResolver(
   };
 
   return nestedGroupResolver;
-}
+};
 
-function createNestedResolvers(config: ResolverConfig): Resolvers[] {
+const createNestedResolvers = (config: ResolverConfig): Resolvers[] => {
   const { nested } = config;
   if (!nested || nested.length === 0) {
     return [];
@@ -165,9 +165,9 @@ function createNestedResolvers(config: ResolverConfig): Resolvers[] {
   return nested.map((type) => {
     return createNestedResolver(type, config.singularName);
   });
-}
+};
 
-function createNestedGroupResolvers(config: ResolverConfig): Resolvers[] {
+const createNestedGroupResolvers = (config: ResolverConfig): Resolvers[] => {
   const { nestedGroup } = config;
   if (!nestedGroup || nestedGroup.length === 0) {
     return [];
@@ -176,14 +176,84 @@ function createNestedGroupResolvers(config: ResolverConfig): Resolvers[] {
   return nestedGroup.map((type) => {
     return createNestedGroupResolver(type, config.singularName, config.idName);
   });
-}
+};
+
+// prettier-ignore
+const operators = {
+  isNull: (key: string, value: boolean) => ({ condition: `${key} IS ${value ? 'NULL' : 'NOT NULL'}` }),
+  eq: (key: string, value: number | string) => ({ condition: `${key} = ?`, value }),
+  ne: (key: string, value: number | string) => ({ condition: `${key} != ?`, value }),
+  gt: (key: string, value: number | string) => ({ condition: `${key} > ?`, value }),
+  gte: (key: string, value: number | string) => ({ condition: `${key} >= ?`, value }),
+  lt: (key: string, value: number | string) => ({ condition: `${key} < ?`, value }),
+  lte: (key: string, value: number | string) => ({ condition: `${key} <= ?`, value }),
+  exact: (key: string, value: string) => ({ condition: `${key} = ?`, value }),
+  contains: (key: string, value: string) => ({ condition: `${key} LIKE ?`, value: `%${value}%` }),
+  startsWith: (key: string, value: string) => ({ condition: `${key} LIKE ?`, value: `${value}%` }),
+  endsWith: (key: string, value: string) => ({ condition: `${key} LIKE ?`, value: `%${value}` }),
+};
+
+const processFilter = (
+  filterKeyCamelCase: string,
+  filterValue: number | string,
+) => {
+  const filterKey = snakeCase(filterKeyCamelCase);
+  const conditions = [];
+  if (filterValue && typeof filterValue === 'object') {
+    const innerFilters = Object.entries(filterValue);
+    innerFilters.forEach(([operatorKey, operatorValue]) => {
+      if (operators[operatorKey]) {
+        conditions.push(operators[operatorKey](filterKey, operatorValue));
+      }
+    });
+  } else {
+    conditions.push({
+      condition: `${filterKey} = ?`,
+      value: filterValue,
+    });
+  }
+  return conditions;
+};
+
+const buildQuery = (tableName: string, filter?: Record<string, unknown>) => {
+  let query = `SELECT * from ${tableName}`;
+  let values: Array<unknown> = [];
+
+  if (filter) {
+    const conditions = Object.entries(mapKeysToSnakeCase(filter)).flatMap(
+      ([filterKeyCamelCase, filterValue]) =>
+        processFilter(filterKeyCamelCase, filterValue),
+    );
+
+    const conditionStrings = conditions
+      .map(({ condition }) => condition)
+      .join(' AND ');
+
+    values = conditions.flatMap(({ value }) => value);
+
+    query += ` WHERE ${conditionStrings}`;
+  }
+
+  return { query, values };
+};
+
+const executeQuery = async (query: string, values: Array<unknown>, context) => {
+  const ps = context.db.prepare(query).bind(...values);
+  const data = await ps.all();
+
+  if (!data.success) {
+    throw new Error(`Failed to execute query: ${query}`);
+  }
+
+  return data.results.map(mapKeysToCamelCase);
+};
 
 /*
  * Create resolvers for a given type
  */
-export function createResolvers(
+export const createResolvers = (
   config: ResolverConfig,
-): Record<string, Record<string, unknown>> {
+): Record<string, Record<string, unknown>> => {
   // Create resolvers for nested types
   const nestedResolvers: Resolvers[] = createNestedResolvers(config);
 
@@ -203,197 +273,102 @@ export function createResolvers(
 
   // Create resolvers for the main type
   const queryObject: { [key: string]: ResolverFunction } = {
+    // allPrecincts, allMotions, etc.
     [listQueryName]: async (root, args, context) => {
-      let query = `SELECT * from ${tableName}`;
-      const values: unknown[] = [];
+      const { query, values } = buildQuery(tableName, args.filter);
+      const results = await executeQuery(query, values, context);
 
-      // If there are filters, add them to the query
-      if (args.filter) {
-        const filter = mapKeysToSnakeCase(args.filter);
-        const filters = Object.entries(filter);
-
-        const processFilter = (filterKeyCamelCase, filterValue) => {
-          const filterKey = snakeCase(filterKeyCamelCase);
-          const conditions = [];
-          if (filterValue && typeof filterValue === 'object') {
-            const innerFilters = Object.entries(filterValue);
-            innerFilters.forEach(([innerKey, innerValue]) => {
-              if (typeof innerValue === 'object') {
-                // Handle nested filters
-                const nestedConditions = processFilter(innerKey, innerValue);
-                conditions.push(nestedConditions);
-              } else {
-                switch (innerKey) {
-                  // null filters
-                  case 'isNull':
-                    conditions.push(
-                      `${filterKey} IS ${innerValue ? 'NULL' : 'NOT NULL'}`,
-                    );
-                    break;
-
-                  // number and ISO date (YYYY-MM-DD) filters
-                  case 'eq':
-                    values.push(innerValue);
-                    conditions.push(`${filterKey} = ?`);
-                    break;
-                  case 'ne':
-                    values.push(innerValue);
-                    conditions.push(`${filterKey} != ?`);
-                    break;
-                  case 'gt':
-                    values.push(innerValue);
-                    conditions.push(`${filterKey} > ?`);
-                    break;
-                  case 'gte':
-                    values.push(innerValue);
-                    conditions.push(`${filterKey} >= ?`);
-                    break;
-                  case 'lt':
-                    values.push(innerValue);
-                    conditions.push(`${filterKey} < ?`);
-                    break;
-                  case 'lte':
-                    values.push(innerValue);
-                    conditions.push(`${filterKey} <= ?`);
-                    break;
-
-                  // string filters
-                  case 'exact':
-                    values.push(innerValue);
-                    conditions.push(`${filterKey} = ?`);
-                    break;
-                  case 'contains':
-                    values.push(`%${innerValue}%`);
-                    conditions.push(`${filterKey} LIKE ?`);
-                    break;
-                  case 'startsWith':
-                    values.push(`${innerValue}%`);
-                    conditions.push(`${filterKey} LIKE ?`);
-                    break;
-                  case 'endsWith':
-                    values.push(`%${innerValue}`);
-                    conditions.push(`${filterKey} LIKE ?`);
-                    break;
-
-                  default:
-                    throw new Error(`Invalid filter key: ${innerKey}`);
-                }
-              }
-            });
-          } else {
-            values.push(filterValue);
-            conditions.push(`${filterKey} = ?`);
-          }
-          return conditions.join(' AND ');
-        };
-
-        const conditions = filters.map(([key, value]) =>
-          processFilter(key, value),
-        );
-        query += ` WHERE ${conditions.join(' AND ')}`;
+      if (results.length === 0) {
+        const filterString = JSON.stringify(args.filter).replace(/\"/g, "'");
+        throw new Error(`No ${tableName} found with filter ${filterString}`);
       }
-
-      const ps = context.db.prepare(query).bind(...values);
-      const data = await ps.all();
-
-      const results = data.results.map(mapKeysToCamelCase);
 
       return results;
     },
+    // precinctById, motionById, etc.
     [itemQueryName]: async (
       root,
       args,
       context,
     ): Promise<Record<string, unknown> | null> => {
-      if (!args.id) {
-        return null;
-      }
+      const query = `SELECT * from ${tableName} WHERE ${idName} = ?`;
+      const results = await executeQuery(query, [args.id], context);
 
-      const ps = context.db
-        .prepare(`SELECT * from ${tableName} WHERE ${idName} = ?`)
-        .bind(args.id);
-      const data = await ps.all();
-
-      if (data.results.length === 0) {
-        return null;
-      }
-
-      const result = mapKeysToCamelCase(data.results[0]);
-
-      if (!data.success) {
+      if (results.length === 0) {
         throw new Error(`No ${tableName} found with id ${args.id}`);
       }
 
-      return result;
+      return results[0];
     },
   };
+
+  const createItemName = `create${singularName.charAt(0).toUpperCase() + singularName.slice(1)}`;
+  const updateItemName = `update${singularName.charAt(0).toUpperCase() + singularName.slice(1)}`;
 
   // Create resolvers for mutations
   const mutationObject: {
     [key: string]: ResolverFunction;
   } = {
-    [`create${singularName.charAt(0).toUpperCase() + singularName.slice(1)}`]:
-      async (root, args, context) => {
-        const timestamp = getUnixTimestamp();
+    [createItemName]: async (root, args, context) => {
+      const timestamp = getUnixTimestamp();
 
-        const input = Object.assign({}, mapKeysToSnakeCase(args.input), {
-          created_at: timestamp,
-          updated_at: timestamp,
-        });
+      const input = Object.assign({}, mapKeysToSnakeCase(args.input), {
+        created_at: timestamp,
+        updated_at: timestamp,
+      });
 
-        const keys = Object.keys(input);
-        const values = Object.values(input);
-        const placeholders = keys.map(() => '?').join(', ');
-        const query = `INSERT INTO ${tableName} (${keys.join(
-          ', ',
-        )}) VALUES (${placeholders})`;
+      const keys = Object.keys(input);
+      const values = Object.values(input);
+      const placeholders = keys.map(() => '?').join(', ');
+      const query = `INSERT INTO ${tableName} (${keys.join(
+        ', ',
+      )}) VALUES (${placeholders})`;
 
-        const ps = context.db.prepare(query).bind(...values);
-        const data = await ps.all();
+      const ps = context.db.prepare(query).bind(...values);
+      const data = await ps.all();
 
-        if (!data.success) {
-          throw new Error(`Failed to create ${singularName}`);
-        }
+      if (!data.success) {
+        throw new Error(`Failed to create ${singularName}`);
+      }
 
-        return {
-          ...args.input,
-          [camelCase(idName)]: data.meta.last_row_id,
-          createdAt: timestamp,
-          updatedAt: timestamp,
-        };
-      },
-    [`update${singularName.charAt(0).toUpperCase() + singularName.slice(1)}`]:
-      async (root, args, context) => {
-        const timestamp = getUnixTimestamp();
+      return {
+        ...args.input,
+        [camelCase(idName)]: data.meta.last_row_id,
+        createdAt: timestamp,
+        updatedAt: timestamp,
+      };
+    },
+    [updateItemName]: async (root, args, context) => {
+      const timestamp = getUnixTimestamp();
 
-        if (!args.id) {
-          throw new Error(`No ${tableName} found with id ${args.id}`);
-        }
+      if (!args.id) {
+        throw new Error(`No ${tableName} found with id ${args.id}`);
+      }
 
-        const input = Object.assign({}, mapKeysToSnakeCase(args.input), {
-          updated_at: timestamp,
-        });
+      const input = Object.assign({}, mapKeysToSnakeCase(args.input), {
+        updated_at: timestamp,
+      });
 
-        const keys = Object.keys(input);
-        const values = Object.values(input);
-        const placeholders = keys.map((key) => `${key} = ?`).join(', ');
-        const query = `UPDATE ${tableName} SET ${placeholders} WHERE ${idName} = ? LIMIT 1`;
+      const keys = Object.keys(input);
+      const values = Object.values(input);
+      const placeholders = keys.map((key) => `${key} = ?`).join(', ');
+      const query = `UPDATE ${tableName} SET ${placeholders} WHERE ${idName} = ? LIMIT 1`;
 
-        const ps = context.db.prepare(query).bind(...values, args.id);
-        const data = await ps.all();
+      const ps = context.db.prepare(query).bind(...values, args.id);
+      const data = await ps.all();
 
-        if (!data.success) {
-          throw new Error(`Failed to update ${singularName}`);
-        }
+      if (!data.success) {
+        throw new Error(`Failed to update ${singularName}`);
+      }
 
-        // After the update, select the updated row
-        const selectQuery = `SELECT * FROM ${tableName} WHERE ${idName} = ?`;
-        const selectPs = context.db.prepare(selectQuery).bind(args.id);
-        const updatedData = await selectPs.all();
+      // After the update, select the updated row
+      const selectQuery = `SELECT * FROM ${tableName} WHERE ${idName} = ?`;
+      const selectPs = context.db.prepare(selectQuery).bind(args.id);
+      const updatedData = await selectPs.all();
 
-        // Convert the updated row to camel case
-        return mapKeysToCamelCase(updatedData.results[0]);
-      },
+      // Convert the updated row to camel case
+      return mapKeysToCamelCase(updatedData.results[0]);
+    },
     /*[`delete${singularName.charAt(0).toUpperCase() + singularName.slice(1)}`]:
       async (root, args, context) => {
         if (!args.id) {
@@ -433,4 +408,4 @@ export function createResolvers(
   );
 
   return resolvers;
-}
+};

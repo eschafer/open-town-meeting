@@ -1,3 +1,6 @@
+// NOTE: this doesn't have created_at and updated_at because
+// it represents a view in the database and not a table
+
 const typeDefs = /* GraphQL */ `
   type TownMeetingVoteResult {
     townMeetingVoteResultId: ID!
@@ -9,9 +12,28 @@ const typeDefs = /* GraphQL */ `
     isPassed: Boolean
   }
 
-  input TownMeetingVoteResultInput {
-    townMeetingVoteResultId: StringFilter
-    motion: MotionInput
+  input TownMeetingVoteResultCreateInput {
+    townMeetingVoteResultId: ID
+    motionId: ID!
+    threshold: String
+    voiceVotePassed: Boolean
+    yesVotes: Int
+    noVotes: Int
+    isPassed: Boolean
+  }
+
+  input TownMeetingVoteResultUpdateInput {
+    motionId: ID
+    threshold: String
+    voiceVotePassed: Boolean
+    yesVotes: Int
+    noVotes: Int
+    isPassed: Boolean
+  }
+
+  input TownMeetingVoteResultFilter {
+    townMeetingVoteResultId: IdFilter
+    motionId: IdFilter
     threshold: StringFilterNullable
     voiceVotePassed: BooleanFilterNullable
     yesVotes: NumberFilterNullable
@@ -21,18 +43,18 @@ const typeDefs = /* GraphQL */ `
 
   extend type Query {
     allTownMeetingVoteResults(
-      filter: TownMeetingVoteResultInput
+      filter: TownMeetingVoteResultFilter
     ): [TownMeetingVoteResult!]!
     townMeetingVoteResultById(id: ID!): TownMeetingVoteResult
   }
 
   extend type Mutation {
     createTownMeetingVoteResult(
-      input: TownMeetingVoteResultInput!
+      input: TownMeetingVoteResultCreateInput!
     ): TownMeetingVoteResult
     updateTownMeetingVoteResult(
       id: ID!
-      input: TownMeetingVoteResultInput!
+      input: TownMeetingVoteResultUpdateInput!
     ): TownMeetingVoteResult
     deleteTownMeetingVoteResult(id: ID!): TownMeetingVoteResult
   }

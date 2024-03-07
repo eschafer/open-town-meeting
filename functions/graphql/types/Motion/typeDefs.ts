@@ -16,9 +16,26 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
-  input MotionInput {
-    motionId: StringFilter
-    warrantArticleId: StringFilter
+  input MotionCreateInput {
+    motion_id: ID
+    warrantArticleId: ID!
+    motionTitle: String!
+    motionDescription: String
+    motionType: String
+    threshold: String
+  }
+
+  input MotionUpdateInput {
+    warrantArticleId: ID
+    motionTitle: String
+    motionDescription: String
+    motionType: String
+    threshold: String
+  }
+
+  input MotionFilter {
+    motionId: IdFilter
+    warrantArticleId: IdFilter
     motionTitle: StringFilter
     motionDescription: StringFilterNullable
     motionType: StringFilterNullable
@@ -28,13 +45,13 @@ const typeDefs = /* GraphQL */ `
   }
 
   extend type Query {
-    allMotions(filter: MotionInput): [Motion!]!
+    allMotions(filter: MotionFilter): [Motion!]!
     motionById(id: ID!): Motion
   }
 
   extend type Mutation {
-    createMotion(input: MotionInput!): Motion
-    updateMotion(id: ID!, input: MotionInput!): Motion
+    createMotion(input: MotionCreateInput!): Motion
+    updateMotion(id: ID!, input: MotionUpdateInput!): Motion
     deleteMotion(id: ID!): Motion
   }
 `;

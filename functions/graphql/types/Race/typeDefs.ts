@@ -9,10 +9,25 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
-  input RaceInput {
-    raceId: StringFilter
-    officeId: StringFilter
-    electionId: StringFilter
+  input RaceCreateInput {
+    raceId: ID
+    officeId: ID!
+    electionId: ID!
+    termLength: Int!
+    seatsOpen: Int!
+  }
+
+  input RaceUpdateInput {
+    officeId: ID
+    electionId: ID
+    termLength: Int
+    seatsOpen: Int
+  }
+
+  input RaceFilter {
+    raceId: IdFilter
+    officeId: IdFilter
+    electionId: IdFilter
     termLength: NumberFilter
     seatsOpen: NumberFilter
     createdAt: NumberFilter
@@ -20,13 +35,13 @@ const typeDefs = /* GraphQL */ `
   }
 
   extend type Query {
-    allRaces(filter: RaceInput): [Race!]!
+    allRaces(filter: RaceFilter): [Race!]!
     raceById(id: ID!): Race
   }
 
   extend type Mutation {
-    createRace(input: RaceInput!): Race
-    updateRace(id: ID!, input: RaceInput): Race
+    createRace(input: RaceCreateInput!): Race
+    updateRace(id: ID!, input: RaceUpdateInput): Race
     deleteRace(id: ID!): Race
   }
 `;

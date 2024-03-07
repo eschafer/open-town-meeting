@@ -9,21 +9,30 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
-  input VoteTypeInput {
-    voteTypeId: StringFilter
+  input VoteTypeCreateInput {
+    voteTypeId: ID
+    voteTypeName: String!
+  }
+
+  input VoteTypeUpdateInput {
+    voteTypeName: String
+  }
+
+  input VoteTypeFilter {
+    voteTypeId: IdFilter
     voteTypeName: StringFilter
     createdAt: NumberFilter
     updatedAt: NumberFilter
   }
 
   extend type Query {
-    allVoteTypes(filter: VoteTypeInput): [VoteType!]!
+    allVoteTypes(filter: VoteTypeFilter): [VoteType!]!
     voteTypeById(id: ID!): VoteType
   }
 
   extend type Mutation {
-    createVoteType(input: VoteTypeInput!): VoteType
-    updateVoteType(id: ID!, input: VoteTypeInput!): VoteType
+    createVoteType(input: VoteTypeCreateInput!): VoteType
+    updateVoteType(id: ID!, input: VoteTypeUpdateInput!): VoteType
     deleteVoteType(id: ID!): VoteType
   }
 `;

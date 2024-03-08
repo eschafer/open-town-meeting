@@ -11,6 +11,11 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
+  type CommitteeMembersWithPagination {
+    items: [CommitteeMember!]!
+    pageInfo: PageInfo
+  }
+
   input CommitteeMemberCreateInput {
     committeeMemberId: ID
     committeeId: ID!
@@ -43,7 +48,12 @@ const typeDefs = /* GraphQL */ `
   }
 
   extend type Query {
-    allCommitteeMembers(filter: CommitteeMemberFilter): [CommitteeMember!]!
+    allCommitteeMembers(
+      filter: CommitteeMemberFilter
+      sort: [SortInput]
+      limit: Int
+      offset: Int
+    ): CommitteeMembersWithPagination!
     committeeMemberById(id: ID!): CommitteeMember
   }
 

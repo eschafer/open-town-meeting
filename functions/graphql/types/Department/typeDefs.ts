@@ -7,6 +7,11 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
+  type DepartmentsWithPagination {
+    items: [Department!]!
+    pageInfo: PageInfo
+  }
+
   input DepartmentCreateInput {
     departmentId: ID
     departmentName: String!
@@ -27,7 +32,12 @@ const typeDefs = /* GraphQL */ `
   }
 
   extend type Query {
-    allDepartments(filter: DepartmentFilter): [Department!]!
+    allDepartments(
+      filter: DepartmentFilter
+      sort: [SortInput]
+      limit: Int
+      offset: Int
+    ): DepartmentsWithPagination!
     departmentById(id: ID!): Department
   }
 

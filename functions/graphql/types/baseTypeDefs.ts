@@ -1,4 +1,22 @@
 const typeDefs = /* GraphQL */ `
+  enum SortDirection {
+    ASC
+    DESC
+  }
+
+  type PageInfo {
+    totalCount: Int
+    limit: Int
+    offset: Int
+    hasNextPage: Boolean
+    hasPreviousPage: Boolean
+  }
+
+  input SortInput {
+    field: String!
+    direction: SortDirection = ASC
+  }
+
   input IdFilter {
     eq: ID
     ne: ID

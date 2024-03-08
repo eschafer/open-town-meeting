@@ -9,6 +9,11 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
+  type VoteTypesWithPagination {
+    items: [VoteType!]!
+    pageInfo: PageInfo
+  }
+
   input VoteTypeCreateInput {
     voteTypeId: ID
     voteTypeName: String!
@@ -26,7 +31,12 @@ const typeDefs = /* GraphQL */ `
   }
 
   extend type Query {
-    allVoteTypes(filter: VoteTypeFilter): [VoteType!]!
+    allVoteTypes(
+      filter: VoteTypeFilter
+      sort: [SortInput]
+      limit: Int
+      offset: Int
+    ): VoteTypesWithPagination!
     voteTypeById(id: ID!): VoteType
   }
 

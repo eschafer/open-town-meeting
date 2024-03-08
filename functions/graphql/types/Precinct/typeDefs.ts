@@ -1,17 +1,7 @@
-import inputTypeDefs from '../inputTypeDefs';
+import baseTypeDefs from '../baseTypeDefs';
 
 const typeDefs = /* GraphQL */ `
-  enum SortDirection {
-    ASC
-    DESC
-  }
-
-  input SortInput {
-    field: String!
-    direction: SortDirection!
-  }
-
-  ${inputTypeDefs}
+  ${baseTypeDefs}
 
   """
   A Brookline precinct based off a specific census year.
@@ -49,6 +39,11 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
+  type PrecinctsWithPagination {
+    items: [Precinct!]!
+    pageInfo: PageInfo
+  }
+
   input PrecinctCreateInput {
     precinctId: ID
     precinctNumber: Int!
@@ -73,11 +68,11 @@ const typeDefs = /* GraphQL */ `
 
   type Query {
     allPrecincts(
-      sort: [SortInput]
       filter: PrecinctFilter
+      sort: [SortInput]
       limit: Int
       offset: Int
-    ): [Precinct!]!
+    ): PrecinctsWithPagination!
     precinctById(id: ID!): Precinct
   }
 

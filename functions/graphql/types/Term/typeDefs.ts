@@ -9,6 +9,11 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
+  type TermsWithPagination {
+    items: [Term!]!
+    pageInfo: PageInfo
+  }
+
   input TermCreateInput {
     termId: ID
     personId: ID!
@@ -35,7 +40,12 @@ const typeDefs = /* GraphQL */ `
   }
 
   extend type Query {
-    allTerms(filter: TermFilter): [Term!]!
+    allTerms(
+      filter: TermFilter
+      sort: [SortInput]
+      limit: Int
+      offset: Int
+    ): TermsWithPagination!
     termById(id: ID!): Term
   }
 

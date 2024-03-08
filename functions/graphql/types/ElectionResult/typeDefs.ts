@@ -7,6 +7,11 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
+  type ElectionResultsWithPagination {
+    items: [ElectionResult!]!
+    pageInfo: PageInfo
+  }
+
   input ElectionResultCreateInput {
     electionResultId: ID
     candidateId: ID!
@@ -27,7 +32,9 @@ const typeDefs = /* GraphQL */ `
   }
 
   extend type Query {
-    allElectionResults(filter: ElectionResultFilter): [ElectionResult!]!
+    allElectionResults(
+      filter: ElectionResultFilter
+    ): ElectionResultsWithPagination!
     electionResultById(id: ID!): ElectionResult
   }
 

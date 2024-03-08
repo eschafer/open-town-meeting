@@ -10,6 +10,11 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
+  type CandidatesWithPagination {
+    items: [Candidate!]!
+    pageInfo: PageInfo
+  }
+
   input CandidateCreateInput {
     candidateId: ID
     personId: ID!
@@ -30,7 +35,12 @@ const typeDefs = /* GraphQL */ `
   }
 
   extend type Query {
-    allCandidates(filter: CandidateFilter): [Candidate!]!
+    allCandidates(
+      filter: CandidateFilter
+      sort: [SortInput]
+      limit: Int
+      offset: Int
+    ): CandidatesWithPagination!
     candidateById(id: ID!): Candidate
   }
 

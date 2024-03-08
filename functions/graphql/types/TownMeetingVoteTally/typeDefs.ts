@@ -9,6 +9,11 @@ const typeDefs = /* GraphQL */ `
     voteCount: Int!
   }
 
+  type TownMeetingVoteTalliesWithPagination {
+    items: [TownMeetingVoteTally!]!
+    pageInfo: PageInfo
+  }
+
   input TownMeetingVoteTallyCreateInput {
     townMeetingVoteTallyId: ID
     motionId: ID!
@@ -32,7 +37,10 @@ const typeDefs = /* GraphQL */ `
   extend type Query {
     allTownMeetingVoteTallies(
       filter: TownMeetingVoteTallyFilter
-    ): [TownMeetingVoteTally!]!
+      sort: [SortInput]
+      limit: Int
+      offset: Int
+    ): TownMeetingVoteTalliesWithPagination!
     townMeetingVoteTallyById(id: ID!): TownMeetingVoteTally
   }
 

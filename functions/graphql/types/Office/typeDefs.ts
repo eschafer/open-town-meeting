@@ -11,6 +11,11 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
+  type OfficesWithPagination {
+    items: [Office!]!
+    pageInfo: PageInfo
+  }
+
   input OfficeCreateInput {
     officeId: ID
     officeName: String!
@@ -31,7 +36,12 @@ const typeDefs = /* GraphQL */ `
   }
 
   extend type Query {
-    allOffices(filter: OfficeFilter): [Office!]!
+    allOffices(
+      filter: OfficeFilter
+      sort: [SortInput]
+      limit: Int
+      offset: Int
+    ): OfficesWithPagination!
     officeById(id: ID!): Office
   }
 

@@ -16,6 +16,11 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
+  type MotionsWithPagination {
+    items: [Motion!]!
+    pageInfo: PageInfo
+  }
+
   input MotionCreateInput {
     motion_id: ID
     warrantArticleId: ID!
@@ -45,7 +50,12 @@ const typeDefs = /* GraphQL */ `
   }
 
   extend type Query {
-    allMotions(filter: MotionFilter): [Motion!]!
+    allMotions(
+      filter: MotionFilter
+      sort: [SortInput]
+      limit: Int
+      offset: Int
+    ): MotionsWithPagination!
     motionById(id: ID!): Motion
   }
 

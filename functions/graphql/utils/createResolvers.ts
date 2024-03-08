@@ -39,6 +39,8 @@ type Resolvers = {
   };
 };
 
+const MAX_LIMIT: number = 100;
+
 const createNestedResolver = (
   { singularName, tableName, idName }: ResolverConfig,
   parentSingularName: string,
@@ -215,8 +217,11 @@ const processFilter = (
   return conditions;
 };
 
-const buildQuery = (tableName: string, args) => {
-  const { sort, filter, limit, offset } = args;
+const buildQuery = async (tableName: string, args, context) => {
+  const filter = args.filter;
+  const sort = args.sort;
+  const limit = Math.min(args.limit, MAX_LIMIT) || MAX_LIMIT;
+  const offset = args.offset || 0;
 
   if (!Object.keys(tables).includes(tableName)) {
     throw new Error(`Invalid table name: ${tableName}`);
@@ -224,6 +229,7 @@ const buildQuery = (tableName: string, args) => {
 
   let query = `SELECT * from ${tableName}`;
   let values: Array<unknown> = [];
+  let totalCount = 0;
 
   if (filter) {
     const conditions = Object.entries(mapKeysToSnakeCase(filter)).flatMap(
@@ -238,6 +244,16 @@ const buildQuery = (tableName: string, args) => {
     values = conditions.flatMap(({ value }) => value);
 
     query += ` WHERE ${conditionStrings}`;
+
+    const ps = context.db
+      .prepare(
+        `SELECT COUNT(*) as total FROM ${tableName}  WHERE ${conditionStrings}`,
+      )
+      .bind(...values);
+    totalCount = await ps.first('total');
+  } else {
+    const ps = context.db.prepare(`SELECT COUNT(*) as total FROM ${tableName}`);
+    totalCount = await ps.first('total');
   }
 
   if (sort) {
@@ -262,7 +278,19 @@ const buildQuery = (tableName: string, args) => {
     values.push(offset);
   }
 
-  return { query, values };
+  const data = {
+    query,
+    values,
+    pageInfo: {
+      totalCount,
+      limit: Math.max(0, limit),
+      offset: Math.max(0, Math.min(offset, totalCount - 1)),
+      hasNextPage: offset + limit < totalCount,
+      hasPreviousPage: offset > 0,
+    },
+  };
+
+  return data;
 };
 
 const executeQuery = async (query: string, values: Array<unknown>, context) => {
@@ -303,15 +331,22 @@ export const createResolvers = (
   const queryObject: { [key: string]: ResolverFunction } = {
     // allPrecincts, allMotions, etc.
     [listQueryName]: async (root, args, context) => {
-      const { query, values } = buildQuery(tableName, args);
-      const results = await executeQuery(query, values, context);
+      const { query, values, pageInfo } = await buildQuery(
+        tableName,
+        args,
+        context,
+      );
+      const items = await executeQuery(query, values, context);
 
-      if (results.length === 0) {
+      if (items.length === 0) {
         const filterString = JSON.stringify(args.filter).replace(/\"/g, "'");
         throw new Error(`No ${tableName} found with filter ${filterString}`);
       }
 
-      return results;
+      return {
+        items,
+        pageInfo,
+      };
     },
     // precinctById, motionById, etc.
     [itemQueryName]: async (
@@ -322,7 +357,7 @@ export const createResolvers = (
       const { id, ...args } = argsOriginal;
       args.filter = { [idName]: { eq: id } };
 
-      const { query, values } = buildQuery(tableName, args);
+      const { query, values } = await buildQuery(tableName, args, context);
       const results = await executeQuery(query, values, context);
 
       if (results.length === 0) {

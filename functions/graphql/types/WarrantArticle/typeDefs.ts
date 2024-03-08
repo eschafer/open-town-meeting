@@ -12,6 +12,11 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
+  type WarrantArticlesWithPagination {
+    items: [WarrantArticle!]!
+    pageInfo: PageInfo
+  }
+
   input WarrantArticleCreateInput {
     warrantArticleId: ID
     townMeetingSessionId: ID!
@@ -38,7 +43,12 @@ const typeDefs = /* GraphQL */ `
   }
 
   extend type Query {
-    allWarrantArticles(filter: WarrantArticleFilter): [WarrantArticle!]!
+    allWarrantArticles(
+      filter: WarrantArticleFilter
+      sort: [SortInput]
+      limit: Int
+      offset: Int
+    ): WarrantArticlesWithPagination!
     warrantArticleById(id: ID!): WarrantArticle
   }
 

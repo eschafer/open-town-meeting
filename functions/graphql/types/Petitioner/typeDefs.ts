@@ -9,6 +9,11 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
+  type PetitionersWithPagination {
+    items: [Petitioner!]!
+    pageInfo: PageInfo
+  }
+
   input PetitionerCreateInput {
     petitionerId: ID
     motionId: ID!
@@ -35,7 +40,12 @@ const typeDefs = /* GraphQL */ `
   }
 
   extend type Query {
-    allPetitioners(filter: PetitionerFilter): [Petitioner!]!
+    allPetitioners(
+      filter: PetitionerFilter
+      sort: [SortInput]
+      limit: Int
+      offset: Int
+    ): PetitionersWithPagination!
     petitionerById(id: ID!): Petitioner
   }
 

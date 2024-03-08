@@ -10,6 +10,11 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
+  type TownMeetingSessionsWithPagination {
+    items: [TownMeetingSession!]!
+    pageInfo: PageInfo
+  }
+
   input TownMeetingSessionCreateInput {
     townMeetingSessionId: ID
     startDate: String!
@@ -32,7 +37,10 @@ const typeDefs = /* GraphQL */ `
   extend type Query {
     allTownMeetingSessions(
       filter: TownMeetingSessionFilter
-    ): [TownMeetingSession!]!
+      sort: [SortInput]
+      limit: Int
+      offset: Int
+    ): TownMeetingSessionsWithPagination!
     townMeetingSessionById(id: ID!): TownMeetingSession
   }
 

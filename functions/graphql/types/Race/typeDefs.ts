@@ -9,6 +9,11 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
+  type RacesWithPagination {
+    items: [Race!]!
+    pageInfo: PageInfo
+  }
+
   input RaceCreateInput {
     raceId: ID
     officeId: ID!
@@ -35,7 +40,12 @@ const typeDefs = /* GraphQL */ `
   }
 
   extend type Query {
-    allRaces(filter: RaceFilter): [Race!]!
+    allRaces(
+      filter: RaceFilter
+      sort: [SortInput]
+      limit: Int
+      offset: Int
+    ): RacesWithPagination!
     raceById(id: ID!): Race
   }
 

@@ -9,6 +9,11 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
+  type ElectionsWithPagination {
+    items: [Election!]!
+    pageInfo: PageInfo
+  }
+
   input ElectionCreateInput {
     electionId: ID
     electionDate: String!
@@ -26,7 +31,12 @@ const typeDefs = /* GraphQL */ `
   }
 
   extend type Query {
-    allElections(filter: ElectionFilter): [Election!]!
+    allElections(
+      filter: ElectionFilter
+      sort: [SortInput]
+      limit: Int
+      offset: Int
+    ): ElectionsWithPagination!
     electionById(id: ID!): Election
   }
 

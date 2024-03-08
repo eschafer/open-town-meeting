@@ -19,6 +19,11 @@ const typeDefs = /* GraphQL */ `
     updatedAt: Int!
   }
 
+  type PeopleWithPagination {
+    items: [Person!]!
+    pageInfo: PageInfo
+  }
+
   input PersonCreateInput {
     personId: ID
     firstName: String!
@@ -54,7 +59,12 @@ const typeDefs = /* GraphQL */ `
   }
 
   extend type Query {
-    allPeople(filter: PersonFilter): [Person!]!
+    allPeople(
+      filter: PersonFilter
+      sort: [SortInput]
+      limit: Int
+      offset: Int
+    ): PeopleWithPagination!
     personById(id: ID!): Person
   }
 

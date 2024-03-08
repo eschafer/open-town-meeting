@@ -215,7 +215,9 @@ const processFilter = (
   return conditions;
 };
 
-const buildQuery = (tableName: string, filter?: Record<string, unknown>) => {
+const buildQuery = (tableName: string, args) => {
+  const { sort, filter, limit, offset } = args;
+
   let query = `SELECT * from ${tableName}`;
   let values: Array<unknown> = [];
 
@@ -232,6 +234,13 @@ const buildQuery = (tableName: string, filter?: Record<string, unknown>) => {
     values = conditions.flatMap(({ value }) => value);
 
     query += ` WHERE ${conditionStrings}`;
+  }
+
+  if (sort) {
+    const sortExpression = sort
+      .map(({ field, direction }) => `${snakeCase(field)} ${direction}`)
+      .join(', ');
+    query += ` ORDER BY ${sortExpression}`;
   }
 
   return { query, values };
@@ -275,7 +284,7 @@ export const createResolvers = (
   const queryObject: { [key: string]: ResolverFunction } = {
     // allPrecincts, allMotions, etc.
     [listQueryName]: async (root, args, context) => {
-      const { query, values } = buildQuery(tableName, args.filter);
+      const { query, values } = buildQuery(tableName, args);
       const results = await executeQuery(query, values, context);
 
       if (results.length === 0) {
@@ -288,14 +297,17 @@ export const createResolvers = (
     // precinctById, motionById, etc.
     [itemQueryName]: async (
       root,
-      args,
+      argsOriginal,
       context,
     ): Promise<Record<string, unknown> | null> => {
-      const query = `SELECT * from ${tableName} WHERE ${idName} = ?`;
-      const results = await executeQuery(query, [args.id], context);
+      const { id, ...args } = argsOriginal;
+      args.filter = { [idName]: { eq: id } };
+
+      const { query, values } = buildQuery(tableName, args);
+      const results = await executeQuery(query, values, context);
 
       if (results.length === 0) {
-        throw new Error(`No ${tableName} found with id ${args.id}`);
+        throw new Error(`No ${tableName} found with id ${id}`);
       }
 
       return results[0];

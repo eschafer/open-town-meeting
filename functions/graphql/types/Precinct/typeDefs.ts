@@ -1,6 +1,16 @@
 import inputTypeDefs from '../inputTypeDefs';
 
 const typeDefs = /* GraphQL */ `
+  enum SortDirection {
+    ASC
+    DESC
+  }
+
+  input SortInput {
+    field: String!
+    direction: SortDirection!
+  }
+
   ${inputTypeDefs}
 
   """
@@ -62,7 +72,12 @@ const typeDefs = /* GraphQL */ `
   }
 
   type Query {
-    allPrecincts(filter: PrecinctFilter): [Precinct!]!
+    allPrecincts(
+      sort: [SortInput]
+      filter: PrecinctFilter
+      limit: Int
+      offset: Int
+    ): [Precinct!]!
     precinctById(id: ID!): Precinct
   }
 

@@ -218,6 +218,10 @@ const processFilter = (
 const buildQuery = (tableName: string, args) => {
   const { sort, filter, limit, offset } = args;
 
+  if (!Object.keys(tables).includes(tableName)) {
+    throw new Error(`Invalid table name: ${tableName}`);
+  }
+
   let query = `SELECT * from ${tableName}`;
   let values: Array<unknown> = [];
 
@@ -238,6 +242,11 @@ const buildQuery = (tableName: string, args) => {
 
   if (sort) {
     const sortExpression = sort
+      .filter(({ field, direction }) => {
+        const fieldIsValid = /^[a-zA-Z0-9_]+$/.test(field);
+        const directionIsValid = ['ASC', 'DESC'].includes(direction);
+        return fieldIsValid && directionIsValid;
+      })
       .map(({ field, direction }) => `${snakeCase(field)} ${direction}`)
       .join(', ');
     query += ` ORDER BY ${sortExpression}`;

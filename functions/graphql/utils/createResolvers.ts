@@ -252,6 +252,16 @@ const buildQuery = (tableName: string, args) => {
     query += ` ORDER BY ${sortExpression}`;
   }
 
+  if (limit) {
+    query += ` LIMIT ?`;
+    values.push(limit);
+  }
+
+  if (offset) {
+    query += ` OFFSET ?`;
+    values.push(offset);
+  }
+
   return { query, values };
 };
 

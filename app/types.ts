@@ -14,6 +14,15 @@ export type Scalars = {
   Float: { input: number; output: number; }
 };
 
+export type BooleanFilter = {
+  eq?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+export type BooleanFilterNullable = {
+  eq?: InputMaybe<Scalars['Boolean']['input']>;
+  isNull?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
 export type Candidate = {
   __typename?: 'Candidate';
   candidateId: Scalars['ID']['output'];
@@ -24,12 +33,29 @@ export type Candidate = {
   updatedAt: Scalars['Int']['output'];
 };
 
-export type CandidateInput = {
+export type CandidateCreateInput = {
   candidateId?: InputMaybe<Scalars['ID']['input']>;
-  createdAt?: InputMaybe<Scalars['Int']['input']>;
+  personId: Scalars['ID']['input'];
+  raceId: Scalars['ID']['input'];
+};
+
+export type CandidateFilter = {
+  candidateId?: InputMaybe<IdFilter>;
+  createdAt?: InputMaybe<NumberFilter>;
+  personId?: InputMaybe<IdFilter>;
+  raceId?: InputMaybe<IdFilter>;
+  updatedAt?: InputMaybe<NumberFilter>;
+};
+
+export type CandidateUpdateInput = {
   personId?: InputMaybe<Scalars['ID']['input']>;
   raceId?: InputMaybe<Scalars['ID']['input']>;
-  updatedAt?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type CandidatesWithPagination = {
+  __typename?: 'CandidatesWithPagination';
+  items: Array<Candidate>;
+  pageInfo?: Maybe<PageInfo>;
 };
 
 export type Committee = {
@@ -43,38 +69,101 @@ export type Committee = {
   updatedAt: Scalars['Int']['output'];
 };
 
-export type CommitteeInput = {
+export type CommitteeCreateInput = {
   committeeDescription?: InputMaybe<Scalars['String']['input']>;
   committeeId?: InputMaybe<Scalars['ID']['input']>;
-  committeeName?: InputMaybe<Scalars['String']['input']>;
+  committeeName: Scalars['String']['input'];
   committeeUrl?: InputMaybe<Scalars['String']['input']>;
-  createdAt?: InputMaybe<Scalars['Int']['input']>;
-  updatedAt?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type CommitteeFilter = {
+  committeeDescription?: InputMaybe<StringFilterNullable>;
+  committeeId?: InputMaybe<IdFilter>;
+  committeeName?: InputMaybe<StringFilter>;
+  committeeUrl?: InputMaybe<StringFilterNullable>;
+  createdAt?: InputMaybe<NumberFilter>;
+  updatedAt?: InputMaybe<NumberFilter>;
 };
 
 export type CommitteeMember = {
   __typename?: 'CommitteeMember';
   appointingAuthority?: Maybe<Scalars['String']['output']>;
-  committee?: Maybe<Committee>;
+  committee: Committee;
   committeeMemberId: Scalars['ID']['output'];
   createdAt: Scalars['Int']['output'];
   endDate?: Maybe<Scalars['String']['output']>;
-  person?: Maybe<Person>;
+  person: Person;
   position?: Maybe<Scalars['String']['output']>;
   startDate?: Maybe<Scalars['String']['output']>;
   updatedAt: Scalars['Int']['output'];
 };
 
-export type CommitteeMemberInput = {
+export type CommitteeMemberCreateInput = {
+  appointingAuthority?: InputMaybe<Scalars['String']['input']>;
+  committeeId: Scalars['ID']['input'];
+  committeeMemberId?: InputMaybe<Scalars['ID']['input']>;
+  endDate?: InputMaybe<Scalars['String']['input']>;
+  personId: Scalars['ID']['input'];
+  position?: InputMaybe<Scalars['String']['input']>;
+  startDate?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type CommitteeMemberFilter = {
+  appointingAuthority?: InputMaybe<StringFilterNullable>;
+  committeeId?: InputMaybe<IdFilter>;
+  committeeMemberId?: InputMaybe<IdFilter>;
+  createdAt?: InputMaybe<NumberFilter>;
+  endDate?: InputMaybe<DateFilterNullable>;
+  personId?: InputMaybe<IdFilter>;
+  position?: InputMaybe<StringFilterNullable>;
+  startDate?: InputMaybe<DateFilterNullable>;
+  updatedAt?: InputMaybe<NumberFilter>;
+};
+
+export type CommitteeMemberUpdateInput = {
   appointingAuthority?: InputMaybe<Scalars['String']['input']>;
   committeeId?: InputMaybe<Scalars['ID']['input']>;
-  committeeMemberId?: InputMaybe<Scalars['ID']['input']>;
-  createdAt?: InputMaybe<Scalars['Int']['input']>;
   endDate?: InputMaybe<Scalars['String']['input']>;
   personId?: InputMaybe<Scalars['ID']['input']>;
   position?: InputMaybe<Scalars['String']['input']>;
   startDate?: InputMaybe<Scalars['String']['input']>;
-  updatedAt?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type CommitteeMembersWithPagination = {
+  __typename?: 'CommitteeMembersWithPagination';
+  items: Array<CommitteeMember>;
+  pageInfo?: Maybe<PageInfo>;
+};
+
+export type CommitteeUpdateInput = {
+  committeeDescription?: InputMaybe<Scalars['String']['input']>;
+  committeeName?: InputMaybe<Scalars['String']['input']>;
+  committeeUrl?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type CommitteesWithPagination = {
+  __typename?: 'CommitteesWithPagination';
+  items: Array<Committee>;
+  pageInfo?: Maybe<PageInfo>;
+};
+
+export type DateFilter = {
+  eq?: InputMaybe<Scalars['String']['input']>;
+  gt?: InputMaybe<Scalars['String']['input']>;
+  gte?: InputMaybe<Scalars['String']['input']>;
+  lt?: InputMaybe<Scalars['String']['input']>;
+  lte?: InputMaybe<Scalars['String']['input']>;
+  ne?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type DateFilterNullable = {
+  eq?: InputMaybe<Scalars['String']['input']>;
+  gt?: InputMaybe<Scalars['String']['input']>;
+  gte?: InputMaybe<Scalars['String']['input']>;
+  isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  lt?: InputMaybe<Scalars['String']['input']>;
+  lte?: InputMaybe<Scalars['String']['input']>;
+  ne?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Department = {
@@ -86,12 +175,29 @@ export type Department = {
   updatedAt: Scalars['Int']['output'];
 };
 
-export type DepartmentInput = {
-  createdAt?: InputMaybe<Scalars['Int']['input']>;
+export type DepartmentCreateInput = {
   departmentId?: InputMaybe<Scalars['ID']['input']>;
+  departmentName: Scalars['String']['input'];
+  departmentUrl?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type DepartmentFilter = {
+  createdAt?: InputMaybe<NumberFilter>;
+  departmentId?: InputMaybe<IdFilter>;
+  departmentName?: InputMaybe<StringFilter>;
+  departmentUrl?: InputMaybe<StringFilterNullable>;
+  updatedAt?: InputMaybe<NumberFilter>;
+};
+
+export type DepartmentUpdateInput = {
   departmentName?: InputMaybe<Scalars['String']['input']>;
   departmentUrl?: InputMaybe<Scalars['String']['input']>;
-  updatedAt?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type DepartmentsWithPagination = {
+  __typename?: 'DepartmentsWithPagination';
+  items: Array<Department>;
+  pageInfo?: Maybe<PageInfo>;
 };
 
 export type Election = {
@@ -103,11 +209,16 @@ export type Election = {
   updatedAt: Scalars['Int']['output'];
 };
 
-export type ElectionInput = {
-  createdAt?: InputMaybe<Scalars['Int']['input']>;
-  electionDate?: InputMaybe<Scalars['String']['input']>;
+export type ElectionCreateInput = {
+  electionDate: Scalars['String']['input'];
   electionId?: InputMaybe<Scalars['ID']['input']>;
-  updatedAt?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type ElectionFilter = {
+  createdAt?: InputMaybe<NumberFilter>;
+  electionDate?: InputMaybe<DateFilter>;
+  electionId?: InputMaybe<IdFilter>;
+  updatedAt?: InputMaybe<NumberFilter>;
 };
 
 export type ElectionResult = {
@@ -119,12 +230,50 @@ export type ElectionResult = {
   voteCount?: Maybe<Scalars['Int']['output']>;
 };
 
-export type ElectionResultInput = {
-  candidateId?: InputMaybe<Scalars['ID']['input']>;
-  createdAt?: InputMaybe<Scalars['Int']['input']>;
+export type ElectionResultCreateInput = {
+  candidateId: Scalars['ID']['input'];
   electionResultId?: InputMaybe<Scalars['ID']['input']>;
-  updatedAt?: InputMaybe<Scalars['Int']['input']>;
   voteCount?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type ElectionResultFilter = {
+  candidateId?: InputMaybe<IdFilter>;
+  createdAt?: InputMaybe<NumberFilter>;
+  electionResultId?: InputMaybe<IdFilter>;
+  updatedAt?: InputMaybe<NumberFilter>;
+  voteCount?: InputMaybe<NumberFilterNullable>;
+};
+
+export type ElectionResultUpdateInput = {
+  candidateId?: InputMaybe<Scalars['ID']['input']>;
+  voteCount?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type ElectionResultsWithPagination = {
+  __typename?: 'ElectionResultsWithPagination';
+  items: Array<ElectionResult>;
+  pageInfo?: Maybe<PageInfo>;
+};
+
+export type ElectionUpdateInput = {
+  electionDate?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type ElectionsWithPagination = {
+  __typename?: 'ElectionsWithPagination';
+  items: Array<Election>;
+  pageInfo?: Maybe<PageInfo>;
+};
+
+export type IdFilter = {
+  eq?: InputMaybe<Scalars['ID']['input']>;
+  ne?: InputMaybe<Scalars['ID']['input']>;
+};
+
+export type IdFilterNullable = {
+  eq?: InputMaybe<Scalars['ID']['input']>;
+  isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  ne?: InputMaybe<Scalars['ID']['input']>;
 };
 
 export type Motion = {
@@ -133,7 +282,7 @@ export type Motion = {
   motionDescription?: Maybe<Scalars['String']['output']>;
   motionId: Scalars['ID']['output'];
   motionTitle: Scalars['String']['output'];
-  motionType: Scalars['String']['output'];
+  motionType?: Maybe<Scalars['String']['output']>;
   petitioners?: Maybe<Array<Maybe<Petitioner>>>;
   threshold?: Maybe<Scalars['String']['output']>;
   townMeetingVoteResults?: Maybe<Array<Maybe<TownMeetingVoteResult>>>;
@@ -143,15 +292,38 @@ export type Motion = {
   warrantArticle: WarrantArticle;
 };
 
-export type MotionInput = {
-  createdAt?: InputMaybe<Scalars['Int']['input']>;
+export type MotionCreateInput = {
   motionDescription?: InputMaybe<Scalars['String']['input']>;
-  motionId?: InputMaybe<Scalars['ID']['input']>;
+  motionTitle: Scalars['String']['input'];
+  motionType?: InputMaybe<Scalars['String']['input']>;
+  motion_id?: InputMaybe<Scalars['ID']['input']>;
+  threshold?: InputMaybe<Scalars['String']['input']>;
+  warrantArticleId: Scalars['ID']['input'];
+};
+
+export type MotionFilter = {
+  createdAt?: InputMaybe<NumberFilter>;
+  motionDescription?: InputMaybe<StringFilterNullable>;
+  motionId?: InputMaybe<IdFilter>;
+  motionTitle?: InputMaybe<StringFilter>;
+  motionType?: InputMaybe<StringFilterNullable>;
+  threshold?: InputMaybe<StringFilterNullable>;
+  updatedAt?: InputMaybe<NumberFilter>;
+  warrantArticleId?: InputMaybe<IdFilter>;
+};
+
+export type MotionUpdateInput = {
+  motionDescription?: InputMaybe<Scalars['String']['input']>;
   motionTitle?: InputMaybe<Scalars['String']['input']>;
   motionType?: InputMaybe<Scalars['String']['input']>;
   threshold?: InputMaybe<Scalars['String']['input']>;
-  updatedAt?: InputMaybe<Scalars['Int']['input']>;
   warrantArticleId?: InputMaybe<Scalars['ID']['input']>;
+};
+
+export type MotionsWithPagination = {
+  __typename?: 'MotionsWithPagination';
+  items: Array<Motion>;
+  pageInfo?: Maybe<PageInfo>;
 };
 
 export type Mutation = {
@@ -217,97 +389,97 @@ export type Mutation = {
 
 
 export type MutationCreateCandidateArgs = {
-  input: CandidateInput;
+  input: CandidateCreateInput;
 };
 
 
 export type MutationCreateCommitteeArgs = {
-  input: CommitteeInput;
+  input: CommitteeCreateInput;
 };
 
 
 export type MutationCreateCommitteeMemberArgs = {
-  input: CommitteeMemberInput;
+  input: CommitteeMemberCreateInput;
 };
 
 
 export type MutationCreateDepartmentArgs = {
-  input: DepartmentInput;
+  input: DepartmentCreateInput;
 };
 
 
 export type MutationCreateElectionArgs = {
-  input: ElectionInput;
+  input: ElectionCreateInput;
 };
 
 
 export type MutationCreateElectionResultArgs = {
-  input: ElectionResultInput;
+  input: ElectionResultCreateInput;
 };
 
 
 export type MutationCreateMotionArgs = {
-  input: MotionInput;
+  input: MotionCreateInput;
 };
 
 
 export type MutationCreateOfficeArgs = {
-  input: OfficeInput;
+  input: OfficeCreateInput;
 };
 
 
 export type MutationCreatePersonArgs = {
-  input: PersonInput;
+  input: PersonCreateInput;
 };
 
 
 export type MutationCreatePetitionerArgs = {
-  input: PetitionerInput;
+  input: PetitionerCreateInput;
 };
 
 
 export type MutationCreatePrecinctArgs = {
-  input: PrecinctInput;
+  input: PrecinctCreateInput;
 };
 
 
 export type MutationCreateRaceArgs = {
-  input: RaceInput;
+  input: RaceCreateInput;
 };
 
 
 export type MutationCreateTermArgs = {
-  input: TermInput;
+  input: TermCreateInput;
 };
 
 
 export type MutationCreateTownMeetingSessionArgs = {
-  input: TownMeetingSessionInput;
+  input: TownMeetingSessionCreateInput;
 };
 
 
 export type MutationCreateTownMeetingVoteArgs = {
-  input: TownMeetingVoteInput;
+  input: TownMeetingVoteCreateInput;
 };
 
 
 export type MutationCreateTownMeetingVoteResultArgs = {
-  input: TownMeetingVoteResultInput;
+  input: TownMeetingVoteResultCreateInput;
 };
 
 
 export type MutationCreateTownMeetingVoteTallyArgs = {
-  input: TownMeetingVoteTallyInput;
+  input: TownMeetingVoteTallyCreateInput;
 };
 
 
 export type MutationCreateVoteTypeArgs = {
-  input: VoteTypeInput;
+  input: VoteTypeCreateInput;
 };
 
 
 export type MutationCreateWarrantArticleArgs = {
-  input: WarrantArticleInput;
+  input: WarrantArticleCreateInput;
 };
 
 
@@ -408,115 +580,134 @@ export type MutationDeleteWarrantArticleArgs = {
 
 export type MutationUpdateCandidateArgs = {
   id: Scalars['ID']['input'];
-  input: CandidateInput;
+  input: CandidateUpdateInput;
 };
 
 
 export type MutationUpdateCommitteeArgs = {
   id: Scalars['ID']['input'];
-  input: CommitteeInput;
+  input: CommitteeUpdateInput;
 };
 
 
 export type MutationUpdateCommitteeMemberArgs = {
   id: Scalars['ID']['input'];
-  input: CommitteeMemberInput;
+  input: CommitteeMemberUpdateInput;
 };
 
 
 export type MutationUpdateDepartmentArgs = {
   id: Scalars['ID']['input'];
-  input: DepartmentInput;
+  input: DepartmentUpdateInput;
 };
 
 
 export type MutationUpdateElectionArgs = {
   id: Scalars['ID']['input'];
-  input: ElectionInput;
+  input: ElectionUpdateInput;
 };
 
 
 export type MutationUpdateElectionResultArgs = {
   id: Scalars['ID']['input'];
-  input: ElectionResultInput;
+  input: ElectionResultUpdateInput;
 };
 
 
 export type MutationUpdateMotionArgs = {
   id: Scalars['ID']['input'];
-  input: MotionInput;
+  input: MotionUpdateInput;
 };
 
 
 export type MutationUpdateOfficeArgs = {
   id: Scalars['ID']['input'];
-  input: OfficeInput;
+  input: OfficeUpdateInput;
 };
 
 
 export type MutationUpdatePersonArgs = {
   id: Scalars['ID']['input'];
-  input: PersonInput;
+  input: PersonUpdateInput;
 };
 
 
 export type MutationUpdatePetitionerArgs = {
   id: Scalars['ID']['input'];
-  input: PetitionerInput;
+  input: PetitionerUpdateInput;
 };
 
 
 export type MutationUpdatePrecinctArgs = {
   id: Scalars['ID']['input'];
-  input: PrecinctInput;
+  input: PrecinctUpdateInput;
 };
 
 
 export type MutationUpdateRaceArgs = {
   id: Scalars['ID']['input'];
-  input?: InputMaybe<RaceInput>;
+  input?: InputMaybe<RaceUpdateInput>;
 };
 
 
 export type MutationUpdateTermArgs = {
   id: Scalars['ID']['input'];
-  input: TermInput;
+  input: TermUpdateInput;
 };
 
 
 export type MutationUpdateTownMeetingSessionArgs = {
   id: Scalars['ID']['input'];
-  input: TownMeetingSessionInput;
+  input: TownMeetingSessionUpdateInput;
 };
 
 
 export type MutationUpdateTownMeetingVoteArgs = {
   id: Scalars['ID']['input'];
-  input: TownMeetingVoteInput;
+  input: TownMeetingVoteUpdateInput;
 };
 
 
 export type MutationUpdateTownMeetingVoteResultArgs = {
   id: Scalars['ID']['input'];
-  input: TownMeetingVoteResultInput;
+  input: TownMeetingVoteResultUpdateInput;
 };
 
 
 export type MutationUpdateTownMeetingVoteTallyArgs = {
   id: Scalars['ID']['input'];
-  input: TownMeetingVoteTallyInput;
+  input: TownMeetingVoteTallyUpdateInput;
 };
 
 
 export type MutationUpdateVoteTypeArgs = {
   id: Scalars['ID']['input'];
-  input: VoteTypeInput;
+  input: VoteTypeUpdateInput;
 };
 
 
 export type MutationUpdateWarrantArticleArgs = {
   id: Scalars['ID']['input'];
-  input: WarrantArticleInput;
+  input: WarrantArticleUpdateInput;
+};
+
+export type NumberFilter = {
+  eq?: InputMaybe<Scalars['Int']['input']>;
+  gt?: InputMaybe<Scalars['Int']['input']>;
+  gte?: InputMaybe<Scalars['Int']['input']>;
+  lt?: InputMaybe<Scalars['Int']['input']>;
+  lte?: InputMaybe<Scalars['Int']['input']>;
+  ne?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type NumberFilterNullable = {
+  eq?: InputMaybe<Scalars['Int']['input']>;
+  gt?: InputMaybe<Scalars['Int']['input']>;
+  gte?: InputMaybe<Scalars['Int']['input']>;
+  isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  lt?: InputMaybe<Scalars['Int']['input']>;
+  lte?: InputMaybe<Scalars['Int']['input']>;
+  ne?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type Office = {
@@ -530,12 +721,44 @@ export type Office = {
   updatedAt: Scalars['Int']['output'];
 };
 
-export type OfficeInput = {
-  createdAt?: InputMaybe<Scalars['Int']['input']>;
+export type OfficeCreateInput = {
   officeId?: InputMaybe<Scalars['ID']['input']>;
+  officeName: Scalars['String']['input'];
+  precinctId?: InputMaybe<Scalars['ID']['input']>;
+};
+
+export type OfficeFilter = {
+  createdAt?: InputMaybe<NumberFilter>;
+  officeId?: InputMaybe<IdFilter>;
+  officeName?: InputMaybe<StringFilter>;
+  precinctId?: InputMaybe<IdFilterNullable>;
+  updatedAt?: InputMaybe<NumberFilter>;
+};
+
+export type OfficeUpdateInput = {
   officeName?: InputMaybe<Scalars['String']['input']>;
-  precinct?: InputMaybe<PrecinctInput>;
-  updatedAt?: InputMaybe<Scalars['Int']['input']>;
+  precinctId?: InputMaybe<Scalars['ID']['input']>;
+};
+
+export type OfficesWithPagination = {
+  __typename?: 'OfficesWithPagination';
+  items: Array<Office>;
+  pageInfo?: Maybe<PageInfo>;
+};
+
+export type PageInfo = {
+  __typename?: 'PageInfo';
+  hasNextPage?: Maybe<Scalars['Boolean']['output']>;
+  hasPreviousPage?: Maybe<Scalars['Boolean']['output']>;
+  limit?: Maybe<Scalars['Int']['output']>;
+  offset?: Maybe<Scalars['Int']['output']>;
+  totalCount?: Maybe<Scalars['Int']['output']>;
+};
+
+export type PeopleWithPagination = {
+  __typename?: 'PeopleWithPagination';
+  items: Array<Person>;
+  pageInfo?: Maybe<PageInfo>;
 };
 
 export type Person = {
@@ -557,17 +780,38 @@ export type Person = {
   updatedAt: Scalars['Int']['output'];
 };
 
-export type PersonInput = {
+export type PersonCreateInput = {
   address?: InputMaybe<Scalars['String']['input']>;
-  createdAt?: InputMaybe<Scalars['Int']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  firstName: Scalars['String']['input'];
+  lastName: Scalars['String']['input'];
+  middleName?: InputMaybe<Scalars['String']['input']>;
+  nameSuffix?: InputMaybe<Scalars['String']['input']>;
+  personId?: InputMaybe<Scalars['ID']['input']>;
+  phone?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type PersonFilter = {
+  address?: InputMaybe<StringFilterNullable>;
+  createdAt?: InputMaybe<NumberFilter>;
+  email?: InputMaybe<StringFilterNullable>;
+  firstName?: InputMaybe<StringFilter>;
+  lastName?: InputMaybe<StringFilter>;
+  middleName?: InputMaybe<StringFilterNullable>;
+  nameSuffix?: InputMaybe<StringFilterNullable>;
+  personId?: InputMaybe<IdFilter>;
+  phone?: InputMaybe<StringFilterNullable>;
+  updatedAt?: InputMaybe<NumberFilter>;
+};
+
+export type PersonUpdateInput = {
+  address?: InputMaybe<Scalars['String']['input']>;
   email?: InputMaybe<Scalars['String']['input']>;
   firstName?: InputMaybe<Scalars['String']['input']>;
   lastName?: InputMaybe<Scalars['String']['input']>;
   middleName?: InputMaybe<Scalars['String']['input']>;
   nameSuffix?: InputMaybe<Scalars['String']['input']>;
-  personId?: InputMaybe<Scalars['ID']['input']>;
   phone?: InputMaybe<Scalars['String']['input']>;
-  updatedAt?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type Petitioner = {
@@ -581,14 +825,35 @@ export type Petitioner = {
   updatedAt: Scalars['Int']['output'];
 };
 
-export type PetitionerInput = {
+export type PetitionerCreateInput = {
   committeeId?: InputMaybe<Scalars['ID']['input']>;
-  createdAt?: InputMaybe<Scalars['Int']['input']>;
+  departmentId?: InputMaybe<Scalars['ID']['input']>;
+  motionId: Scalars['ID']['input'];
+  personId?: InputMaybe<Scalars['ID']['input']>;
+  petitionerId?: InputMaybe<Scalars['ID']['input']>;
+};
+
+export type PetitionerFilter = {
+  committeeId?: InputMaybe<IdFilterNullable>;
+  createdAt?: InputMaybe<NumberFilter>;
+  departmentId?: InputMaybe<IdFilterNullable>;
+  motionId?: InputMaybe<IdFilter>;
+  personId?: InputMaybe<IdFilterNullable>;
+  petitionerId?: InputMaybe<IdFilter>;
+  updatedAt?: InputMaybe<NumberFilter>;
+};
+
+export type PetitionerUpdateInput = {
+  committeeId?: InputMaybe<Scalars['ID']['input']>;
   departmentId?: InputMaybe<Scalars['ID']['input']>;
   motionId?: InputMaybe<Scalars['ID']['input']>;
   personId?: InputMaybe<Scalars['ID']['input']>;
-  petitionerId?: InputMaybe<Scalars['ID']['input']>;
-  updatedAt?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type PetitionersWithPagination = {
+  __typename?: 'PetitionersWithPagination';
+  items: Array<Petitioner>;
+  pageInfo?: Maybe<PageInfo>;
 };
 
 /** A Brookline precinct based off a specific census year. */
@@ -610,36 +875,55 @@ export type Precinct = {
   updatedAt: Scalars['Int']['output'];
 };
 
-export type PrecinctInput = {
-  censusYear?: InputMaybe<Scalars['Int']['input']>;
-  createdAt?: InputMaybe<Scalars['Int']['input']>;
+export type PrecinctCreateInput = {
+  censusYear: Scalars['Int']['input'];
   pollingPlace?: InputMaybe<Scalars['String']['input']>;
   precinctId?: InputMaybe<Scalars['ID']['input']>;
+  precinctNumber: Scalars['Int']['input'];
+};
+
+export type PrecinctFilter = {
+  censusYear?: InputMaybe<NumberFilter>;
+  createdAt?: InputMaybe<NumberFilter>;
+  pollingPlace?: InputMaybe<StringFilterNullable>;
+  precinctId?: InputMaybe<IdFilter>;
+  precinctNumber?: InputMaybe<NumberFilter>;
+  updatedAt?: InputMaybe<NumberFilter>;
+};
+
+export type PrecinctUpdateInput = {
+  censusYear?: InputMaybe<Scalars['Int']['input']>;
+  pollingPlace?: InputMaybe<Scalars['String']['input']>;
   precinctNumber?: InputMaybe<Scalars['Int']['input']>;
-  updatedAt?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type PrecinctsWithPagination = {
+  __typename?: 'PrecinctsWithPagination';
+  items: Array<Precinct>;
+  pageInfo?: Maybe<PageInfo>;
 };
 
 export type Query = {
   __typename?: 'Query';
-  allCandidates: Array<Candidate>;
-  allCommitteeMembers: Array<CommitteeMember>;
-  allCommittees: Array<Committee>;
-  allDepartments: Array<Department>;
-  allElectionResults: Array<ElectionResult>;
-  allElections: Array<Election>;
-  allMotions: Array<Motion>;
-  allOffices: Array<Office>;
-  allPeople: Array<Person>;
-  allPetitioners: Array<Petitioner>;
-  allPrecincts: Array<Precinct>;
-  allRaces: Array<Race>;
-  allTerms: Array<Term>;
-  allTownMeetingSessions: Array<TownMeetingSession>;
-  allTownMeetingVoteResults: Array<TownMeetingVoteResult>;
-  allTownMeetingVoteTallies: Array<TownMeetingVoteTally>;
-  allTownMeetingVotes: Array<TownMeetingVote>;
-  allVoteTypes: Array<VoteType>;
-  allWarrantArticles: Array<WarrantArticle>;
+  allCandidates: CandidatesWithPagination;
+  allCommitteeMembers: CommitteeMembersWithPagination;
+  allCommittees: CommitteesWithPagination;
+  allDepartments: DepartmentsWithPagination;
+  allElectionResults: ElectionResultsWithPagination;
+  allElections: ElectionsWithPagination;
+  allMotions: MotionsWithPagination;
+  allOffices: OfficesWithPagination;
+  allPeople: PeopleWithPagination;
+  allPetitioners: PetitionersWithPagination;
+  allPrecincts: PrecinctsWithPagination;
+  allRaces: RacesWithPagination;
+  allTerms: TermsWithPagination;
+  allTownMeetingSessions: TownMeetingSessionsWithPagination;
+  allTownMeetingVoteResults: TownMeetingVotesWithPagination;
+  allTownMeetingVoteTallies: TownMeetingVoteTalliesWithPagination;
+  allTownMeetingVotes: TownMeetingVotesWithPagination;
+  allVoteTypes: VoteTypesWithPagination;
+  allWarrantArticles: WarrantArticlesWithPagination;
   candidateById?: Maybe<Candidate>;
   committeeById?: Maybe<Committee>;
   committeeMemberById?: Maybe<CommitteeMember>;
@@ -663,97 +947,151 @@ export type Query = {
 
 
 export type QueryAllCandidatesArgs = {
-  filter?: InputMaybe<CandidateInput>;
+  filter?: InputMaybe<CandidateFilter>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<Array<InputMaybe<SortInput>>>;
 };
 
 
 export type QueryAllCommitteeMembersArgs = {
-  filter?: InputMaybe<CommitteeMemberInput>;
+  filter?: InputMaybe<CommitteeMemberFilter>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<Array<InputMaybe<SortInput>>>;
 };
 
 
 export type QueryAllCommitteesArgs = {
-  filter?: InputMaybe<CommitteeInput>;
+  filter?: InputMaybe<CommitteeFilter>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<Array<InputMaybe<SortInput>>>;
 };
 
 
 export type QueryAllDepartmentsArgs = {
-  filter?: InputMaybe<DepartmentInput>;
+  filter?: InputMaybe<DepartmentFilter>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<Array<InputMaybe<SortInput>>>;
 };
 
 
 export type QueryAllElectionResultsArgs = {
-  filter?: InputMaybe<ElectionResultInput>;
+  filter?: InputMaybe<ElectionResultFilter>;
 };
 
 
 export type QueryAllElectionsArgs = {
-  filter?: InputMaybe<ElectionInput>;
+  filter?: InputMaybe<ElectionFilter>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<Array<InputMaybe<SortInput>>>;
 };
 
 
 export type QueryAllMotionsArgs = {
-  filter?: InputMaybe<MotionInput>;
+  filter?: InputMaybe<MotionFilter>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<Array<InputMaybe<SortInput>>>;
 };
 
 
 export type QueryAllOfficesArgs = {
-  filter?: InputMaybe<OfficeInput>;
+  filter?: InputMaybe<OfficeFilter>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<Array<InputMaybe<SortInput>>>;
 };
 
 
 export type QueryAllPeopleArgs = {
-  filter?: InputMaybe<PersonInput>;
+  filter?: InputMaybe<PersonFilter>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<Array<InputMaybe<SortInput>>>;
 };
 
 
 export type QueryAllPetitionersArgs = {
-  filter?: InputMaybe<PetitionerInput>;
+  filter?: InputMaybe<PetitionerFilter>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<Array<InputMaybe<SortInput>>>;
 };
 
 
 export type QueryAllPrecinctsArgs = {
-  filter?: InputMaybe<PrecinctInput>;
+  filter?: InputMaybe<PrecinctFilter>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<Array<InputMaybe<SortInput>>>;
 };
 
 
 export type QueryAllRacesArgs = {
-  filter?: InputMaybe<RaceInput>;
+  filter?: InputMaybe<RaceFilter>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<Array<InputMaybe<SortInput>>>;
 };
 
 
 export type QueryAllTermsArgs = {
-  filter?: InputMaybe<TermInput>;
+  filter?: InputMaybe<TermFilter>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<Array<InputMaybe<SortInput>>>;
 };
 
 
 export type QueryAllTownMeetingSessionsArgs = {
-  filter?: InputMaybe<TownMeetingSessionInput>;
+  filter?: InputMaybe<TownMeetingSessionFilter>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<Array<InputMaybe<SortInput>>>;
 };
 
 
 export type QueryAllTownMeetingVoteResultsArgs = {
-  filter?: InputMaybe<TownMeetingVoteResultInput>;
+  filter?: InputMaybe<TownMeetingVoteResultFilter>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<Array<InputMaybe<SortInput>>>;
 };
 
 
 export type QueryAllTownMeetingVoteTalliesArgs = {
-  filter?: InputMaybe<TownMeetingVoteTallyInput>;
+  filter?: InputMaybe<TownMeetingVoteTallyFilter>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<Array<InputMaybe<SortInput>>>;
 };
 
 
 export type QueryAllTownMeetingVotesArgs = {
-  filter?: InputMaybe<TownMeetingVoteInput>;
+  filter?: InputMaybe<TownMeetingVoteFilter>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<Array<InputMaybe<SortInput>>>;
 };
 
 
 export type QueryAllVoteTypesArgs = {
-  filter?: InputMaybe<VoteTypeInput>;
+  filter?: InputMaybe<VoteTypeFilter>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<Array<InputMaybe<SortInput>>>;
 };
 
 
 export type QueryAllWarrantArticlesArgs = {
-  filter?: InputMaybe<WarrantArticleInput>;
+  filter?: InputMaybe<WarrantArticleFilter>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  sort?: InputMaybe<Array<InputMaybe<SortInput>>>;
 };
 
 
@@ -862,14 +1200,60 @@ export type Race = {
   updatedAt: Scalars['Int']['output'];
 };
 
-export type RaceInput = {
-  createdAt?: InputMaybe<Scalars['Int']['input']>;
+export type RaceCreateInput = {
+  electionId: Scalars['ID']['input'];
+  officeId: Scalars['ID']['input'];
+  raceId?: InputMaybe<Scalars['ID']['input']>;
+  seatsOpen: Scalars['Int']['input'];
+  termLength: Scalars['Int']['input'];
+};
+
+export type RaceFilter = {
+  createdAt?: InputMaybe<NumberFilter>;
+  electionId?: InputMaybe<IdFilter>;
+  officeId?: InputMaybe<IdFilter>;
+  raceId?: InputMaybe<IdFilter>;
+  seatsOpen?: InputMaybe<NumberFilter>;
+  termLength?: InputMaybe<NumberFilter>;
+  updatedAt?: InputMaybe<NumberFilter>;
+};
+
+export type RaceUpdateInput = {
   electionId?: InputMaybe<Scalars['ID']['input']>;
   officeId?: InputMaybe<Scalars['ID']['input']>;
-  raceId?: InputMaybe<Scalars['ID']['input']>;
   seatsOpen?: InputMaybe<Scalars['Int']['input']>;
   termLength?: InputMaybe<Scalars['Int']['input']>;
-  updatedAt?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type RacesWithPagination = {
+  __typename?: 'RacesWithPagination';
+  items: Array<Race>;
+  pageInfo?: Maybe<PageInfo>;
+};
+
+export enum SortDirection {
+  Asc = 'ASC',
+  Desc = 'DESC'
+}
+
+export type SortInput = {
+  direction?: InputMaybe<SortDirection>;
+  field: Scalars['String']['input'];
+};
+
+export type StringFilter = {
+  contains?: InputMaybe<Scalars['String']['input']>;
+  endsWith?: InputMaybe<Scalars['String']['input']>;
+  exact?: InputMaybe<Scalars['String']['input']>;
+  startsWith?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type StringFilterNullable = {
+  contains?: InputMaybe<Scalars['String']['input']>;
+  endsWith?: InputMaybe<Scalars['String']['input']>;
+  exact?: InputMaybe<Scalars['String']['input']>;
+  isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  startsWith?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Term = {
@@ -883,14 +1267,35 @@ export type Term = {
   updatedAt: Scalars['Int']['output'];
 };
 
-export type TermInput = {
-  createdAt?: InputMaybe<Scalars['Int']['input']>;
+export type TermCreateInput = {
+  endDate: Scalars['String']['input'];
+  officeId: Scalars['ID']['input'];
+  personId: Scalars['ID']['input'];
+  startDate: Scalars['String']['input'];
+  termId?: InputMaybe<Scalars['ID']['input']>;
+};
+
+export type TermFilter = {
+  createdAt?: InputMaybe<NumberFilter>;
+  endDate?: InputMaybe<DateFilter>;
+  officeId?: InputMaybe<IdFilter>;
+  personId?: InputMaybe<IdFilter>;
+  startDate?: InputMaybe<DateFilter>;
+  termId?: InputMaybe<IdFilter>;
+  updatedAt?: InputMaybe<NumberFilter>;
+};
+
+export type TermUpdateInput = {
   endDate?: InputMaybe<Scalars['String']['input']>;
   officeId?: InputMaybe<Scalars['ID']['input']>;
   personId?: InputMaybe<Scalars['ID']['input']>;
   startDate?: InputMaybe<Scalars['String']['input']>;
-  termId?: InputMaybe<Scalars['ID']['input']>;
-  updatedAt?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type TermsWithPagination = {
+  __typename?: 'TermsWithPagination';
+  items: Array<Term>;
+  pageInfo?: Maybe<PageInfo>;
 };
 
 export type TownMeetingSession = {
@@ -903,12 +1308,29 @@ export type TownMeetingSession = {
   warrantArticles?: Maybe<Array<Maybe<WarrantArticle>>>;
 };
 
-export type TownMeetingSessionInput = {
-  createdAt?: InputMaybe<Scalars['Int']['input']>;
+export type TownMeetingSessionCreateInput = {
+  sessionName: Scalars['String']['input'];
+  startDate: Scalars['String']['input'];
+  townMeetingSessionId?: InputMaybe<Scalars['ID']['input']>;
+};
+
+export type TownMeetingSessionFilter = {
+  createdAt?: InputMaybe<NumberFilter>;
+  sessionName?: InputMaybe<StringFilter>;
+  startDate?: InputMaybe<DateFilter>;
+  townMeetingSessionId?: InputMaybe<IdFilter>;
+  updatedAt?: InputMaybe<NumberFilter>;
+};
+
+export type TownMeetingSessionUpdateInput = {
   sessionName?: InputMaybe<Scalars['String']['input']>;
   startDate?: InputMaybe<Scalars['String']['input']>;
-  townMeetingSessionId?: InputMaybe<Scalars['ID']['input']>;
-  updatedAt?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type TownMeetingSessionsWithPagination = {
+  __typename?: 'TownMeetingSessionsWithPagination';
+  items: Array<TownMeetingSession>;
+  pageInfo?: Maybe<PageInfo>;
 };
 
 export type TownMeetingVote = {
@@ -918,16 +1340,23 @@ export type TownMeetingVote = {
   person: Person;
   townMeetingVoteId: Scalars['ID']['output'];
   updatedAt: Scalars['Int']['output'];
-  voteType?: Maybe<VoteType>;
+  voteType: VoteType;
 };
 
-export type TownMeetingVoteInput = {
-  createdAt?: InputMaybe<Scalars['Int']['input']>;
-  motionId?: InputMaybe<Scalars['ID']['input']>;
-  personId?: InputMaybe<Scalars['ID']['input']>;
+export type TownMeetingVoteCreateInput = {
+  motionId: Scalars['ID']['input'];
+  personId: Scalars['ID']['input'];
   townMeetingVoteId?: InputMaybe<Scalars['ID']['input']>;
-  updatedAt?: InputMaybe<Scalars['Int']['input']>;
-  voteTypeID?: InputMaybe<Scalars['ID']['input']>;
+  voteTypeId: Scalars['ID']['input'];
+};
+
+export type TownMeetingVoteFilter = {
+  createdAt?: InputMaybe<NumberFilter>;
+  motionId?: InputMaybe<IdFilter>;
+  personId?: InputMaybe<IdFilter>;
+  townMeetingVoteId?: InputMaybe<IdFilter>;
+  updatedAt?: InputMaybe<NumberFilter>;
+  voteTypeId?: InputMaybe<IdFilter>;
 };
 
 export type TownMeetingVoteResult = {
@@ -941,9 +1370,9 @@ export type TownMeetingVoteResult = {
   yesVotes?: Maybe<Scalars['Int']['output']>;
 };
 
-export type TownMeetingVoteResultInput = {
+export type TownMeetingVoteResultCreateInput = {
   isPassed?: InputMaybe<Scalars['Boolean']['input']>;
-  motionId?: InputMaybe<Scalars['ID']['input']>;
+  motionId: Scalars['ID']['input'];
   noVotes?: InputMaybe<Scalars['Int']['input']>;
   threshold?: InputMaybe<Scalars['String']['input']>;
   townMeetingVoteResultId?: InputMaybe<Scalars['ID']['input']>;
@@ -951,19 +1380,75 @@ export type TownMeetingVoteResultInput = {
   yesVotes?: InputMaybe<Scalars['Int']['input']>;
 };
 
-export type TownMeetingVoteTally = {
-  __typename?: 'TownMeetingVoteTally';
-  motion?: Maybe<Motion>;
-  townMeetingVoteTallyId: Scalars['ID']['output'];
-  voteCount: Scalars['Int']['output'];
-  voteType?: Maybe<VoteType>;
+export type TownMeetingVoteResultFilter = {
+  isPassed?: InputMaybe<BooleanFilterNullable>;
+  motionId?: InputMaybe<IdFilter>;
+  noVotes?: InputMaybe<NumberFilterNullable>;
+  threshold?: InputMaybe<StringFilterNullable>;
+  townMeetingVoteResultId?: InputMaybe<IdFilter>;
+  voiceVotePassed?: InputMaybe<BooleanFilterNullable>;
+  yesVotes?: InputMaybe<NumberFilterNullable>;
 };
 
-export type TownMeetingVoteTallyInput = {
+export type TownMeetingVoteResultUpdateInput = {
+  isPassed?: InputMaybe<Scalars['Boolean']['input']>;
   motionId?: InputMaybe<Scalars['ID']['input']>;
+  noVotes?: InputMaybe<Scalars['Int']['input']>;
+  threshold?: InputMaybe<Scalars['String']['input']>;
+  voiceVotePassed?: InputMaybe<Scalars['Boolean']['input']>;
+  yesVotes?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type TownMeetingVoteResultsWithPagination = {
+  __typename?: 'TownMeetingVoteResultsWithPagination';
+  items: Array<TownMeetingVoteResult>;
+  pageInfo?: Maybe<PageInfo>;
+};
+
+export type TownMeetingVoteTalliesWithPagination = {
+  __typename?: 'TownMeetingVoteTalliesWithPagination';
+  items: Array<TownMeetingVoteTally>;
+  pageInfo?: Maybe<PageInfo>;
+};
+
+export type TownMeetingVoteTally = {
+  __typename?: 'TownMeetingVoteTally';
+  motion: Motion;
+  townMeetingVoteTallyId: Scalars['ID']['output'];
+  voteCount: Scalars['Int']['output'];
+  voteType: VoteType;
+};
+
+export type TownMeetingVoteTallyCreateInput = {
+  motionId: Scalars['ID']['input'];
   townMeetingVoteTallyId?: InputMaybe<Scalars['ID']['input']>;
+  voteCount: Scalars['Int']['input'];
+  voteTypeId: Scalars['ID']['input'];
+};
+
+export type TownMeetingVoteTallyFilter = {
+  motionId?: InputMaybe<IdFilter>;
+  townMeetingVoteTallyId?: InputMaybe<IdFilter>;
+  voteCount?: InputMaybe<NumberFilter>;
+  voteTypeId?: InputMaybe<IdFilter>;
+};
+
+export type TownMeetingVoteTallyUpdateInput = {
+  motionId?: InputMaybe<Scalars['ID']['input']>;
   voteCount?: InputMaybe<Scalars['Int']['input']>;
   voteTypeId?: InputMaybe<Scalars['ID']['input']>;
+};
+
+export type TownMeetingVoteUpdateInput = {
+  motionId?: InputMaybe<Scalars['ID']['input']>;
+  personId?: InputMaybe<Scalars['ID']['input']>;
+  voteTypeId?: InputMaybe<Scalars['ID']['input']>;
+};
+
+export type TownMeetingVotesWithPagination = {
+  __typename?: 'TownMeetingVotesWithPagination';
+  items: Array<TownMeetingVote>;
+  pageInfo?: Maybe<PageInfo>;
 };
 
 export type VoteType = {
@@ -975,11 +1460,26 @@ export type VoteType = {
   voteTypeName: Scalars['String']['output'];
 };
 
-export type VoteTypeInput = {
-  createdAt?: InputMaybe<Scalars['Int']['input']>;
-  updatedAt?: InputMaybe<Scalars['Int']['input']>;
+export type VoteTypeCreateInput = {
   voteTypeId?: InputMaybe<Scalars['ID']['input']>;
+  voteTypeName: Scalars['String']['input'];
+};
+
+export type VoteTypeFilter = {
+  createdAt?: InputMaybe<NumberFilter>;
+  updatedAt?: InputMaybe<NumberFilter>;
+  voteTypeId?: InputMaybe<IdFilter>;
+  voteTypeName?: InputMaybe<StringFilter>;
+};
+
+export type VoteTypeUpdateInput = {
   voteTypeName?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type VoteTypesWithPagination = {
+  __typename?: 'VoteTypesWithPagination';
+  items: Array<VoteType>;
+  pageInfo?: Maybe<PageInfo>;
 };
 
 export type WarrantArticle = {
@@ -994,12 +1494,33 @@ export type WarrantArticle = {
   warrantArticleId: Scalars['ID']['output'];
 };
 
-export type WarrantArticleInput = {
+export type WarrantArticleCreateInput = {
+  articleDescription?: InputMaybe<Scalars['String']['input']>;
+  articleNumber: Scalars['Int']['input'];
+  articleTitle: Scalars['String']['input'];
+  townMeetingSessionId: Scalars['ID']['input'];
+  warrantArticleId?: InputMaybe<Scalars['ID']['input']>;
+};
+
+export type WarrantArticleFilter = {
+  articleDescription?: InputMaybe<StringFilterNullable>;
+  articleNumber?: InputMaybe<NumberFilter>;
+  articleTitle?: InputMaybe<StringFilter>;
+  createdAt?: InputMaybe<NumberFilter>;
+  townMeetingSessionId?: InputMaybe<IdFilter>;
+  updatedAt?: InputMaybe<NumberFilter>;
+  warrantArticleId?: InputMaybe<IdFilter>;
+};
+
+export type WarrantArticleUpdateInput = {
   articleDescription?: InputMaybe<Scalars['String']['input']>;
   articleNumber?: InputMaybe<Scalars['Int']['input']>;
   articleTitle?: InputMaybe<Scalars['String']['input']>;
-  createdAt?: InputMaybe<Scalars['Int']['input']>;
   townMeetingSessionId?: InputMaybe<Scalars['ID']['input']>;
-  updatedAt?: InputMaybe<Scalars['Int']['input']>;
-  warrantArticleId?: InputMaybe<Scalars['ID']['input']>;
+};
+
+export type WarrantArticlesWithPagination = {
+  __typename?: 'WarrantArticlesWithPagination';
+  items: Array<WarrantArticle>;
+  pageInfo?: Maybe<PageInfo>;
 };

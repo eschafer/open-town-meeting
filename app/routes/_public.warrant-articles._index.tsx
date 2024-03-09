@@ -22,7 +22,11 @@ import Breadcrumbs from '../components/Breadcrumbs';
 import slugify from '@sindresorhus/slugify';
 
 import type { LoaderFunctionArgs } from '@remix-run/cloudflare';
-import type { TownMeetingSession, WarrantArticle } from '~/types';
+import type {
+  TownMeetingSession,
+  TownMeetingSessionsWithPagination,
+  WarrantArticle,
+} from '~/types';
 
 export function ErrorBoundary() {
   const error = useRouteError();
@@ -56,15 +60,17 @@ export const loader: LoaderFunction = async ({
   const query = `
     query AllTownMeetingSessions {
       allTownMeetingSessions(filter: { startDate: { gte: "2024-01-01", lte: "2024-12-31" } }) {
-        warrantArticles {
-          warrantArticleId
-          articleNumber
-          articleTitle
-          articleDescription
-          townMeetingSession {
-            townMeetingSessionId
-            startDate
-            sessionName
+        items {
+          warrantArticles {
+            warrantArticleId
+            articleNumber
+            articleTitle
+            articleDescription
+            townMeetingSession {
+              townMeetingSessionId
+              startDate
+              sessionName
+            }
           }
         }
       }
@@ -72,18 +78,29 @@ export const loader: LoaderFunction = async ({
   `;
 
   const data = (await fetchGraphQL({ query, request })) as {
-    allTownMeetingSessions: TownMeetingSession[];
+    allTownMeetingSessions: TownMeetingSessionsWithPagination;
   };
 
-  return json(data.allTownMeetingSessions);
+  return json(data.allTownMeetingSessions.items);
 };
 
 export default function WarrantArticles() {
   const sessions: TownMeetingSession[] = useLoaderData();
 
-  const articles: WarrantArticle[] = sessions.reduce((acc, session) => {
-    return acc.concat(session.warrantArticles);
-  }, []);
+  const articles: WarrantArticle[] = sessions.reduce(
+    (acc: WarrantArticle[], session) => {
+      if (!session.warrantArticles) return acc;
+
+      const validArticles = session.warrantArticles.filter(
+        (article): article is WarrantArticle => {
+          return article !== null;
+        },
+      );
+
+      return acc.concat(validArticles);
+    },
+    [],
+  );
 
   return (
     <>

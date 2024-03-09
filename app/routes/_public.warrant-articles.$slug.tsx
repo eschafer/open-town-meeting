@@ -9,7 +9,7 @@ import Markdown from 'react-markdown';
 import Breadcrumbs from '../components/Breadcrumbs';
 import { decodeId, fetchGraphQL } from '~/utils';
 
-import type { WarrantArticle } from '~/types';
+import type { WarrantArticle, WarrantArticlesWithPagination } from '~/types';
 
 export function ErrorBoundary() {
   const error = useRouteError();
@@ -51,18 +51,20 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
   const query = `
     query AllWarrantArticles {
       allWarrantArticles(filter: { warrantArticleId: { eq: "${id}" } }) {
-        articleNumber
-        articleTitle
-        articleDescription
+        items {
+          articleNumber
+          articleTitle
+          articleDescription
+        }
       }
     }
   `;
 
   const data = (await fetchGraphQL({ query, request })) as {
-    allWarrantArticles: WarrantArticle[];
+    allWarrantArticles: WarrantArticlesWithPagination;
   };
 
-  const { articleNumber, articleTitle } = data.allWarrantArticles[0];
+  const { articleNumber, articleTitle } = data.allWarrantArticles.items[0];
 
   return json({
     articleNumber,

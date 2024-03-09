@@ -19,7 +19,10 @@ import Breadcrumbs from '../components/Breadcrumbs';
 import { encodeId, fetchGraphQL } from '~/utils';
 import slugify from '@sindresorhus/slugify';
 
-import type { TownMeetingSession } from '~/types';
+import type {
+  TownMeetingSession,
+  TownMeetingSessionsWithPagination,
+} from '~/types';
 
 const drawerWidth = 240;
 
@@ -53,15 +56,17 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
   const query = `
     query AllTownMeetingSessions {
       allTownMeetingSessions(filter: { startDate: { gte: "${params.year}-01-01", lte: "${params.year}-12-31" } }) {
-        warrantArticles {
-          warrantArticleId
-          articleNumber
-          articleTitle
-          articleDescription
-          townMeetingSession {
-            townMeetingSessionId
-            startDate
-            sessionName
+        items {
+          warrantArticles {
+            warrantArticleId
+            articleNumber
+            articleTitle
+            articleDescription
+            townMeetingSession {
+              townMeetingSessionId
+              startDate
+              sessionName
+            }
           }
         }
       }
@@ -69,10 +74,10 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
   `;
 
   const data = (await fetchGraphQL({ query, request })) as {
-    allTownMeetingSessions: TownMeetingSession[];
+    allTownMeetingSessions: TownMeetingSessionsWithPagination;
   };
 
-  return json(data.allTownMeetingSessions[0]);
+  return json(data.allTownMeetingSessions.items[0]);
 }
 
 export default function TownMeetingYear() {
@@ -112,15 +117,13 @@ export default function TownMeetingYear() {
             {tmSession.warrantArticles?.map(
               (article) =>
                 article && (
-                  <>
-                    <ListItemButton>
-                      <Link
-                        to={`/warrant-articles/wa-${article.articleNumber}-${slugify(article.articleTitle)}-${encodeId(article.warrantArticleId)}`}
-                      >
-                        {`WA-${article.articleNumber}: ${article?.articleTitle}`}
-                      </Link>
-                    </ListItemButton>
-                  </>
+                  <ListItemButton key={article.warrantArticleId}>
+                    <Link
+                      to={`/warrant-articles/wa-${article.articleNumber}-${slugify(article.articleTitle)}-${encodeId(article.warrantArticleId)}`}
+                    >
+                      {`WA-${article.articleNumber}: ${article?.articleTitle}`}
+                    </Link>
+                  </ListItemButton>
                 ),
             )}
           </List>
